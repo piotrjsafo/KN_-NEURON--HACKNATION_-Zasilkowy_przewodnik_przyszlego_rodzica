@@ -73,18 +73,8 @@
             margin: 0;
         }
 
-        #mojFormularz input[type="submit"] {
-            font-size: 1.2rem;
-            padding: 12px 28px;
-            border-radius: 10px;
-            border: 2px solid #555;
-            cursor: pointer;
-            margin: 4px 0 0;
-            align-self: center;
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-        }
-
-        #btnSymulujMObywatel{
+        #mojFormularz input[type="submit"],
+        #btnSymulujMObywatel {
             font-size: 1.2rem;
             padding: 12px 28px;
             border-radius: 10px;
@@ -113,14 +103,14 @@
         <p id="statusMObywatel"></p>
     </div>
 
-    <form id="mojFormularz" action="formularz" style="display: none;">
-        <input type="text" id="poleImie" name="imie" placeholder="Imię">
-        <input type="text" id="poleNazwisko" name="nazwisko" placeholder="Nazwisko">
+    <form id="mojFormularz" action="formularz.html" method="GET" style="display: none;">
+        <input type="text" id="poleImie" name="imie" placeholder="Imię" required>
+        <input type="text" id="poleNazwisko" name="nazwisko" placeholder="Nazwisko" required>
         <input type="submit" value="Zapisz i przejdź dalej">
     </form>
 
     <footer>
-        <p>czytaj więcej: <a href="https://www.zus.pl/">https://www.zus.pl/</a></p>
+        <p>Czytaj więcej: <a href="https://zus.pl" target="_blank">https://zus.pl</a></p>
     </footer>
 </div>
 
@@ -167,8 +157,8 @@
 
         setTimeout(() => {
             const daneZMobywatela = {
-                imie: 'przykładowe_imię',
-                nazwisko: 'przykładowe_nazwisko'
+                imie: 'Jan',
+                nazwisko: 'Kowalski'
             };
 
             poleImie.value = daneZMobywatela.imie;
