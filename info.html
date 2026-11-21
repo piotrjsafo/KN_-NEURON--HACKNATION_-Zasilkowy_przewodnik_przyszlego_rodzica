@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prawo w pigułce – Zasiłkowy Przewodnik Przyszłego Rodzica</title>
+<style>
+  /* ================================================= 1. ZMIENNE I BAZA ================================================= */
+  :root {
+    --bg: #f3f7f4;
+    --card-bg: #ffffff;
+    --text: #162b20;
+    --mut: #556b5e;
+    --primary: #15803d;
+    --primary-hover: #166534;
+    --accent: #e6f4ec;
+    --warn-bg: #fefce8;
+    --warn-border: #ca8a04;
+    --warn-text: #854d0e;
+    --note-bg: #ecfdf5;
+    --note-border: #10b981;
+    --note-text: #065f46;
+    --border: #cfe0d6;
+    --radius: 12px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+  }
+
+  /* ================================================= 2. UKŁAD STRONY (WRAPPER) ================================================= */
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 20px rgba(20, 50, 35, 0.06);
+  }
+
+  h1 {
+    font-family: inherit;
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+
+  .sub {
+    font-size: 1.05rem;
+    color: var(--mut);
+    margin-bottom: 25px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: var(--primary-hover);
+    margin-top: 40px;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  /* ================================================= 3. SEKCJA CHIPS (NAWIGACJA SZYBKA) ================================================= */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+
+  .chips a {
+    text-decoration: none;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s, transform 0.1s;
+  }
+
+  .chips a:hover {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  /* ================================================= 4. KARTY I ELEMENTY TREŚCI ================================================= */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(20, 50, 35, 0.03);
+  }
+
+  .card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .card p {
+    margin-bottom: 10px;
+  }
+
+  .card ul {
+    margin-left: 20px;
+    margin-bottom: 10px;
+  }
+
+  .card li {
+    margin-bottom: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 0.95rem;
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    background-color: var(--accent);
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  td.n, th.n {
+    text-align: right;
+  }
+
+  .note {
+    background-color: var(--note-bg);
+    border-left: 4px solid var(--note-border);
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin: 15px 0;
+    font-size: 0.95rem;
+    color: var(--note-text);
+  }
+
+  .warn {
+    background-color: var(--warn-bg);
+    border-left: 4px solid var(--warn-border);
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin: 15px 0;
+    font-size: 0.95rem;
+    color: var(--warn-text);
+  }
+
+  .num {
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .hint {
+    font-size: 0.85rem;
+    color: var(--mut);
+  }
+
+  .legal {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--mut);
+    text-align: right;
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  /* ================================================= 4a. SEKCJA PRZYDATNE LINKI ================================================= */
+  .linklist {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  .linklist a {
+    display: block;
+    background: var(--accent);
+    color: var(--primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .linklist a:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .linklist span {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--mut);
+  }
+
+  .linklist a:hover span {
+    color: #e6f4ec;
+  }
+
+  .foot {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--mut);
+    text-align: center;
+  }
+
+  /* ================================================= 5. RESPONSYWNOŚĆ ================================================= */
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+
+    .wrap {
+      padding: 18px;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    th, td {
+      padding: 8px;
+      font-size: 0.88rem;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Prawo w pigułce</h1>
+  <p class="sub">Zasiłkowy Przewodnik Przyszłego Rodzica — wszystkie ważne zasady z ustawy zasiłkowej, Kodeksu pracy, rozporządzeń i poradnika ZUS wyjaśnione prostym językiem. Stan prawny po 24.10.2026 r.</p>
+
+  <div class="chips">
+    <a href="#chorobowy">Zasiłek chorobowy</a>
+    <a href="#rehab">Rehabilitacyjne</a>
+    <a href="#utrata">Utrata pracy w ciąży</a>
+    <a href="#macierzynski">Macierzyński</a>
+    <a href="#wysokosc">Wysokość</a>
+    <a href="#podstawa">Podstawa wymiaru</a>
+    <a href="#dokumenty">Dokumenty</a>
+    <a href="#linki">Przydatne linki</a>
+    <a href="#ryzyka">Ryzyka</a>
+  </div>
+
+  <h2 id="chorobowy">1. Zasiłek chorobowy</h2>
+  <div class="card">
+    <p><b>Komu przysługuje?</b> Osobie objętej ubezpieczeniem chorobowym (obowiązkowo — umowa o pracę; dobrowolnie — zlecenie, działalność).</p>
+    <p><b>Okres wyczekiwania:</b></p>
+    <ul>
+      <li><span class="num">30 dni</span> — ubezpieczenie obowiązkowe (umowa o pracę),</li>
+      <li><span class="num">90 dni</span> — ubezpieczenie dobrowolne (zlecenie, działalność).</li>
+    </ul>
+    <p class="hint">Wyjątki: absolwenci (90 dni od ukończenia szkoły), wypadek w drodze do/z pracy, osoby z 10-letnim stażem obowiązkowego ubezpieczenia.</p>
+    <span class="legal">art. 4 ustawy zasiłkowej</span>
+  </div>
+
+  <div class="card">
+    <h3>Czyja to wypłata?</h3>
+    <p>Pracodawca płaci tzw. <b>wynagrodzenie chorobowe</b> (art. 92 Kodeksu pracy) przez pierwsze:</p>
+    <ul>
+      <li><span class="num">33 dni</span> w roku kalendarzowym,</li>
+      <li><span class="num">14 dni</span> — pracownik, który ukończył 50 lat (od roku kalendarzowego następującego po 50. urodzinach).</li>
+    </ul>
+    <p>Potem świadczenie przejmuje <b>zasiłek chorobowy</b> (ZUS lub duży płatnik). U niepracowników (zlecenie, działalność) zasiłek płynie od pierwszego dnia.</p>
+    <p>Wynagrodzenie chorobowe wynosi <b>80%</b>, a gdy niezdolność przypada w <b>ciąży</b> — <b>100%</b>.</p>
+    <span class="legal">art. 92 § 1–5 Kodeksu pracy</span>
+  </div>
+
+  <div class="card">
+    <h3>Ile to wynosi?</h3>
+    <table>
+      <tr><th>Sytuacja</th><th class="n">Stawka</th><th class="n">Maks. okres</th></tr>
+      <tr><td>Ciąża (kod „B” na e-ZLA)</td><td class="n"><b>100%</b></td><td class="n">270 dni</td></tr>
+      <tr><td>Choroba „zwykła”</td><td class="n">80%</td><td class="n">182 dni</td></tr>
+      <tr><td>Gruźlica</td><td class="n">80%</td><td class="n">270 dni</td></tr>
+      <tr><td>Wypadek w drodze do/z pracy, badania/dawstwo</td><td class="n">100%</td><td class="n">182 dni</td></tr>
+    </table>
+    <span class="legal">art. 8 i art. 11 ustawy zasiłkowej</span>
+  </div>
+
+  <div class="card">
+    <h3>Sumowanie zwolnień (okres zasiłkowy)</h3>
+    <p>Do jednego okresu zasiłkowego wlicza się wszystkie nieprzerwane zwolnienia oraz poprzednie, jeżeli przerwa między nimi nie przekroczyła <b>60 dni</b>.</p>
+    <div class="note"><b>Ważne:</b> jeżeli nowe zwolnienie przypada <b>w ciąży</b>, wcześniejszych okresów sprzed przerwy <b>nie wlicza się</b> — limit 270 dni liczy się od nowa.</div>
+    <span class="legal">art. 9 ust. 1–2 ustawy zasiłkowej</span>
+  </div>
+
+  <div class="card">
+    <h3>Po ustaniu ubezpieczenia</h3>
+    <p>Zasiłek przysługuje, gdy niezdolność do pracy powstała:</p>
+    <ul>
+      <li><span class="num">14 dni</span> po ustaniu ubezpieczenia — albo</li>
+      <li><span class="num">3 mies.</span> — choroba zakaźna (kod „E”),</li>
+    </ul>
+    <p>i trwała bez przerwy co najmniej <b>30 dni</b>. Wypłaca ZUS.</p>
+    <div class="note"><b>Limit:</b> za okres po ustaniu ubezpieczenia zasiłek przysługuje maksymalnie przez <b>91 dni</b> — ale nie w ciąży i przy gruźlicy (wtedy 270 dni).</div>
+    <span class="legal">art. 7, art. 8 ust. 2 ustawy zasiłkowej</span>
+  </div>
+
+  <div class="card">
+    <h3>Kiedy tracisz zasiłek</h3>
+    <ul>
+      <li>wykonywanie pracy zarobkowej w czasie zwolnienia,</li>
+      <li>aktywność niezgodna z celem zwolnienia,</li>
+      <li>sfałszowane zwolnienie,</li>
+      <li>niezdolność wskutek nadużycia alkoholu — bez zasiłku za pierwsze 5 dni.</li>
+    </ul>
+    <span class="legal">art. 15–17 ustawy zasiłkowej</span>
+  </div>
+
+  <h2 id="rehab">2. Świadczenie rehabilitacyjne</h2>
+  <div class="card">
+    <p>Gdy po wyczerpaniu 182/270 dni nadal nie możesz pracować, a leczenie lub rehabilitacja <b>rokują powrót do zdrowia</b> — przysługuje świadczenie rehabilitacyjne.</p>
+    <table>
+      <tr><th>Okres</th><th class="n">Stawka</th></tr>
+      <tr><td>pierwsze 3 miesiące</td><td class="n"><b>90%</b></td></tr>
+      <tr><td>pozostałe miesiące (łącznie do 12 mies.)</td><td class="n"><b>75%</b></td></tr>
+      <tr><td>cały okres, gdy niezdolność przypada w ciąży</td><td class="n"><b>100%</b></td></tr>
+    </table>
+    <p>O przyznaniu orzeka <b>lekarz orzecznik ZUS</b>; świadczenie wypłaca ZUS; podstawa wymiaru podlega waloryzacji kwartalnej.</p>
+    <span class="legal">art. 18–19 ustawy zasiłkowej</span>
+  </div>
+
+  <h2 id="utrata">3. Utrata pracy w ciąży</h2>
+  <div class="card">
+    <p><b>Zasiłek w wysokości zasiłku macierzyńskiego — do dnia porodu (100%):</b></p>
+    <ul>
+      <li>śmierć, <b>upadłość lub likwidacja</b> pracodawcy — i nie zapewniono innego zatrudnienia.</li>
+    </ul>
+    <div class="warn"><b>Uwaga:</b> przy rozwiązaniu umowy <b>z naruszeniem przepisów prawa</b> (prawomocny wyrok sądu) zasiłek „do dnia porodu” nie przysługuje — po porodzie kobieta ma prawo do <b>zasiłku macierzyńskiego po ustaniu ubezpieczenia</b>.</div>
+    <span class="legal">art. 30 ust. 1 pkt 2 i ust. 3 ustawy zasiłkowej</span>
+  </div>
+
+  <div class="card">
+    <div class="note"><b>Ochrona:</b> umowa na czas określony lub okres próbny (powyżej 1 miesiąca), która rozwiązałaby się po 3. miesiącu ciąży, <b>przedłuża się do dnia porodu</b>. W ciąży i w trakcie urlopów związanych z rodzicielstwem nie można wypowiedzieć umowy — wyjątkiem jest rozwiązanie umowy w razie ogłoszenia <b>upadłości lub likwidacji</b> pracodawcy.</div>
+    <span class="legal">art. 177 § 1, § 3 i § 4 Kodeksu pracy</span>
+  </div>
+
+  <h2 id="macierzynski">4. Zasiłek macierzyński</h2>
+  <div class="card">
+    <h3>Urlop macierzyński</h3>
+    <table>
+      <tr><th>Liczba dzieci</th><th class="n">Tygodnie</th></tr>
+      <tr><td>1 dziecko</td><td class="n">20</td></tr>
+      <tr><td>2 dzieci</td><td class="n">31</td></tr>
+      <tr><td>3 dzieci</td><td class="n">33</td></tr>
+      <tr><td>4 dzieci</td><td class="n">35</td></tr>
+      <tr><td>5 i więcej</td><td class="n">37</td></tr>
+    </table>
+    <ul>
+      <li>Do <b>6 tygodni przed planowaną datą porodu</b> można wykorzystać z wyprzedzeniem.</li>
+      <li>Pierwsze <b>14 tygodni po porodzie</b> matka wykorzystuje sama; dopiero potem może zrezygnować z reszty na rzecz ojca.</li>
+    </ul>
+    <span class="legal">art. 180 § 1–5 Kodeksu pracy</span>
+  </div>
+
+  <div class="card">
+    <h3>Ojciec przejmuje urlop — sytuacje szczególne</h3>
+    <table>
+      <tr><th>Sytuacja matki</th><th class="n">Od kiedy ojciec przejmuje</th></tr>
+      <tr><td>Orzeczenie o niezdolności do samodzielnej egzystencji</td><td class="n">po 8 tyg. po porodzie</td></tr>
+      <tr><td>Pobyt w szpitalu (uniemożliwia opiekę)</td><td class="n">po 8 tyg. — na czas hospitalizacji</td></tr>
+      <tr><td>Porzucenie dziecka</td><td class="n">po 8 tyg. (po dniu porzucenia)</td></tr>
+      <tr><td>Śmierć matki</td><td class="n">od dnia zgonu (bez progu)</td></tr>
+      <tr><td>Matka nieubezpieczona (zgon/porzucenie/niezdolność)</td><td class="n">od dnia zdarzenia (bez progu)</td></tr>
+      <tr><td>Matka nieubezpieczona podjęła pracę ≥ 1/2 etatu</td><td class="n">na okres tego zatrudnienia</td></tr>
+    </table>
+    <p class="hint">Wymagane 8 tygodni liczy się <b>po porodzie</b> — tygodnie wykorzystane przed porodem skracają część ojca. Łączny urlop obojga rodziców nie przekracza wymiaru z tabeli.</p>
+    <span class="legal">art. 180 § 6–17 Kodeksu pracy; art. 29 ust. 5–10 ustawy zasiłkowej</span>
+  </div>
+
+  <div class="card">
+    <h3>Martwe urodzenie lub zgon dziecka</h3>
+    <ul>
+      <li><b>Przed 8. tygodniem życia:</b> zasiłek przez 8 tygodni po porodzie, nie krócej niż 7 dni od dnia zgonu.</li>
+      <li><b>Po 8. tygodniu życia:</b> prawo zachowane przez 7 dni od dnia zgonu.</li>
+      <li><b>Poród mnogi:</b> wymiar wg liczby dzieci pozostałych przy życiu.</li>
+    </ul>
+    <div class="note"><b>Dodatkowo</b> przysługuje zasiłek pogrzebowy — <b>7000 zł</b> (wniosek na druku Z-12, w ciągu 12 miesięcy od pochówku).</div>
+    <span class="legal">art. 180¹ Kodeksu pracy; art. 29a ust. 1 ustawy zasiłkowej</span>
+  </div>
+
+  <div class="card">
+    <h3>Uzupełniający urlop macierzyński (wcześniak / hospitalizacja)</h3>
+    <p>Przysługuje <b>jednemu z rodziców</b>, bezpośrednio po urlopie macierzyńskim, jednorazowo. Wymiar: <b>1 tydzień za każdy tydzień pobytu dziecka w szpitalu</b> (okresy sumuje się, niepełny tydzień zaokrągla w górę).</p>
+    <table>
+      <tr><th>Przypadek</th><th class="n">Limit</th></tr>
+      <tr><td>Poród przed 28. tyg. ciąży lub masa ≤ 1000 g</td><td class="n">do 15 tyg.</td></tr>
+      <tr><td>Poród 28–37. tydz., masa > 1000 g</td><td class="n">do 8 tyg.</td></tr>
+      <tr><td>Poród o czasie — pierwszy z ≥2 kolejnych dni w szpitalu między 5.–28. dniem</td><td class="n">do 8 tyg.</td></tr>
+      <tr><td>Poród mnogi — wg najniższej masy i najdłuższej hospitalizacji</td><td class="n">8 lub 15 tyg.</td></tr>
+    </table>
+    <span class="legal">art. 180² Kodeksu pracy</span>
+  </div>
+
+  <div class="card">
+    <h3>Urlop rodzicielski</h3>
+    <table>
+      <tr><th>Sytuacja</th><th class="n">Pula (łącznie dla obojga)</th></tr>
+      <tr><td>1 dziecko</td><td class="n">41 tyg.</td></tr>
+      <tr><td>2 i więcej dzieci</td><td class="n">43 tyg.</td></tr>
+      <tr><td>„Za życiem” — 1 dziecko / 2+ dzieci</td><td class="n">65 / 67 tyg.</td></tr>
+      <tr><td>Adopcja przy skróceniu do min. 9 tyg.</td><td class="n">38 tyg. (62 z „Za życiem”)</td></tr>
+    </table>
+    <ul>
+      <li><b>9 tygodni</b> z puli należy się wyłącznie każdemu z rodziców i nie można ich przenieść na drugiego.</li>
+      <li>Rodzice korzystają jednocześnie lub naprzemiennie, w maks. <b>5 częściach</b>, do końca roku, w którym dziecko kończy 6 lat.</li>
+    </ul>
+    <span class="legal">art. 182¹a, 182¹c Kodeksu pracy</span>
+  </div>
+
+  <div class="card">
+    <h3>Urlop ojcowski</h3>
+    <ul>
+      <li><b>14 dni</b> (2 tygodnie) — jednorazowo lub w 2 częściach po co najmniej 7 dni.</li>
+      <li>Tylko dla <b>pracownika — ojca</b> (biologicznego lub adopcyjnego).</li>
+      <li>Do ukończenia przez dziecko 12. miesiąca życia; przy adopcji — 12 miesięcy od uprawomocnienia, nie dłużej niż do 14. roku życia.</li>
+    </ul>
+    <span class="legal">art. 182³ Kodeksu pracy</span>
+  </div>
+
+  <div class="card">
+    <h3>Przyjęcie dziecka na wychowanie (adopcja / rodzina zastępcza)</h3>
+    <p><b>Urlop na warunkach urlopu macierzyńskiego</b> — wymiar jak przy urodzeniu (20–37 tyg.).</p>
+    <ul>
+      <li>Rodzina zastępcza niezawodowa: do <b>7. roku życia</b> dziecka (do 10 lat przy odroczeniu obowiązku szkolnego).</li>
+      <li>Adopcja (wniosek o przysposobienie): do <b>14. roku życia</b>.</li>
+      <li>Jeżeli dziecko osiąga granicę wieku w trakcie urlopu — urlop skraca się do dnia granicy, ale <b>nigdy poniżej 9 tygodni</b>; wtedy pula rodzicielska to 38 tyg. (z „Za życiem” — 62 tyg.).</li>
+      <li>Przy przejęciu urlopu przez drugiego rodzica obowiązuje reguła <b>14 tygodni</b>.</li>
+    </ul>
+    <span class="legal">art. 183 Kodeksu pracy</span>
+  </div>
+
+  <div class="card">
+    <h3>Łączenie urlopu rodzicielskiego z pracą</h3>
+    <ul>
+      <li>Można pracować u pracodawcy udzielającego urlopu — maksymalnie na <b>1/2 etatu</b>.</li>
+      <li>Urlop wydłuża się proporcjonalnie; zasiłek jest proporcjonalnie pomniejszany (łączna kwota pozostaje taka sama).</li>
+      <li>Praca w wymiarze <b>wyższym niż 1/2 etatu</b> = rezygnacja z pozostałej części urlopu i utrata zasiłku za nią.</li>
+    </ul>
+    <span class="legal">art. 182¹e–182¹f Kodeksu pracy; art. 31 ust. 4a ustawy zasiłkowej</span>
+  </div>
+
+  <h2 id="wysokosc">5. Wysokość zasiłku macierzyńskiego</h2>
+  <div class="card">
+    <table>
+      <tr><th>Okres</th><th class="n">Stawka</th></tr>
+      <tr><td>Urlop macierzyński / na warunkach / uzupełniający / ojcowski</td><td class="n"><b>100%</b></td></tr>
+      <tr><td>Urlop rodzicielski</td><td class="n"><b>70%</b></td></tr>
+      <tr><td>Wniosek w 21 dni o całość (macierzyński + rodzicielski w pełnym wymiarze)</td><td class="n"><b>81,5%</b></td></tr>
+      <tr><td>9 tyg. drugiego rodzica — zawsze</td><td class="n"><b>70%</b></td></tr>
+    </table>
+    <div class="warn"><b>81,5% a pierwszy rok:</b> jeżeli ani jeden dzień urlopu rodzicielskiego nie przypada w pierwszym roku życia dziecka — zasiłek za rodzicielski wynosi 70%, a za macierzyński przysługuje jednorazowe wyrównanie do 100%.</div>
+    <span class="legal">art. 30a, art. 31 ust. 1–3, 3f, 3g, 4 ustawy zasiłkowej</span>
+  </div>
+
+  <div class="card">
+    <h3>Podwyższenie do świadczenia rodzicielskiego (1000 zł)</h3>
+    <p>Gdy miesięczny zasiłek macierzyński <b>pomniejszony o zaliczkę na podatek</b> jest niższy niż świadczenie rodzicielskie (<b>1000 zł</b>), ZUS podwyższa zasiłek o różnicę. Częste przy niskiej podstawie wymiaru i łączeniu urlopu z pracą.</p>
+    <span class="legal">art. 31 ust. 3a ustawy zasiłkowej</span>
+  </div>
+
+  <h2 id="podstawa">6. Podstawa wymiaru zasiłku</h2>
+  <div class="card">
+    <p><b>Pracownik:</b> przeciętne wynagrodzenie z 12 miesięcy poprzedzających, pomniejszone o <b>13,71%</b> (składki finansowane przez pracownika).</p>
+    <ul>
+      <li>Premie kwartalne: 1/12 kwot z 4 kwartałów; roczne: 1/12 z poprzedniego roku.</li>
+      <li>Miesiące przepracowane w mniej niż połowie — pomijane; co najmniej połowa — uzupełniane.</li>
+    </ul>
+    <p><b>Niepracownik (zlecenie, działalność):</b> przeciętny przychód z 12 miesięcy, pomniejszony o 13,71%.</p>
+    <div class="note"><b>Limity 2026:</b> minimalna podstawa (pełny etat, płaca minimalna 4 806 zł) — <b>4 147,10 zł</b>; maksymalna podstawa dobrowolnego ubezpieczenia chorobowego — <b>20 321,30 zł</b>.</div>
+    <span class="legal">art. 36–48 ustawy zasiłkowej</span>
+  </div>
+
+  <div class="card">
+    <h3>Zadłużenie składek (art. 2a)</h3>
+    <p><b>Przedsiębiorca</b> z zadłużeniem składek przekraczającym <b>1% minimalnego wynagrodzenia</b> (w 2026 r. — <b>48,06 zł</b>) w dniu powstania prawa do świadczenia:</p>
+    <ul>
+      <li>nie otrzyma świadczeń <b>do czasu spłaty całości zadłużenia</b> (pomocą jest układ ratalny opłacany terminowo),</li>
+      <li>jeżeli nie ureguluje długu w ciągu <b>6 miesięcy</b> — prawo do świadczeń <b>przedawnia się</b>.</li>
+    </ul>
+    <p class="hint">Nie dotyczy pracowników i zleceniobiorców — ich składki odprowadza płatnik.</p>
+    <span class="legal">art. 2a ust. 1–2 ustawy zasiłkowej</span>
+  </div>
+
+  <h2 id="dokumenty">7. Dokumenty i gdzie je składać</h2>
+  <div class="card">
+    <table>
+      <tr><th>Kto i o co</th><th>Dokumenty</th></tr>
+      <tr><td>Pracownik — zasiłek chorobowy</td><td>e-ZLA trafia elektronicznie; pracodawca >20 osób wypłaca sam, mniejszy przekazuje <b>Z-3</b> (kontynuacja: <b>ZAS-12</b>) do ZUS</td></tr>
+      <tr><td>Zleceniobiorca — zasiłek chorobowy</td><td>wniosek <b>ZAS-53</b> + <b>Z-3a</b> od zleceniodawcy</td></tr>
+      <tr><td>Przedsiębiorca — zasiłek chorobowy</td><td><b>ZAS-53</b> do ZUS</td></tr>
+      <tr><td>Po ustaniu ubezpieczenia</td><td><b>ZAS-53</b> + oświadczenie <b>Z-10</b>; były płatnik przekazuje Z-3/Z-3a</td></tr>
+      <tr><td>Pracownik — zasiłek macierzyński</td><td>wniosek o urlop do pracodawcy (+Z-3 do ZUS u małego płatnika)</td></tr>
+      <tr><td>Niepracownik — zasiłek macierzyński</td><td>wniosek <b>ZAM</b> do ZUS</td></tr>
+      <tr><td>Martwe urodzenie</td><td>akt urodzenia z adnotacją / zaświadczenie o martwym urodzeniu; zasiłek pogrzebowy — <b>Z-12</b></td></tr>
+    </table>
+    <div class="note"><b>Od 24.10.2026 r.:</b> formularze ZUR i ZAO zostały połączone z ZAM, a Z-3b zlikwidowany — wszystko składa się na <b>ZAM</b>.</div>
+    <span class="legal">rozporządzenie z 27.09.2026 r. (Dz.U. 2026 poz. 1316)</span>
+  </div>
+
+  <h2 id="linki">8. Przydatne linki</h2>
+  <div class="card">
+    <div class="linklist">
+      <a href="https://www.zus.pl" target="_blank" rel="noopener">ZUS – zus.pl<span>Informacje o świadczeniach i wzory formularzy (ZAM, ZAS-53, Z-3)</span></a>
+      <a href="https://www.zus.pl/ezus" target="_blank" rel="noopener">PUE/eZUS<span>Portal elektroniczny ZUS – wnioski online</span></a>
+      <a href="https://www.gov.pl/web/rodzina" target="_blank" rel="noopener">Ministerstwo Rodziny, Pracy i Polityki Społecznej<span>gov.pl/rodzina</span></a>
+      <a href="https://www.gov.pl/web/rodzina/urlop-rodzicielski" target="_blank" rel="noopener">Urlop rodzicielski<span>Informator MRPiPS</span></a>
+      <a href="https://www.pip.gov.pl/dla-pracodawcow/porady-prawne/rodzicielstwo" target="_blank" rel="noopener">Państwowa Inspekcja Pracy<span>Porady prawne – rodzicielstwo</span></a>
+      <a href="https://www.gov.pl/web/cyfryzacja/rejestr-stanu-cywilnego" target="_blank" rel="noopener">Rejestr stanu cywilnego<span>Wniosek o odpis aktu urodzenia</span></a>
+      <a href="https://www.gov.pl/web/mobywatel" target="_blank" rel="noopener">mObywatel<span>Aplikacja mobilna – dokumenty i sprawy urzędowe</span></a>
+      <a href="https://isap.sejm.gov.pl" target="_blank" rel="noopener">ISAP<span>Internetowy System Aktów Prawnych</span></a>
+    </div>
+  </div>
+
+  <h2 id="ryzyka">9. Ryzyka — na co uważać</h2>
+  <div class="card">
+    <ul>
+      <li><b>Pozorna umowa lub działalność</b> założona tylko dla świadczeń — ZUS może wydać decyzję o niepodleganiu ubezpieczeniom.</li>
+      <li><b>Sztuczne zawyżenie podstawy składek w ciąży</b> — ZUS może obniżyć podstawę wymiaru zasiłku.</li>
+      <li><b>Utrata tytułu ubezpieczenia przed porodem</b> (koniec zlecenia/działalności) — brak prawa do zasiłku macierzyńskiego.</li>
+      <li><b>Ochrona przed wypowiedzeniem</b> dotyczy tylko pracowników (umowa o pracę), nie zleceniobiorców.</li>
+      <li><b>Zadłużenie składek</b> u przedsiębiorcy blokuje świadczenia (art. 2a).</li>
+    </ul>
+  </div>
+
+  <p class="foot">Źródła: ustawa z 25.06.1999 r. o świadczeniach pieniężnych z ubezpieczenia społecznego w razie choroby i macierzyństwa (Dz.U. 2026 poz. 854) • Kodeks pracy (Dz.U. 2026 poz. 1245) • rozporządzenie z 27.09.2026 r. (Dz.U. 2026 poz. 1316) • poradnik ZUS 2026. Materiał poglądowy — decyzje wydaje ZUS.</p>
+</div>
+</body>
+</html>
