@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -6,6 +7,7 @@
     <meta name="author" content="Piotr Kiciński">
     <link rel="stylesheet" href="style.css">
     <title>Formularz poprzedzający kalkulator</title>
+
     <style>
         .kontener {
             text-align: center;
@@ -24,7 +26,7 @@
             margin-top: 10px;
         }
 
-        #formularzDanych input[type="text"],
+        #formularzDanych input[type="number"],
         #formularzDanych select {
             font-size: 1.2rem;
             padding: 8px 12px;
@@ -59,30 +61,62 @@
         }
     </style>
 </head>
+
 <body>
 <div class="kontener">
-    <h1>Formularz danych</h1>
 
-    <form id="formularzDanych" action="formularz">
-        <label for="ojciec">Wypłata ojca:</label>
-        <input type="text" id="ojciec" name="ojciec">
+    <h1>Formularz zasiłkowy</h1>
 
-        <label for="matka">Wypłata matki:</label>
-        <input type="text" id="matka" name="matka">
+    <p id="powitanie"></p>
+
+    <form id="formularzDanych" action="kalkulator.html" method="GET">
+
+        <input type="hidden" id="ukryteImie" name="imie">
+        <input type="hidden" id="ukryteNazwisko" name="nazwisko">
+
+        <label for="matka">Wypłata matki (zł/mies.):</label>
+        <input type="number" id="matka" name="matka"
+               placeholder="np. 6000" min="0" required>
+
+        <label for="ojciec">Wypłata ojca (zł/mies.):</label>
+        <input type="number" id="ojciec" name="ojciec"
+               placeholder="np. 7000" min="0" required>
 
         <label for="zdarzenie">Stan dziecka:</label>
+
         <select id="zdarzenie" name="zdarzenie">
             <option value="normalne">Urodziło się zdrowe</option>
             <option value="niepelnosprawne">Urodziło się niepełnosprawne</option>
             <option value="zmarlo">Dziecko zmarło</option>
         </select>
 
-        <input type="submit" value="Zapisz">
+        <input type="submit" value="Zapisz i oblicz zasiłek">
+
     </form>
 
     <footer>
-        <p>czytaj więcej: <a href="https://www.zus.pl/">https://www.zus.pl/</a></p>
+        <p>czytaj więcej:
+            <a href="https://www.zus.pl/" target="_blank">https://www.zus.pl/</a>
+        </p>
     </footer>
+
 </div>
+
+<script>
+    // Pobranie danych z adresu strony
+    const parametry = new URLSearchParams(window.location.search);
+
+    const imie = parametry.get('imie') || '';
+    const nazwisko = parametry.get('nazwisko') || '';
+
+    // Przepisanie danych do ukrytych pól formularza
+    document.getElementById('ukryteImie').value = imie;
+    document.getElementById('ukryteNazwisko').value = nazwisko;
+
+    // Wyświetlenie powitania
+    document.getElementById('powitanie').textContent =
+        'Witaj, ' + imie + ' ' + nazwisko + '! Wypełnij poniższe dane.';
+</script>
+
 </body>
 </html>
