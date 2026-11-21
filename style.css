@@ -35,14 +35,7 @@ label {
   margin-bottom: 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  cursor: pointer;
   transition: all 0.2s ease;
-}
-
-label:hover {
-  background-color: #28a745;
-  color: #ffffff;
-  border-color: #28a745;
 }
 
 label:has(input:checked) {
