@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="KN-NEURON, Piotr Kicinski">
+    <link rel="stylesheet" href="style.css">
+    <title>Świadczenie ZUS</title>
+    <style>
+        .wybor {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .wybor button {
+            font-size: 1.4rem;
+            padding: 18px 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid #555;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .wybor button.aktywny {
+            background-color: #28a745;
+            border-color: #1e7e34;
+            color: white;
+        }
+        #mojFormularz {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin: 10px 0;
+        }
+
+        #mojFormularz input[type="text"] {
+            font-size: 1.2rem;
+            padding: 8px 12px;
+            border: 2px solid #555;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 380px;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        #mojFormularz input[type="submit"] {
+            font-size: 1.2rem;
+            padding: 12px 28px;
+            border-radius: 10px;
+            border: 2px solid #555;
+            cursor: pointer;
+            margin: 4px 0 0;
+            align-self: center;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        #btnSymulujMObywatel{
+            font-size: 1.2rem;
+            padding: 12px 28px;
+            border-radius: 10px;
+            border: 2px solid #555;
+            cursor: pointer;
+            margin: 4px 0 0;
+            align-self: center;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+    </style>
+</head>
+<body>
+<div class="kontener">
+    <h1>Zasiłkowy przewodnik przyszłego rodzica</h1>
+
+    <div class="wybor">
+        <button type="button" id="btnMObywatel">Logowanie z mObywatelem</button>
+        <button type="button" id="btnBez">Logowanie bez mObywatela</button>
+    </div>
+
+    <div id="sekcjaMObywatel" style="display: none; margin: 15px 0; padding: 15px; border: 1px solid #ccc; border-radius: 8px;">
+        <p>Zeskanuj kod QR w aplikacji mObywatel. <img src="kod_QR.png" alt="Kod QR"> lub kliknij przycisk poniżej, aby zasymulować autoryzację:</p>
+        <button type="button" id="btnSymulujMObywatel">Autoryzuj i pobierz dane z mObywatela</button>
+        <p id="statusMObywatel" style="color: green; font-weight: bold; margin-top: 10px;"></p>
+    </div>
+
+    <form id="mojFormularz" action="formularz" style="display: none;">
+        <input type="text" id="poleImie" name="imie" placeholder="Imię">
+        <input type="text" id="poleNazwisko" name="nazwisko" placeholder="Nazwisko">
+        <input type="submit" value="Zapisz i przejdź dalej">
+    </form>
+
+    <footer>
+        <p>czytaj więcej: <a href="https://www.zus.pl/">https://www.zus.pl/</a></p>
+    </footer>
+</div>
+
+<script>
+    const formularz = document.getElementById('mojFormularz');
+    const sekcjaMObywatel = document.getElementById('sekcjaMObywatel');
+    const btnMObywatel = document.getElementById('btnMObywatel');
+    const btnBez = document.getElementById('btnBez');
+    const btnSymuluj = document.getElementById('btnSymulujMObywatel');
+    const statusMObywatel = document.getElementById('statusMObywatel');
+    const poleImie = document.getElementById('poleImie');
+    const poleNazwisko = document.getElementById('poleNazwisko');
+
+    function reset() {
+        formularz.style.display = 'none';
+        sekcjaMObywatel.style.display = 'none';
+        statusMObywatel.textContent = '';
+    }
+
+    function zaznacz(przycisk) {
+        btnMObywatel.classList.remove('aktywny');
+        btnBez.classList.remove('aktywny');
+        przycisk.classList.add('aktywny');
+    }
+
+    btnBez.addEventListener('click', function() {
+        reset();
+        zaznacz(btnBez);
+        poleImie.value = '';
+        poleNazwisko.value = '';
+        poleImie.readOnly = false;
+        poleNazwisko.readOnly = false;
+        formularz.style.display = 'flex';
+    });
+
+    btnMObywatel.addEventListener('click', function() {
+        reset();
+        zaznacz(btnMObywatel);
+        sekcjaMObywatel.style.display = 'block';
+    });
+
+    btnSymuluj.addEventListener('click', function() {
+        statusMObywatel.textContent = 'Łączenie z mObywatelem...';
+
+        setTimeout(() => {
+            const daneZMobywatela = {
+                imie: 'przykładowe_imię',
+                nazwisko: 'przykładowe_nazwisko'
+            };
+
+            poleImie.value = daneZMobywatela.imie;
+            poleNazwisko.value = daneZMobywatela.nazwisko;
+            poleImie.readOnly = true;
+            poleNazwisko.readOnly = true;
+            statusMObywatel.textContent = 'Pobrano dane pomyślnie!';
+            formularz.style.display = 'flex';
+        }, 1000);
+    });
+</script>
+</body>
+</html>
