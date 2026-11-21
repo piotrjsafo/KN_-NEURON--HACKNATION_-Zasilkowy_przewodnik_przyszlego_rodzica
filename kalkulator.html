@@ -6,58 +6,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kalkulator zasiłków rodzicielskich – prototyp</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap">
-<style>
-:root{--bg:#f4f7f5;--card:#fff;--ink:#12293a;--mut:#5b6b78;--line:#d5dfda;--acc:#00753a;--acc2:#0b3f7a;--warn:#8a5a00;--warnbg:#fff4d6;--bad:#9b1c1c;--badbg:#fde8e8;--okbg:#e3f3ea;--m:#0b3f7a;--f:#00753a;--s:#7a4fa0;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a22;--card:#16252f;--ink:#e6eef3;--mut:#9fb2bf;--line:#2b3d49;--acc:#4cc58a;--acc2:#7fb2f0;--warn:#f0c46a;--warnbg:#3a2f12;--bad:#f2a0a0;--badbg:#3d1a1a;--okbg:#14352a;--m:#7fb2f0;--f:#4cc58a;--s:#c3a0ea;color-scheme:dark}}
-*,*:before,*:after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 48px}
-h1{font-size:1.6rem;line-height:1.2;margin:0 0 4px}
-.sub{color:var(--mut);margin:0 0 18px;max-width:70ch}
-.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.tabs button{font:inherit;font-weight:600;padding:9px 14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;cursor:pointer}
-.tabs button[aria-selected="true"]{background:var(--acc2);color:#fff;border-color:var(--acc2)}
-button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
-.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:18px;align-items:start}
-@media (max-width:860px){.grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
-.card h2{font-size:1.05rem;margin:0 0 10px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media (max-width:420px){.row{grid-template-columns:1fr}}
-label{display:block;font-size:.85rem;font-weight:600;margin:10px 0 3px}
-input[type=number],input[type=date],select{width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
-.chk{display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:.9rem;margin:10px 0 0}
-.chk input{margin-top:4px}
-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
-.hint{font-size:.8rem;color:var(--mut);margin:3px 0 0}
-.tot{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-@media (max-width:520px){.tot{grid-template-columns:1fr}}
-.tot div{border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg)}
-.tot b{display:block;font-size:1.3rem}
-.tot span{font-size:.8rem;color:var(--mut)}
-.tw{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:.88rem}
-th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
-td.n,th.n{text-align:right}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
-.bar{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:6px 0 4px;background:var(--line)}
-.bar i{display:block;height:100%}
-.msg{padding:9px 12px;border-radius:8px;margin:8px 0;font-size:.9rem}
-.w{background:var(--warnbg);color:var(--warn)}
-.e{background:var(--badbg);color:var(--bad)}
-.o{background:var(--okbg);color:var(--ink)}
-.file{margin-top:10px;font-size:.9rem}
-.file li{margin:4px 0}
-details{margin-top:18px}
-summary{cursor:pointer;font-weight:600}
-.adm{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 12px}
-.btn{font:inherit;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;margin-top:10px}
-.foot{font-size:.8rem;color:var(--mut);margin-top:22px;max-width:90ch}
-.hide{display:none}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="kalkulator.css" type="text/css">
+
 </head>
 
 <body>
@@ -282,26 +233,85 @@ function renderSick(){
 function buildAdmin(){
   $("adm").innerHTML=Object.keys(D).map(function(k){return '<div><label for="a_'+k+'">'+L[k]+'</label><input type="number" step="0.5" id="a_'+k+'" data-k="'+k+'" value="'+P[k]+'"></div>'}).join("");
   Array.prototype.forEach.call($("adm").querySelectorAll("input"),function(i){i.addEventListener("input",function(){P[i.dataset.k]=+i.value;resetParental();render();renderSick()})});
+} 
+
+function vis() {
+  var sc = v("sc");
+  $("fBirth").classList.toggle("hide", sc !== "birth");
+  $("fAdopt").classList.toggle("hide", sc !== "adopt");
+  $("fSplit").classList.toggle("hide", sc === "still");
+  $("pat").parentNode.classList.toggle("hide", sc === "still");
+  $("opt").parentNode.classList.toggle("hide", sc !== "birth");
 }
-function vis(){
-  var sc=v("sc");
-  $("fBirth").classList.toggle("hide",sc!=="birth");
-  $("fAdopt").classList.toggle("hide",sc!=="adopt");
-  $("fSplit").classList.toggle("hide",sc==="still");
-  $("pat").parentNode.classList.toggle("hide",sc==="still");
-  $("opt").parentNode.classList.toggle("hide",sc!=="birth");
+
+["sc", "kids", "zz"].forEach(function(id) {
+  $(id).addEventListener("change", function() {
+    vis();
+    resetParental();
+    render();
+  });
+});
+
+document.querySelectorAll("#p1 input, #p1 select").forEach(function(e) {
+  e.addEventListener("input", render);
+  e.addEventListener("change", render);
+});
+
+document.querySelectorAll("#p2 input, #p2 select").forEach(function(e) {
+  e.addEventListener("input", renderSick);
+  e.addEventListener("change", renderSick);
+});
+
+function tab(a) {
+  $("p1").classList.toggle("hide", a !== 1);
+  $("p2").classList.toggle("hide", a !== 2);
+  $("t1").setAttribute("aria-selected", a === 1);
+  $("t2").setAttribute("aria-selected", a === 2);
 }
-["sc","kids","zz"].forEach(function(id){$(id).addEventListener("change",function(){vis();resetParental();render()})});
-document.querySelectorAll("#p1 input,#p1 select").forEach(function(e){e.addEventListener("input",render);e.addEventListener("change",render)});
-document.querySelectorAll("#p2 input,#p2 select").forEach(function(e){e.addEventListener("input",renderSick);e.addEventListener("change",renderSick)});
-function tab(a){
-  $("p1").classList.toggle("hide",a!==1);$("p2").classList.toggle("hide",a!==2);
-  $("t1").setAttribute("aria-selected",a===1);$("t2").setAttribute("aria-selected",a===2);
-}
-$("t1").onclick=function(){tab(1)};$("t2").onclick=function(){tab(2)};
-$("reset").onclick=function(){P=Object.assign({},D);buildAdmin();resetParental();render();renderSick()};
-buildAdmin();vis();resetParental();render();renderSick();
+
+$("t1").onclick = function() { tab(1); };
+$("t2").onclick = function() { tab(2); };
+$("reset").onclick = function() {
+  P = Object.assign({}, D);
+  buildAdmin();
+  resetParental();
+  render();
+  renderSick();
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+  buildAdmin();
+
+  const params = new URLSearchParams(window.location.search);
+  const matka = params.get('matka');
+  const ojciec = params.get('ojciec');
+  const zdarzenie = params.get('zdarzenie');
+
+  if (matka && document.getElementById('b1')) {
+    document.getElementById('b1').value = matka;
+  }
+  if (ojciec && document.getElementById('b2')) {
+    document.getElementById('b2').value = ojciec;
+  }
+
+  const sc = document.getElementById('sc');
+  const zz = document.getElementById('zz');
+
+  if (zdarzenie && sc) {
+    if (zdarzenie === 'normalne') {
+      sc.value = 'birth';
+    } else if (zdarzenie === 'niepelnosprawne') {
+      sc.value = 'birth';
+      if (zz) zz.checked = true;
+    } else if (zdarzenie === 'zmarlo') {
+      sc.value = 'still';
+    }
+  }
+  vis();
+  resetParental();
+  render();
+  renderSick();
+});
 </script>
 </body>
-
 </html>
