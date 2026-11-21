@@ -16,7 +16,7 @@
 <!-- Pasek zakładek -->
 <div class="top-bar">
   <div class="tabs" role="tablist">
-    <button role="tab" id="t1" aria-selected="true">9 macierzyński</button>
+    <button role="tab" id="t1" aria-selected="true">Urlop i zasiłek macierzyński</button>
     <button role="tab" id="t2" aria-selected="false">Zasiłek chorobowy i ciąża</button>
   </div>
 </div>
@@ -50,7 +50,8 @@
         <option value="none">Brak (matka min. 14 tyg. po porodzie)</option>
         <option value="incap">Orzeczenie o niezdolności do samodzielnej egzystencji</option>
         <option value="hosp">Pobyt matki w szpitalu / zakładzie leczniczym</option>
-        <option value="death">Śmierć matki albo porzucenie dziecka</option>
+        <option value="aband">Porzucenie dziecka przez matkę</option>
+        <option value="death">Śmierć matki</option>
       </select>
     </div>
   </div>
@@ -171,7 +172,7 @@
       <label for="srate">Stawka zasiłku</label>
       <select id="srate">
         <option value="80">80% (standardowe zwolnienie lekarskie)</option>
-        <option value="100">100% (wypadek w drodze do/z pracy, choroba zawodowa, badania/dawstwo)</option>
+        <option value="100">100% (wypadek w drodze do/z pracy, badania/dawstwo; choroba zawodowa – 100% z ubezpieczenia wypadkowego)</option>
       </select>
     </div>
     <div>
@@ -203,7 +204,7 @@
   <div><label for="sz">Dni zwolnienia lekarskiego (e-ZLA)</label><input type="number" id="sz" min="0" value="60"></div>
   <div><label for="sp">Dni niezdolności wykorzystane wcześniej w roku</label><input type="number" id="sp" min="0" value="0"></div>
 </div>
-<label class="chk"><input type="checkbox" id="s50"> Pracownik po ukończeniu 50. roku życia (14 dni wynagrodzenia chorobowego zamiast 33)</label>
+<label class="chk"><input type="checkbox" id="s50"> Pracownik, który ukończył 50. rok życia (14 dni wynagrodzenia chorobowego zamiast 33 – od roku kalendarzowego następującego po ukończeniu 50. r.ż.)</label>
 
 <hr>
 <div id="fLostBox">
@@ -223,6 +224,22 @@
     </div>
   </div>
 </div>
+
+<hr>
+<div class="rehab-box" id="fRehabBox">
+  <h2>Świadczenie rehabilitacyjne</h2>
+  <p class="hint">Przysługuje po wyczerpaniu okresu zasiłkowego (182 lub 270 dni), jeżeli dalsze leczenie lub rehabilitacja rokują odzyskanie zdolności do pracy. O przyznaniu orzeka lekarz orzecznik ZUS; maksymalny okres to 12 miesięcy. Wysokość: 90% podstawy wymiaru za pierwsze 3 miesiące i 75% za pozostały okres; jeżeli niezdolność do pracy przypada w okresie ciąży – 100% przez cały okres (art. 19 ust. 3 ustawy zasiłkowej). Świadczenie wypłaca ZUS; podstawa wymiaru podlega waloryzacji kwartalnej (art. 19 ust. 2).</p>
+  <div class="row">
+    <div><label for="rmon">Liczba miesięcy (maks. 12)</label><input type="number" id="rmon" min="1" max="12" value="6"></div>
+    <div>
+      <label for="rpreg">Czy niezdolność do pracy przypada w okresie ciąży?</label>
+      <select id="rpreg">
+        <option value="1">Tak – 100% przez cały okres</option>
+        <option value="0">Nie – 90% (pierwsze 3 mies.) i 75% (pozostałe)</option>
+      </select>
+    </div>
+  </div>
+</div>
 </div>
 
 <div class="card" id="res2"></div>
@@ -234,7 +251,7 @@ var D={
   rMat:100,rPar:70,rOpt:81.5,rPat:100,rSick:100,rSickGen:80,
   m1:20,m2:31,m3:33,m4:35,m5:37,
   p1:41,p2:43,z1:65,z2:67,
-  pat:14,res:9,resSolo:0,minMom:14,preMax:6,supp:8,still:8,stillAfter:7,
+  pat:14,res:9,resSolo:0,minMom:14,preMax:6,supp:8,still:8,stillAfter:7,incap:8,adopt9:38,
   e33:33,e50:14,sickMax:270,sickGenMax:182,sickAfter:91,workMax:50
 };
 var P=Object.assign({},D);
@@ -325,6 +342,11 @@ function eff(){
 
 function pool(){
   var n=eff().n,zz=ck("zz")&&v("sc")==="birth";
+  if(v("sc")==="adopt"){
+    var a=+v("age")||0;
+    var lim=v("kind")==="adopt"?14:(ck("defer")?10:7);
+    if(a>=7&&a<lim)return P.adopt9;
+  }
   return P[(zz?"z":"p")+(n>1?2:1)];
 }
 
@@ -441,11 +463,20 @@ function calc(){
       maxT=(e1&&e2)?Math.max(0,M-P.minMom-pre):0;
       if(!e1||!e2)T=0;
     }else{
-      maxT=e2?M:0;
+      if(momSpec==="incap"){
+        maxT=e2?Math.max(0,M-P.incap):0;
+        W.push(["o","Matka posiada orzeczenie o niezdolności do samodzielnej egzystencji — po wykorzystaniu co najmniej 8 tygodni po porodzie ojciec może przejąć pozostałą część urlopu macierzyńskiego (art. 180 § 6–7 k.p., art. 29 ust. 5 ustawy zasiłkowej)."]);
+      }else if(momSpec==="hosp"){
+        maxT=e2?Math.max(0,M-P.incap):0;
+        W.push(["o","Matka przebywa w szpitalu/zakładzie leczniczym — po wykorzystaniu co najmniej 8 tygodni po porodzie ojciec może przejąć zasiłek za okres hospitalizacji matki (art. 180 § 10–11 k.p., art. 29 ust. 6 ustawy zasiłkowej)."]);
+      }else if(momSpec==="aband"){
+        maxT=e2?Math.max(0,M-P.incap):0;
+        W.push(["o","Porzucenie dziecka przez matkę — ojciec przejmuje część urlopu macierzyńskiego przypadającą po dniu porzucenia, nie wcześniej niż po 8 tygodniach po porodzie (art. 180 § 13 k.p., art. 29 ust. 7 ustawy zasiłkowej)."]);
+      }else if(momSpec==="death"){
+        maxT=e2?M:0;
+        W.push(["o","Śmierć matki — ojciec przejmuje część urlopu macierzyńskiego przypadającą po dniu zgonu, także gdy matka nie była ubezpieczona (art. 180 § 12 k.p., art. 29 ust. 7 ustawy zasiłkowej)."]);
+      }
       if(!e2)T=0;
-      if(momSpec==="incap")W.push(["o","Matka posiada orzeczenie o niezdolności do samodzielnej egzystencji — ojciec może przejąć urlop macierzyński wcześniej niż po 14 tygodniach."]);
-      if(momSpec==="hosp")W.push(["o","Matka przebywa w szpitalu/zakładzie leczniczym — ojciec może przejąć zasiłek za okres hospitalizacji matki."]);
-      if(momSpec==="death")W.push(["o","Śmierć matki lub porzucenie dziecka — ojciec może przejąć pozostałą część urlopu macierzyńskiego (także gdy matka nie była ubezpieczona)."]);
     }
   }else if(sc==="adopt"){
     maxT=(e1&&e2)?Math.max(0,M-P.minMom):(e2?M:0);
@@ -637,7 +668,7 @@ function render(){
     }else if(s==="z"){
       h+='<li>'+nm+' (zleceniobiorca): wniosek <b>ZAM</b>. '+(ck("big")?"Zasiłek ustala i wypłaca zleceniodawca.":"Zleceniodawca przekazuje do ZUS zaświadczenie <b>Z-3a</b>, a ZUS wypłaca zasiłek.")+'</li>';
     }else{
-      h+='<li>'+nm+' (przedsiębiorca): wniosek <b>ZAM</b> bezpośrednio do ZUS (przez PUE/eZUS lub w placówce).</li>';
+      h+='<li>'+nm+' (przedsiębiorca): wniosek <b>ZAM</b> bezpośrednio do ZUS (przez PUE/eZUS lub w placówce). Uwaga: zadłużenie z tytułu składek przekraczające 1% minimalnego wynagrodzenia pozbawia prawa do świadczeń do czasu spłaty (art. 2a ustawy zasiłkowej).</li>';
     }
   });
   if(c.pre>0)h+='<li>Załącznik: zaświadczenie lekarskie o przewidywanej dacie porodu (urlop przed porodem).</li>';
@@ -702,12 +733,19 @@ function renderSick(){
   var zus=z-emp;
 
   if(sp+z>totMax){
-    h+='<div class="msg w">Okres zasiłkowy wynosi maksymalnie <b>'+totMax+' dni</b> (suma dni: '+(sp+z)+'). Po jego wyczerpaniu osoba nadal niezdolna do pracy może ubiegać się o <b>świadczenie rehabilitacyjne</b>.</div>';
+    h+='<div class="msg w">Okres zasiłkowy wynosi maksymalnie <b>'+totMax+' dni</b> (suma dni: '+(sp+z)+'). Po jego wyczerpaniu osoba nadal niezdolna do pracy może ubiegać się o <b>świadczenie rehabilitacyjne</b> (oblicz w sekcji „Świadczenie rehabilitacyjne”).</div>';
   }
 
   h+='<p class="hint">Do jednego okresu zasiłkowego wlicza się wszystkie okresy nieprzerwanej niezdolności do pracy oraz poprzednie okresy, jeżeli przerwa między nimi nie przekroczyła <b>60 dni</b>. Jeżeli nowa niezdolność przypada w okresie ciąży, okresów sprzed przerwy nie wlicza się.</p>';
 
   h+='<div class="tot"><div><b>'+pln(b/30*emp*rate/100)+'</b><span>Wynagrodzenie chorobowe (pracodawca), '+emp+' dni</span></div><div><b>'+pln(b/30*zus*rate/100)+'</b><span>Zasiłek chorobowy (ZUS / płatnik), '+zus+' dni</span></div><div><b>'+pln(b/30*z*rate/100)+'</b><span>Razem ('+rate+'%), '+z+' dni</span></div></div>';
+
+  /* Świadczenie rehabilitacyjne (art. 18-19 ustawy zasiłkowej) – zawsze widoczne */
+  var rmon=cl(+v("rmon")||0,0,12);
+  var rpreg=v("rpreg")==="1";
+  var m3=Math.min(rmon,3),mRest=Math.max(0,rmon-3);
+  var rSum=b/30*(m3*30*(rpreg?100:90)/100+mRest*30*(rpreg?100:75)/100);
+  h+='<div class="msg o"><b>Świadczenie rehabilitacyjne: '+pln(rSum)+'</b> za '+rmon+' mies. '+(rpreg?'(100% podstawy – ciąża, art. 19 ust. 3)':'(90% za pierwsze 3 mies., 75% za pozostałe)')+'. Wypłaca ZUS po orzeczeniu lekarza orzecznika i złożeniu wniosku z dokumentacją medyczną.</div>';
 
   if(mode==="preg"){
     h+='<p class="hint">W okresie ciąży przy kodzie „B” zasiłek wynosi 100% podstawy wymiaru przez maks. 270 dni. Jeżeli niezdolność trwa nieprzerwanie do dnia porodu, od porodu rozpoczyna się zasiłek macierzyński.</p>';
@@ -746,7 +784,7 @@ function lostHtml(){
   if(days<=0)return h+'<div class="msg w">Data porodu musi być późniejsza niż ostatni dzień ubezpieczenia.</div>';
 
   h+='<div class="tot"><div><b>'+days+'</b><span>Dni zasiłku (do porodu)</span></div><div><b>'+P.rMat+'%</b><span>Stawka</span></div><div><b>'+pln(b/30*days*P.rMat/100)+'</b><span>Kwota do dnia porodu</span></div></div>';
-  h+='<p class="hint">Wy9płacany przez ZUS po ustaniu ubezpieczenia do dnia porodu w wysokości 100% podstawy wymiaru (wymagane dokumenty potwierdzające upadłość/likwidację/śmierć pracodawcy lub prawomocny wyrok sądu).</p>';
+  h+='<p class="hint">Wypłacany przez ZUS po ustaniu ubezpieczenia do dnia porodu w wysokości 100% podstawy wymiaru (wymagane dokumenty potwierdzające upadłość/likwidację/śmierć pracodawcy lub prawomocny wyrok sądu).</p>';
   return h;
 }
 
