@@ -16,7 +16,7 @@
 <!-- Pasek zakładek i gotowych spraw testowych z zestawów ZUS -->
 <div class="top-bar">
   <div class="tabs" role="tablist">
-    <button role="tab" id="t1" aria-selected="true">Zasiłek macierzyński</button>
+    <button role="tab" id="t1" aria-selected="true">9 macierzyński</button>
     <button role="tab" id="t2" aria-selected="false">Zasiłek chorobowy i ciąża</button>
   </div>
   <div class="preset-box">
@@ -29,9 +29,10 @@
       <option value="p_hosp">4. Hospitalizacja matki po porodzie: wcześniejsze przejęcie przez ojca</option>
       <option value="p_adopt">5. Przysposobienie dziecka (5 lat) – urlop na warunkach macierzyńskiego</option>
       <option value="p_still">6. Martwe urodzenie / zgon dziecka przed 8. tyg.</option>
-      <option value="s_preg">7. Ciąża: L4 kod „B” (pracownica vs zleceniobiorca)</option>
-      <option value="s_bank">8. Upadłość pracodawcy w ciąży (zasiłek do dnia porodu)</option>
-      <option value="s_after">9. Choroba po ustaniu zatrudnienia (do 14 dni, min. 30 dni)</option>
+      <option value="p_after8">7. Zgon dziecka po upływie 8. tygodnia życia</option>
+      <option value="s_preg">8. Ciąża: L4 kod „B” (pracownica vs zleceniobiorca)</option>
+      <option value="s_bank">9. Upadłość pracodawcy w ciąży (zasiłek do dnia porodu)</option>
+      <option value="s_after">10. Choroba po ustaniu zatrudnienia (do 14 dni, min. 30 dni)</option>
     </select>
   </div>
 </div>
@@ -44,7 +45,8 @@
 <select id="sc">
   <option value="birth">Urodzenie dziecka</option>
   <option value="adopt">Przyjęcie dziecka na wychowanie (adopcja / rodzina zastępcza)</option>
-  <option value="still">Urodzenie martwego dziecka lub zgon dziecka</option>
+  <option value="still">Urodzenie martwego dziecka lub zgon dziecka przed 8. tygodniem</option>
+  <option value="death_after8">Urodzenie i zgon dziecka po 8 tygodniach</option>
 </select>
 <div class="row">
   <div><label for="kids">Liczba dzieci (jeden poród lub przyjęcie)</label><select id="kids"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
@@ -84,9 +86,9 @@
 <div id="fStill" class="hide">
   <div class="row">
     <div><label for="dd">Dzień życia dziecka w chwili zgonu (0 = martwe urodzenie)</label><input type="number" id="dd" min="0" value="0"></div>
-    <div><label for="alive">Liczba dzieci, które przeżyły (poród mnogi)</label><input type="number" id="alive" min="0" value="0"></div>
+    <div><label for="alive">Liczba dzieci, które przeżyły (musi być &lt; liczby urodzonych)</label><input type="number" id="alive" min="0" max="0" value="0"></div>
   </div>
-  <p class="hint">Zgon przed upływem 8. tyg. życia: zasiłek za 8 tyg. od porodu, nie krócej niż 7 dni od zgonu. Zgon po 8. tyg.: zasiłek przez 7 dni od zgonu.</p>
+  <p class="hint" id="stillHint">Zgon przed upływem 8. tyg. życia: zasiłek za 8 tyg. od porodu, nie krócej niż 7 dni od zgonu. Zgon po 8. tyg.: zasiłek przez 7 dni od zgonu.</p>
 </div>
 
 <!-- Uzupełniający urlop macierzyński (wcześniak / hospitalizacja) -->
@@ -226,9 +228,6 @@
 <div class="card" id="res2"></div>
 </div>
 
-
-
-
 <script>
 /*PARAMETRY DOMYŚLNE (D)*/
 var D={
@@ -237,36 +236,6 @@ var D={
   p1:41,p2:43,z1:65,z2:67,
   pat:14,res:9,resSolo:0,minMom:14,preMax:6,supp:8,still:8,stillAfter:7,
   e33:33,e50:14,sickMax:270,sickGenMax:182,workMax:50
-};
-var L={
-  rMat:"Zasiłek: macierzyński, uzupełniający, ojcowski (%)",
-  rPar:"Zasiłek: urlop rodzicielski (%)",
-  rOpt:"Zasiłek przy wniosku w 21 dni (%)",
-  rPat:"Zasiłek: urlop ojcowski (%)",
-  rSick:"Zasiłek chorobowy w ciąży kod B (%)",
-  rSickGen:"Zasiłek chorobowy ogólny (%)",
-  m1:"Urlop macierzyński: 1 dziecko (tyg.)",
-  m2:"Urlop macierzyński: 2 dzieci (tyg.)",
-  m3:"Urlop macierzyński: 3 dzieci (tyg.)",
-  m4:"Urlop macierzyński: 4 dzieci (tyg.)",
-  m5:"Urlop macierzyński: 5 i więcej (tyg.)",
-  p1:"Urlop rodzicielski: 1 dziecko (tyg.)",
-  p2:"Urlop rodzicielski: 2 i więcej (tyg.)",
-  z1:"Rodzicielski „Za życiem”: 1 dziecko (tyg.)",
-  z2:"Rodzicielski „Za życiem”: 2 i więcej (tyg.)",
-  pat:"Urlop ojcowski (dni)",
-  res:"Tygodnie nieprzenoszalne na rodzica",
-  resSolo:"Tygodnie nieprzenoszalne przy braku 2. rodzica",
-  minMom:"Minimum matki po porodzie (tyg.)",
-  preMax:"Maks. urlop macierzyński przed porodem (tyg.)",
-  supp:"Maks. uzupełniający urlop macierzyński (tyg.)",
-  still:"Martwe urodzenie / zgon do 8 tyg.: wymiar (tyg.)",
-  stillAfter:"Zgon dziecka: minimalny okres od zgonu (dni)",
-  e33:"Wynagrodzenie chorobowe: dni (do 50 lat)",
-  e50:"Wynagrodzenie chorobowe: dni (po 50 r.ż.)",
-  sickMax:"Okres zasiłkowy: ciąża / gruźlica (dni)",
-  sickGenMax:"Okres zasiłkowy: ogólny (dni)",
-  workMax:"Maks. praca w czasie urlopu rodz. (% etatu)"
 };
 var P=Object.assign({},D);
 
@@ -292,13 +261,58 @@ var stName=function(k){return ST.filter(function(s){return s[0]===k})[0][1]};
   $(id).value="e";
 });
 
-function eff(){
-  var sc=v("sc"),n=+v("kids");
-  if(sc==="still"){
-    var a=cl(+v("alive")||0,0,n-1);
-    if(a>0)return{sc:"birth",n:a,still:true,alive:a};
+function isDeathScenario(sc){
+  return sc==="still"||sc==="death_after8";
+}
+
+/* Synchronizacja limitu dzieci, które przeżyły (zawsze < liczba urodzonych dzieci) */
+function syncAliveLimit(){
+  var n=Math.max(1,+v("kids")||1);
+  var maxAlive=Math.max(0,n-1);
+  var el=$("alive");
+  el.max=maxAlive;
+  el.disabled=(maxAlive===0);
+  var cur=Math.floor(+el.value||0);
+  var clamped=cl(cur,0,maxAlive);
+  if(cur!==clamped||el.value==="")el.value=clamped;
+}
+
+/* Synchronizacja dnia zgonu po przełączeniu typu zdarzenia */
+function syncDeathDay(changedField){
+  var sc=v("sc");
+  var ddEl=$("dd");
+  var dd=Math.max(0,Math.floor(+ddEl.value||0));
+  if(changedField==="sc"){
+    if(sc==="death_after8"){
+      ddEl.min=P.still*7;
+      if(dd<P.still*7)ddEl.value=P.still*7;
+    }else if(sc==="still"){
+      ddEl.min=0;
+      if(dd>=P.still*7)ddEl.value=0;
+    }
   }
-  return{sc:sc,n:n};
+}
+
+function eff(){
+  var sc=v("sc"),n=Math.max(1,+v("kids")||1);
+  if(isDeathScenario(sc)){
+    var maxAlive=Math.max(0,n-1);
+    var rawAlive=Math.floor(+v("alive")||0);
+    var a=cl(rawAlive,0,maxAlive);
+    var dd=Math.max(0,Math.floor(+v("dd")||0));
+    if(sc==="death_after8"&&dd<P.still*7)dd=P.still*7;
+    return{
+      sc:a>0?"birth":"still",
+      deathMode:sc,
+      n:a>0?a:n,
+      born:n,
+      still:true,
+      alive:a,
+      aliveExceeded:rawAlive>maxAlive,
+      dd:dd
+    };
+  }
+  return{sc:sc,n:n,born:n,alive:n};
 }
 
 function pool(){
@@ -321,29 +335,58 @@ function resetParental(){
     :"Pula urlopu rodzicielskiego: "+p+" tyg. Każdemu rodzicowi przysługuje "+P.res+" tyg. wyłącznie dla niego, więc jedno z rodziców może wziąć maks. "+(p-P.res)+" tyg.";
 }
 
-/*(): GŁÓWNA LOGIKA ZASIŁKU MACIERZYŃSKIEGO*/
+/*calc(): GŁÓWNA LOGIKA ZASIŁKU MACIERZYŃSKIEGO*/
 function calc(){
   var raw=v("sc"),E=eff(),sc=E.sc,n=E.n,W=[],ph=[];
   var noP2=v("st2")==="b",r=resv();
   var e1=v("st1")!=="n",e2=v("st2")!=="n"&&!noP2;
-  var momSpec=(sc==="birth")?v("momSpec"):"none";
+  var momSpec=(raw==="birth")?v("momSpec"):"none";
   var b1=+v("b1")||0,b2=+v("b2")||0;
   var M=P["m"+Math.min(n,5)],stillDays=0;
 
   if(noP2)W.push(["w","Przyjęto brak drugiego rodzica — nieprzenoszalna pula drugiego rodzica nie przepada."]);
 
-  /* Martwe urodzenie lub zgon dziecka */
-  if(sc==="still"){
-    var dd=Math.max(0,Math.floor(+v("dd")||0)),full=M*7;
-    stillDays=dd<P.still*7?Math.max(P.still*7,dd+P.stillAfter):Math.min(dd+P.stillAfter,full);
-    M=stillDays/7;
-    W.push(["w","W przypadku zgonu jedynego dziecka urlop rodzicielski oraz urlop ojcowski nie przysługują."]);
-  }else if(E.still){
-    W.push(["w","Przy porodzie mnogim wymiar urlopów liczono stosownie do liczby dzieci pozostałych przy życiu ("+E.alive+")."]);
+  if(E.aliveExceeded){
+    W.push(["e","Liczba dzieci, które przeżyły poród, musi być mniejsza niż liczba urodzonych dzieci ("+E.born+"). Przyjęto maksymalnie "+(E.born-1)+"."]);
+  }
+
+  /* Martwe urodzenie lub zgon dziecka (przed oraz po upływie 8 tygodni życia) */
+  if(isDeathScenario(raw)){
+    var dd=E.dd;
+    var fullOrig=P["m"+Math.min(E.born,5)]*7;
+    var after8=(raw==="death_after8"||dd>=P.still*7);
+
+    if(E.alive===0){
+      /* Żadne dziecko nie przeżyło (poród pojedynczy lub zgon wszystkich dzieci z porodu mnogiego) */
+      if(!after8){
+        /* Martwe urodzenie lub zgon przed upływem 8 tyg. życia: 8 tyg. po porodzie, nie krócej niż 7 dni od zgonu */
+        stillDays=Math.max(P.still*7,dd+P.stillAfter);
+      }else{
+        /* Zgon po upływie 8 tyg. życia: zachowane prawo do zasiłku za okres urlopu macierzyńskiego przez 7 dni od dnia zgonu */
+        stillDays=Math.min(dd+P.stillAfter,fullOrig);
+      }
+      M=stillDays/7;
+      W.push(["w",after8
+        ?"Zgon dziecka po upływie 8. tygodnia życia (dzień "+dd+"): prawo do zasiłku za okres urlopu macierzyńskiego jest zachowane przez 7 dni od dnia zgonu (łącznie "+stillDays+" dni). Urlop rodzicielski i ojcowski nie przysługują."
+        :"Martwe urodzenie lub zgon przed upływem 8. tygodnia życia: zasiłek przysługuje przez 8 tygodni po porodzie, nie krócej niż 7 dni od dnia zgonu (łącznie "+stillDays+" dni). Urlop rodzicielski i ojcowski nie przysługują."
+      ]);
+    }else{
+      /* Poród mnogi i co najmniej 1 dziecko przeżyło: wymiar stosowny do liczby dzieci pozostałych przy życiu, nie krócej niż 7 dni od zgonu */
+      var aliveDays=P["m"+Math.min(E.alive,5)]*7;
+      if(after8){
+        stillDays=Math.max(aliveDays,Math.min(dd+P.stillAfter,fullOrig));
+        M=stillDays/7;
+        W.push(["w","Poród mnogi ("+E.born+" dzieci) i zgon po 8. tygodniu życia (dzień "+dd+"): przysługuje urlop macierzyński w wymiarze stosownym do liczby dzieci pozostałych przy życiu ("+E.alive+" – "+P["m"+Math.min(E.alive,5)]+" tyg.), nie krócej niż 7 dni od dnia zgonu."]);
+      }else{
+        stillDays=Math.max(aliveDays,Math.max(P.still*7,dd+P.stillAfter));
+        M=stillDays/7;
+        W.push(["w","Poród mnogi ("+E.born+" dzieci) i zgon przed 8. tygodniem życia: przysługuje urlop macierzyński w wymiarze stosownym do liczby dzieci pozostałych przy życiu ("+E.alive+" – "+P["m"+Math.min(E.alive,5)]+" tyg.)."]);
+      }
+    }
   }
 
   /* Urlop macierzyński przed porodem (maks. 6 tyg.) */
-  var pre=(sc==="birth"&&e1)?cl(+v("pre")||0,0,P.preMax):0;
+  var pre=(raw==="birth"&&e1)?cl(+v("pre")||0,0,P.preMax):0;
   if(pre>0&&momSpec!=="none"){
     W.push(["w","Przy wcześniejszym przejęciu urlopu przez ojca z powodu sytuacji szczególnej matki sprawdź dokładną liczbę tygodni wykorzystanych przez matkę przed i po porodzie."]);
   }
@@ -356,15 +399,13 @@ function calc(){
     maxT=0;T=0;
   }else if(sc==="birth"){
     if(momSpec==="none"){
-      /* Zwykły tryb: matka musi wykorzystać min. 14 tyg. po porodzie + ew. tygodnie przed porodem */
       maxT=(e1&&e2)?Math.max(0,M-P.minMom-pre):0;
       if(!e1||!e2)T=0;
     }else{
-      /* Szczególna sytuacja matki: ojciec może przejąć urlop wcześniej niż po 14 tyg., nawet gdy matka nie jest ubezpieczona */
       maxT=e2?M:0;
       if(!e2)T=0;
       if(momSpec==="incap")W.push(["o","Matka posiada orzeczenie o niezdolności do samodzielnej egzystencji — ojciec może przejąć urlop macierzyński wcześniej niż po 14 tygodniach."]);
-      if(momSpec==="hosp")W.push(["o","Matka przebywa w szpitalu/zakładzie leczniczym — ojciec może przejąć zasiłek za okres hospitalizacji matki (po 8 tyg. po porodzie lub wcześniej wg przepisów)."]);
+      if(momSpec==="hosp")W.push(["o","Matka przebywa w szpitalu/zakładzie leczniczym — ojciec może przejąć zasiłek za okres hospitalizacji matki."]);
       if(momSpec==="death")W.push(["o","Śmierć matki lub porzucenie dziecka — ojciec może przejąć pozostałą część urlopu macierzyńskiego (także gdy matka nie była ubezpieczona)."]);
     }
   }else if(sc==="adopt"){
@@ -375,7 +416,7 @@ function calc(){
 
   T=cl(T,0,maxT);
 
-  if(sc==="birth"&&!e1&&momSpec==="none"){
+  if(raw==="birth"&&!e1&&momSpec==="none"){
     W.push(["e","Matka nie podlega ubezpieczeniu chorobowemu w dniu porodu — nie przysługuje jej zasiłek macierzyński. Ojciec może skorzystać z urlopu rodzicielskiego i ojcowskiego."]);
   }
   if(sc!=="birth"&&!e1&&!e2){
@@ -384,7 +425,7 @@ function calc(){
 
   var mM=e1?Math.max(0,M-T):0;
 
-  /* Uzupełniający urlop macierzyński (matka albo ojciec, poród lub adopcja) */
+  /* Uzupełniający urlop macierzyński (matka albo ojciec) */
   var S=0,suppWho=+v("suppWho")||1;
   if(sc!=="still"){
     var rawSupp=cl(+v("supp")||0,0,P.supp);
@@ -407,7 +448,7 @@ function calc(){
       W.push(["w","Suma urlopów rodzicielskich przekracza pulę ("+p+" tyg.). Skrócono urlop ojca do "+wF+" tyg."]);
     }
     if(e1&&e2&&wM+wF<p){
-      W.push(["w","Niewykorzystane tygodnie z puli urlopu rodzicielskiego: "+(p-wM-wF)+" tyg. (można wykorzystać w maks. 5 częściach do końca roku ukończenia 6 lat)."]);
+      W.push(["w","Niewykorzystane tygodnie z puli urlopu rodzicielskiego: "+(p-wM-wF)+" tyg. może wykorzystać ojciec dziecka (lub inni uprawnieni członkowie rodziny w przypadkach ustawowych)."]);
     }
   }
 
@@ -417,7 +458,7 @@ function calc(){
 
   /* Wariant 81,5% (poród lub przyjęcie dziecka na wychowanie) */
   var optOn=false;
-  if(ck("opt")&&(sc==="birth"||sc==="adopt")){
+  if(ck("opt")&&sc!=="still"&&(raw==="birth"||raw==="adopt")){
     if(e1&&T===0&&wM===p-r)optOn=true;
     else W.push(["w","Stawka 81,5% wymaga, aby Rodzic 1 wykorzystał pełny wymiar urlopu macierzyńskiego (lub na warunkach macierzyńskiego) oraz pełną swoją część urlopu rodzicielskiego ("+(p-r)+" tyg.). Policzono standardowe stawki (100% i 70%)."]);
   }
@@ -433,7 +474,6 @@ function calc(){
     [2,"Urlop rodzicielski",wF,f2<1?wF/(1-f2):wF,P.rPar,b2,f2]
   ];
 
-  /* Oś czasu z uwzględnieniem wcześniejszego rozpoczęcia urlopu przed porodem (pre) */
   var d0=v("bd")?new Date(v("bd")+"T00:00:00"):null;
   var cur=d0?-pre:0;
   defs.forEach(function(d){
@@ -461,7 +501,7 @@ function calc(){
     }
   }
 
-  /*9 Kontrola wieku dziecka przy adopcji i rodzinie zastępczej */
+  /* Kontrola wieku dziecka przy adopcji i rodzinie zastępczej */
   if(sc==="adopt"){
     var a=+v("age")||0,lim=v("kind")==="adopt"?14:(ck("defer")?10:7);
     if(a>=lim){
@@ -500,7 +540,7 @@ function render(){
   h+='<div class="tw"><table><thead><tr><th>Okres</th><th class="n">Wymiar</th><th class="n">Stawka</th><th class="n">Miesięcznie</th><th class="n">Razem</th>'+(hasD?'<th>Termin / zasady</th>':'')+'</tr></thead><tbody>';
   c.ph.forEach(function(o){
     var mon=o.base*o.rate/100*(1-o.f);
-    var wk=o.days?o.days+" dni":(Math.round(o.w*10)/10)+' tyg.'+(o.f>0?' (kalend. '+(Math.round(o.cal*10)/10)+')':'');
+    var wk=o.days?o.days+" dni ("+(Math.round(o.w*10)/10)+" tyg.)":(Math.round(o.w*10)/10)+' tyg.'+(o.f>0?' (kalend. '+(Math.round(o.cal*10)/10)+')':'');
     h+='<tr><td><span class="dot" style="background:'+(o.name.indexOf("Uzup")===0?"var(--s)":col[o.who])+'"></span>'+(o.who===1?"M: ":"O: ")+o.name+'</td><td class="n">'+wk+'</td><td class="n">'+o.rate+'%</td><td class="n">'+pln(mon)+'</td><td class="n">'+pln(o.tot)+'</td>'+(hasD?'<td>'+(o.e?o.s+" – "+o.e:o.s||"")+'</td>':'')+'</tr>';
   });
   h+='</tbody></table></div>';
@@ -526,11 +566,11 @@ function render(){
   if(c.pre>0)h+='<li>Załącznik: zaświadczenie lekarskie o przewidywanej dacie porodu (urlop przed porodem).</li>';
   if(c.S>0)h+='<li>Załącznik: zaświadczenie wydane przez szpital (podstawa do uzupełniającego urlopu macierzyńskiego).</li>';
   if(ck("zz")&&c.raw==="birth")h+='<li>Załącznik: zaświadczenie lekarskie „Za życiem” (wydłużony urlop rodzicielski).</li>';
-  if(c.sc==="still")h+='<li>Załącznik: odpis skrócony aktu urodzenia z adnotacją o martwym urodzeniu lub akt zgonu dziecka.</li>';
+  if(isDeathScenario(c.raw))h+='<li>Załącznik: odpis skrócony aktu urodzenia z adnotacją o martwym urodzeniu lub akt zgonu dziecka.</li>';
   h+='</ul>';
 
   /* Wsparcie charytatywne w sytuacjach szczególnych */
-  if(c.sc==="still"||ck("zz")||c.S>0){
+  if(isDeathScenario(c.raw)||ck("zz")||c.S>0){
     h+='<div class="msg o" style="margin-top:14px"><b>Wsparcie w trudnych sytuacjach:</b> Organizacje pożytku publicznego i fundacje (m.in. Fundacja Ernesta, Fundacja Gajusz, Fundacja Wcześniak, lokalne ośrodki wsparcia okołoporodowego) oferują bezpłatną pomoc psychologiczną, prawną oraz opiekę dla rodziców po stracie dziecka, przy narodzinach wcześniaka lub dziecka z ciężką chorobą.</div>';
   }
 
@@ -552,7 +592,6 @@ function renderSick(){
     return;
   }
 
-  /* Okres wyczekiwania (30 dni obowiązkowe, 90 dni dobrowolne) */
   var need=s==="e"?30:90;
   if(d<need){
     h+='<div class="msg w">Okres wyczekiwania wynosi co do zasady <b>'+need+' dni</b> ('+(s==="e"?"ubezpieczenie obowiązkowe":"ubezpieczenie dobrowolne")+'). Przy '+d+' dniach prawo do zasiłku może nie powstać (chyba że zachodzą ustawowe wyjątki, np. 10-letni staż obowiązkowy lub wypadek).</div>';
@@ -561,7 +600,6 @@ function renderSick(){
   var rate=mode==="preg"?P.rSick:(mode==="gen"?+v("srate"):P.rSickGen);
   var totMax=mode==="preg"?P.sickMax:(mode==="gen"?+v("smax"):P.sickGenMax);
 
-  /* Walidacja dla niezdolności po ustaniu ubezpieczenia */
   if(mode==="after"){
     var onset=v("onset");
     if(onset!=="during"&&z<30){
@@ -571,7 +609,6 @@ function renderSick(){
     }
   }
 
-  /* Wynagrodzenie chorobowe pracodawcy vs zasiłek (nie dotyczy okresu po ustaniu ubezpieczenia) */
   var lim=ck("s50")?P.e50:P.e33,emp=0;
   if(s==="e"&&mode!=="after")emp=Math.min(z,Math.max(0,lim-sp));
   var zus=z-emp;
@@ -586,7 +623,6 @@ function renderSick(){
     h+='<p class="hint">W okresie ciąży przy kodzie „B” zasiłek wynosi 100% podstawy wymiaru przez maks. 270 dni. Jeżeli niezdolność trwa nieprzerwanie do dnia porodu, od porodu rozpoczyna się zasiłek macierzyński.</p>';
   }
 
-  /* Dokumenty */
   h+='<h2 style="margin-top:14px">Dokumenty i procedura</h2><ul class="file"><li>Zaświadczenie lekarskie <b>e-ZLA</b> trafia elektronicznie do ZUS oraz na profil płatnika na PUE/eZUS.</li>';
   if(mode==="after"){
     h+='<li>Po ustaniu ubezpieczenia wniosek składa się bezpośrednio do ZUS (formularz <b>ZAS-53</b> wraz z oświadczeniem <b>Z-10</b>; płatnik przekazuje <b>Z-3</b> / <b>Z-3a</b>).</li>';
@@ -612,10 +648,6 @@ function lostHtml(){
   var why="";
   if((r==="bank"||r==="death")&&!ck("nojob")){
     why="Zasiłek przysługuje tylko wtedy, gdy kobiecie w ciąży nie zapewniono innego zatrudnienia.";
-  }else if(r==="viol0"){
-    why="Rozwiązanie umowy z naruszeniem przepisów musi zostać potwierdzone prawomocnym wyrokiem sądu.";
-  }else if(r==="other"){
-    why="Przy innej przyczynie zasiłek w wysokości zasiłku macierzyńskiego po ustaniu zatrudnienia nie przysługuje. <b>Uwaga (Kodeks pracy):</b> umowa o pracę na czas określony lub na okres próbny przekraczający 1 miesiąc, która uległaby rozwiązaniu po upływie 3. miesiąca ciąży, ulega z mocy prawa przedłużeniu do dnia porodu.";
   }
   if(why)return h+'<div class="msg e">'+why+'</div>';
 
@@ -636,6 +668,7 @@ var PRESETS={
   p_hosp:{tab:1,sc:"birth",kids:"1",pre:0,momSpec:"hosp",zz:false,supp:0,suppWho:"1",st1:"e",st2:"e",b1:5800,b2:6800,big:false,T:12,wM:32,wF:9,f1:0,f2:0,pat:false,patParts:"1",opt:false},
   p_adopt:{tab:1,sc:"adopt",kids:"1",kind:"adopt",age:5,defer:false,supp:0,suppWho:"1",st1:"e",st2:"e",b1:6200,b2:7000,big:true,T:0,wM:32,wF:9,f1:0,f2:0,pat:true,patParts:"1",opt:true},
   p_still:{tab:1,sc:"still",kids:"1",dd:0,alive:0,st1:"e",st2:"e",b1:6000,b2:6500,big:false},
+  p_after8:{tab:1,sc:"death_after8",kids:"1",dd:70,alive:0,st1:"e",st2:"e",b1:6000,b2:6500,big:true},
   s_preg:{tab:2,smode:"preg",sst:"e",sd:180,sb:6200,sz:45,sp:10,s50:false,lost:false},
   s_bank:{tab:2,smode:"preg",sst:"e",sd:300,sb:5500,sz:30,sp:0,s50:false,lost:true,lr:"bank",nojob:true,ld:"2026-11-01",due:"2027-01-15"},
   s_after:{tab:2,smode:"after",onset:"post14",sst:"e",sd:250,sb:5200,sz:35,sp:0,s50:false,lost:false}
@@ -649,17 +682,19 @@ $("preset").onchange=function(){
     if(el.type==="checkbox")el.checked=!!pr[k];
     else el.value=pr[k];
   });
-  vis();render();renderSick();
+  syncAliveLimit();
+  syncDeathDay("sc");
+  vis();resetParental();render();renderSick();
 };
 
-
-
 function vis(){
+  syncAliveLimit();
   var sc=v("sc"),e=eff(),solo=v("st2")==="b",momSpec=sc==="birth"?v("momSpec"):"none";
   var isFoster=(sc==="adopt"&&v("kind")==="foster");
+  var deathSc=isDeathScenario(sc);
   $("fBirth").classList.toggle("hide",sc!=="birth");
   $("fAdopt").classList.toggle("hide",sc!=="adopt");
-  $("fStill").classList.toggle("hide",sc!=="still");
+  $("fStill").classList.toggle("hide",!deathSc);
   $("fSupp").classList.toggle("hide",e.sc==="still");
   $("fSplit").classList.toggle("hide",e.sc==="still");
   $("fT").classList.toggle("hide",solo&&momSpec==="none");
@@ -669,17 +704,31 @@ function vis(){
   $("pat").parentNode.parentNode.classList.toggle("hide",e.sc==="still"||solo||isFoster);
   $("opt").parentNode.classList.toggle("hide",e.sc==="still"||(sc!=="birth"&&sc!=="adopt"));
 
+  if(deathSc){
+    $("stillHint").textContent=(sc==="death_after8")
+      ?"Zgon dziecka po upływie 8. tyg. życia (od 56. dnia): zachowane prawo do zasiłku za okres urlopu macierzyńskiego przez 7 dni od dnia zgonu. Przy porodzie mnogim – wymiar stosowny do liczby dzieci pozostałych przy życiu (maks. "+(Math.max(0,(+v("kids")||1)-1))+")."
+      :"Urodzenie martwego dziecka lub zgon przed upływem 8. tyg. życia (do 55. dnia): zasiłek za 8 tyg. od porodu, nie krócej niż 7 dni od zgonu. Przy porodzie mnogim – wymiar stosowny do liczby dzieci pozostałych przy życiu (maks. "+(Math.max(0,(+v("kids")||1)-1))+").";
+  }
+
   /* Łączenie urlopu rodzicielskiego z pracą tylko dla pracownika (st === "e") */
   $("f1").disabled=(v("st1")!=="e");if($("f1").disabled)$("f1").value=0;
   $("f2").disabled=(v("st2")!=="e");if($("f2").disabled)$("f2").value=0;
 }
 
-["sc","kids","zz","alive","st1","st2","momSpec","kind"].forEach(function(id){
+["sc","kids","zz","alive","dd","st1","st2","momSpec","kind"].forEach(function(id){
   $(id).addEventListener("change",function(){
+    if(id==="kids"||id==="alive")syncAliveLimit();
+    if(id==="sc")syncDeathDay("sc");
     vis();
     if(id==="sc"||id==="kids"||id==="zz"||id==="alive"||id==="st2"||id==="momSpec")resetParental();
     render();
   });
+});
+$("alive").addEventListener("input",function(){
+  syncAliveLimit();
+  vis();
+  resetParental();
+  render();
 });
 document.querySelectorAll("#p1 input,#p1 select").forEach(function(e){e.addEventListener("input",render);e.addEventListener("change",render)});
 document.querySelectorAll("#p2 input,#p2 select").forEach(function(e){e.addEventListener("input",renderSick);e.addEventListener("change",renderSick)});
@@ -690,8 +739,7 @@ function tab(a){
 }
 $("t1").onclick=function(){tab(1)};$("t2").onclick=function(){tab(2)};
 
-
-vis();resetParental();render();renderSick();
+syncAliveLimit();vis();resetParental();render();renderSick();
 </script>
 </body>
 </html>
