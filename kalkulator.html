@@ -16,7 +16,7 @@
 <!-- Pasek zakładek -->
 <div class="top-bar">
   <div class="tabs" role="tablist">
-    <button role="tab" id="t1" aria-selected="true">Urlop i zasiłek macierzyński</button>
+    <button role="tab" id="t1" aria-selected="true">9 macierzyński</button>
     <button role="tab" id="t2" aria-selected="false">Zasiłek chorobowy i ciąża</button>
   </div>
 </div>
@@ -118,6 +118,8 @@
   <div><label for="b2">Podstawa wymiaru R2, zł/mies.</label><input type="number" id="b2" min="0" step="50" value="7000"></div>
 </div>
 <label class="chk"><input type="checkbox" id="big"> Płatnik składek (pracodawca / zleceniodawca) zgłasza do ubezpieczenia chorobowego powyżej 20 osób</label>
+<label class="chk" id="lblDebt1"><input type="checkbox" id="debt1"> Rodzic 1 (przedsiębiorca): zadłużenie z tytułu składek powyżej 1% minimalnego wynagrodzenia (art. 2a ustawy zasiłkowej)</label>
+<label class="chk" id="lblDebt2"><input type="checkbox" id="debt2"> Rodzic 2 (przedsiębiorca): zadłużenie z tytułu składek powyżej 1% minimalnego wynagrodzenia (art. 2a ustawy zasiłkowej)</label>
 <p class="hint">Podstawa wymiaru zasiłku: dla pracownika – przeciętne wynagrodzenie z 12 miesięcy poprzedzających, pomniejszone o 13,71%; dla niepracownika – przeciętny przychód z 12 miesięcy, pomniejszony o 13,71%. W 2026 r. minimalna podstawa (pełny etat, płaca minimalna 4 806 zł) to 4 147,10 zł, a maksymalna podstawa dobrowolnego ubezpieczenia chorobowego – 20 321,30 zł.</p>
 
 <hr>
@@ -215,6 +217,7 @@
   <div><label for="sp">Dni niezdolności wykorzystane wcześniej w roku</label><input type="number" id="sp" min="0" value="0"></div>
 </div>
 <label class="chk"><input type="checkbox" id="s50"> Pracownik, który ukończył 50. rok życia (14 dni wynagrodzenia chorobowego zamiast 33 – od roku kalendarzowego następującego po ukończeniu 50. r.ż.)</label>
+<label class="chk" id="lblDebtS"><input type="checkbox" id="debtS"> Przedsiębiorca: zadłużenie z tytułu składek powyżej 1% minimalnego wynagrodzenia (art. 2a ustawy zasiłkowej)</label>
 
 <hr>
 <div id="fLostBox">
@@ -421,6 +424,12 @@ function calc(){
 
   if(noP2)W.push(["w","Przyjęto brak drugiego rodzica — nieprzenoszalna pula drugiego rodzica nie przepada."]);
 
+  /* Art. 2a ustawy zasiłkowej: zadłużenie składek > 1% min. wynagrodzenia (działalność) */
+  var debt1=ck("debt1")&&v("st1")==="d";
+  var debt2=ck("debt2")&&v("st2")==="d";
+  if(debt1)W.push(["e","Rodzic 1 (przedsiębiorca): zadłużenie z tytułu składek na ubezpieczenia społeczne przekraczające 1% minimalnego wynagrodzenia (48,06 zł w 2026 r.) pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2)."]);
+  if(debt2)W.push(["e","Rodzic 2 (przedsiębiorca): zadłużenie z tytułu składek na ubezpieczenia społeczne przekraczające 1% minimalnego wynagrodzenia (48,06 zł w 2026 r.) pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2)."]);
+
   if(E.aliveExceeded){
     W.push(["e","Liczba dzieci, które przeżyły poród, musi być mniejsza niż liczba urodzonych dzieci ("+E.born+"). Przyjęto maksymalnie "+(E.born-1)+"."]);
   }
@@ -595,6 +604,10 @@ function calc(){
     wdF=e2?days("wf1","wf2"):0;
   }
 
+  /* Art. 2a: zadłużenie składek -> świadczenia nie przysługują do czasu spłaty */
+  if(debt1){pre=0;mM=0;wM=0;if(suppWho===1)S=0;}
+  if(debt2){T=0;wF=0;if(suppWho===2)S=0;}
+
   /* Wariant 81,5% (poród lub przyjęcie dziecka na wychowanie) */
   var optOn=false;
   if(ck("opt")&&sc!=="still"&&!adoptDenied&&(raw==="birth"||raw==="adopt")){
@@ -762,8 +775,13 @@ function renderSick(){
   $("fLost").classList.toggle("hide",mode!=="preg"||!ck("lost"));
 
   var s=v("sst"),d=+v("sd")||0,b=+v("sb")||0,z=+v("sz")||0,sp=+v("sp")||0,h="";
+  $("lblDebtS").classList.toggle("hide",s!=="d");
   if(s==="n"){
     $("res2").innerHTML='<div class="msg e">Bez ubezpieczenia chorobowego zasiłek chorobowy nie przysługuje.</div>'+(mode==="preg"?lostHtml():"");
+    return;
+  }
+  if(s==="d"&&ck("debtS")){
+    $("res2").innerHTML='<div class="msg e">Zadłużenie z tytułu składek na ubezpieczenia społeczne przekraczające 1% minimalnego wynagrodzenia (48,06 zł w 2026 r.) pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2).</div>'+(mode==="preg"?lostHtml():"");
     return;
   }
 
@@ -879,6 +897,8 @@ function vis(){
   $("wf1").parentNode.classList.toggle("hide",solo);
   $("wf2").parentNode.classList.toggle("hide",solo);
   $("f2").parentNode.classList.toggle("hide",solo);
+  $("lblDebt1").classList.toggle("hide",v("st1")!=="d");
+  $("lblDebt2").classList.toggle("hide",v("st2")!=="d"||solo);
   $("pat").parentNode.parentNode.classList.toggle("hide",e.sc==="still"||solo||isFoster);
   $("opt").parentNode.classList.toggle("hide",e.sc==="still"||(sc!=="birth"&&sc!=="adopt"));
 
