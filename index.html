@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="KN-,,NEURON",Piotr Kicinski">
+    <link rel="stylesheet" href="style.css">
+    <title>swiadczenie ZUS</title>
+</head>
+<body>
+   <p>ZUS</p>
+   <label><input type="checkbox" class="mobywatel"> Logowanie z mObywatelem</label><br>
+   <label><input type="checkbox" class="bez"> Logowanie bez mObywatela</label>
+   <form id="mojFormularz" action="formularz" style="display: none;">
+       <input type="text" name="imie" placeholder="Imię"><br>
+       <input type="text" name="nazwisko" placeholder="Nazwisko"><br>
+       <input type="email" name="email" placeholder="Email"><br>
+       <input type="submit" value="Zapisz">
+   </form>
+   <script>
+     const checkboxy = document.querySelectorAll('.mobywatel, .bez');
+     const formularz = document.getElementById('mojFormularz');
+     const boxBez = document.querySelector('.bez');
+
+     checkboxy.forEach(box => {
+       box.addEventListener('change', function() {
+         if (this.checked) {
+           checkboxy.forEach(inny => {
+             if (inny !== this) inny.checked = false;
+           });
+         }
+         if (boxBez.checked) {
+           formularz.style.display = 'block';
+         } else {
+           formularz.style.display = 'none';
+         }
+       });
+     });
+   </script>
+
+</body>
+</html>
