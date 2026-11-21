@@ -6,65 +6,7 @@
 <!-- viewport: strona dopasowuje szerokość do ekranu telefonu (RWD); viewport-fit=cover pozwala rysować pod paskami systemowymi. -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Zasiłkowy Przewodnik Przyszłego Rodzica – Kalkulator ZUS</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap">
-<style>
-:root{--bg:#f4f7f5;--card:#fff;--ink:#12293a;--mut:#5b6b78;--line:#d5dfda;--acc:#00753a;--acc2:#0b3f7a;--warn:#8a5a00;--warnbg:#fff4d6;--bad:#9b1c1c;--badbg:#fde8e8;--okbg:#e3f3ea;--m:#0b3f7a;--f:#00753a;--s:#7a4fa0;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a22;--card:#16252f;--ink:#e6eef3;--mut:#9fb2bf;--line:#2b3d49;--acc:#4cc58a;--acc2:#7fb2f0;--warn:#f0c46a;--warnbg:#3a2f12;--bad:#f2a0a0;--badbg:#3d1a1a;--okbg:#14352a;--m:#7fb2f0;--f:#4cc58a;--s:#c3a0ea;color-scheme:dark}}
-*,*:before,*:after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:1120px;margin:0 auto;padding:20px 16px 48px}
-h1{font-size:1.6rem;line-height:1.2;margin:0 0 4px}
-.sub{color:var(--mut);margin:0 0 14px;max-width:75ch}
-.top-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap}
-.tabs button,.btn{font:inherit;font-weight:600;padding:9px 14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;cursor:pointer}
-.tabs button[aria-selected="true"]{background:var(--acc2);color:#fff;border-color:var(--acc2)}
-.btn-acc{background:var(--acc);color:#fff;border-color:var(--acc)}
-button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
-.preset-box{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.preset-box select{width:auto;min-width:250px}
-.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:18px;align-items:start}
-@media (max-width:860px){.grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
-.card h2{font-size:1.05rem;margin:0 0 10px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media (max-width:440px){.row{grid-template-columns:1fr}}
-label{display:block;font-size:.85rem;font-weight:600;margin:10px 0 3px}
-input[type=number],input[type=date],select{width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
-input:disabled,select:disabled{opacity:.55;cursor:not-allowed}
-.chk{display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:.9rem;margin:10px 0 0}
-.chk input{margin-top:4px}
-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
-.hint{font-size:.8rem;color:var(--mut);margin:4px 0 0}
-.tot{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-@media (max-width:520px){.tot{grid-template-columns:1fr}}
-.tot div{border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg)}
-.tot b{display:block;font-size:1.25rem}
-.tot span{font-size:.8rem;color:var(--mut)}
-.tw{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:.88rem}
-th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
-td.n,th.n{text-align:right}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
-.bar{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:6px 0 4px;background:var(--line)}
-.bar i{display:block;height:100%}
-.msg{padding:9px 12px;border-radius:8px;margin:8px 0;font-size:.9rem}
-.w{background:var(--warnbg);color:var(--warn)}
-.e{background:var(--badbg);color:var(--bad)}
-.o{background:var(--okbg);color:var(--ink)}
-.file{margin:8px 0 0;padding-left:20px;font-size:.9rem}
-.file li{margin:4px 0}
-.sim-box{border:1px dashed var(--line);border-radius:8px;padding:12px;margin-top:10px;background:var(--bg);font-size:.88rem}
-details{margin-top:14px}
-summary{cursor:pointer;font-weight:600;padding:4px 0}
-.adm{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px 12px}
-.links{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:.88rem}
-.links a{color:var(--acc2);font-weight:600}
-.foot{font-size:.8rem;color:var(--mut);margin-top:22px;max-width:95ch}
-.hide{display:none}
-</style>
+<link rel="stylesheet" href="kalkulator.css">
 </head>
 <body>
 <div class="wrap">
@@ -94,7 +36,7 @@ summary{cursor:pointer;font-weight:600;padding:4px 0}
   </div>
 </div>
 
-<!-- ===== PANEL 1: ZASIŁEK MACIERZYŃSKI ===== -->
+<!--PANEL 1: ZASIŁEK MACIERZYŃSKI-->
 <div id="p1" class="grid">
 <div class="card">
 <h2>1. Sytuacja rodziny</h2>
@@ -210,7 +152,7 @@ summary{cursor:pointer;font-weight:600;padding:4px 0}
 </div>
 </div>
 
-<!-- ===== PANEL 2: ZASIŁEK CHOROBOWY I CIĄŻA ===== -->
+<!--PANEL 2: ZASIŁEK CHOROBOWY I CIĄŻA-->
 <div id="p2" class="grid hide">
 <div class="card">
 <h2>Zasiłek chorobowy – parametry zwolnienia</h2>
@@ -286,7 +228,7 @@ summary{cursor:pointer;font-weight:600;padding:4px 0}
 <div class="card" id="res2"></div>
 </div>
 
-<!-- ===== SYMULACJA PUE/eZUS, mOBYWATEL I WNIOSKÓW (wymóg pkt 3 konkursu) ===== -->
+<!-- SYMULACJA PUE/eZUS, mOBYWATEL I WNIOSKÓW (wymóg pkt 3 konkursu)-->
 <details>
 <summary>Symulacja konta PUE/eZUS, mObywatel oraz generowania wniosków</summary>
 <div class="card" style="margin-top:10px">
@@ -306,7 +248,7 @@ summary{cursor:pointer;font-weight:600;padding:4px 0}
 </div>
 </details>
 
-<!-- ===== PANEL ADMINISTRACYJNY ===== -->
+<!-- PANEL ADMINISTRACYJNY-->
 <details>
 <summary>Panel administracyjny: parametry prawne kalkulatora</summary>
 <div class="card" style="margin-top:10px">
@@ -320,7 +262,7 @@ summary{cursor:pointer;font-weight:600;padding:4px 0}
 </div>
 
 <script>
-/* ===== PARAMETRY DOMYŚLNE (D) ===== */
+/*PARAMETRY DOMYŚLNE (D)*/
 var D={
   rMat:100,rPar:70,rOpt:81.5,rPat:100,rSick:100,rSickGen:80,
   m1:20,m2:31,m3:33,m4:35,m5:37,
@@ -411,7 +353,7 @@ function resetParental(){
     :"Pula urlopu rodzicielskiego: "+p+" tyg. Każdemu rodzicowi przysługuje "+P.res+" tyg. wyłącznie dla niego, więc jedno z rodziców może wziąć maks. "+(p-P.res)+" tyg.";
 }
 
-/* ===== calc(): GŁÓWNA LOGIKA ZASIŁKU MACIERZYŃSKIEGO ===== */
+/*(): GŁÓWNA LOGIKA ZASIŁKU MACIERZYŃSKIEGO*/
 function calc(){
   var raw=v("sc"),E=eff(),sc=E.sc,n=E.n,W=[],ph=[];
   var noP2=v("st2")==="b",r=resv();
@@ -551,7 +493,7 @@ function calc(){
     }
   }
 
-  /* Kontrola wieku dziecka przy adopcji i rodzinie zastępczej */
+  /*9 Kontrola wieku dziecka przy adopcji i rodzinie zastępczej */
   if(sc==="adopt"){
     var a=+v("age")||0,lim=v("kind")==="adopt"?14:(ck("defer")?10:7);
     if(a>=lim){
@@ -567,7 +509,7 @@ function calc(){
   return{ph:ph,W:W,cmp:cmp,sc:sc,raw:raw,e1:e1,e2:e2,p:p,wM:wM,wF:wF,optOn:optOn,S:S,pre:pre};
 }
 
-/* ===== render(): WYNIKI ZASIŁKU MACIERZYŃSKIEGO ===== */
+/*render(): WYNIKI ZASIŁKU MACIERZYŃSKIEGO*/
 function render(){
   var c=calc(),h="";
   var tM=0,tF=0;
@@ -628,7 +570,7 @@ function render(){
   $("res").innerHTML=h;
 }
 
-/* ===== renderSick(): KALKULATOR ZASIŁKU CHOROBOWEGO ===== */
+/*renderSick(): KALKULATOR ZASIŁKU CHOROBOWEGO*/
 function renderSick(){
   var mode=v("smode");
   $("fGen").classList.toggle("hide",mode!=="gen");
@@ -692,7 +634,7 @@ function renderSick(){
   $("res2").innerHTML=h+(mode!=="after"?lostHtml():"");
 }
 
-/* ===== lostHtml(): ZASIŁEK W WYSOKOŚCI ZASIŁKU MACIERZYŃSKIEGO PO USTANIU ZATRUDNIENIA W CIĄŻY ===== */
+/* lostHtml(): ZASIŁEK W WYSOKOŚCI ZASIŁKU MACIERZYŃSKIEGO PO USTANIU ZATRUDNIENIA W CIĄŻY*/
 function lostHtml(){
   if(!ck("lost"))return "";
   var h='<h2 style="margin-top:16px">Zasiłek w wysokości zasiłku macierzyńskiego (do dnia porodu)</h2>';
@@ -718,7 +660,7 @@ function lostHtml(){
   return h;
 }
 
-/* ===== SYMULATOR PUE/eZUS, mOBYWATEL I WNIOSKÓW ===== */
+/*SYMULATOR PUE/eZUS, mOBYWATEL I WNIOSKÓW*/
 $("simLogin").onclick=function(){
   var o=$("simOut");o.classList.remove("hide");
   o.innerHTML='<b>[Symulacja mObywatel / PUE eZUS]</b> Uwierzytelniono ubezpieczonego: <i>Anna Kowalska (PESEL: 940512*****)</i>.<br>• Aktywny tytuł ubezpieczenia: <b>'+stName(v("st1"))+'</b> (nieprzerwany okres: 412 dni).<br>• Zarejestrowane zaświadczenia e-ZLA: <b>1 aktywne zwolnienie (kod B)</b>.<br>• Podstawa wymiaru składek pobrana z ZUS: <b>'+pln(+v("b1")||6000)+'</b>.';
@@ -732,7 +674,7 @@ $("genApp").onclick=function(){
   o.innerHTML='<b>[Podgląd wygenerowanego wniosku ZAM / wniosku o urlop]</b><br>Wnioskodawca: <i>Rodzic 1 ('+stName(v("st1"))+')</i> | Zdarzenie: <i>'+$("sc").options[$("sc").selectedIndex].text+'</i> | Liczba dzieci: <i>'+v("kids")+'</i> | Wariant 81,5%: <i>'+(ck("opt")?"TAK":"NIE")+'</i>.<br>Miejsce złożenia: <b>'+(v("st1")==="e"&&ck("big")?"Płatnik składek (pracodawca)":"Zakład Ubezpieczeń Społecznych (PUE/eZUS)")+'</b>.';
 };
 
-/* ===== PRZYKŁADOWE SPRAWY TESTOWE ZUS ===== */
+/*PRZYKŁADOWE SPRAWY TESTOWE ZUS*/
 var PRESETS={
   p_std:{tab:1,sc:"birth",kids:"1",pre:0,momSpec:"none",zz:false,supp:0,suppWho:"1",st1:"e",st2:"e",b1:6500,b2:7200,big:true,T:0,wM:32,wF:9,f1:0,f2:0,pat:true,patParts:"1",opt:true},
   p_split:{tab:1,sc:"birth",kids:"1",pre:0,momSpec:"none",zz:false,supp:0,suppWho:"1",st1:"z",st2:"e",b1:5000,b2:8000,big:false,T:6,wM:16,wF:25,f1:0,f2:50,pat:true,patParts:"2",opt:false},
@@ -756,9 +698,9 @@ $("preset").onchange=function(){
   vis();render();renderSick();
 };
 
-/* ===== PANEL ADMINISTRACYJNY I WIDOCZNOŚĆ PÓL ===== */
+/*PANEL ADMINISTRACYJNY I WIDOCZNOŚĆ PÓL*/
 function buildAdmin(){
-  $("adm").innerHTML=Object.keys(D).map(function(k){
+  $("adm").innerHTML=Object.keys(D).map(function(k){9
     return '<div><label for="a_'+k+'">'+L[k]+'</label><input type="number" step="0.5" id="a_'+k+'" data-k="'+k+'" value="'+P[k]+'"></div>';
   }).join("");
   Array.prototype.forEach.call($("adm").querySelectorAll("input"),function(i){
