@@ -191,6 +191,42 @@
     font-style: italic;
   }
 
+  /* ================================================= 4a. SEKCJA PRZYDATNE LINKI ================================================= */
+  .linklist {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  .linklist a {
+    display: block;
+    background: var(--accent);
+    color: var(--primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .linklist a:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .linklist span {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--mut);
+  }
+
+  .linklist a:hover span {
+    color: #e6f4ec;
+  }
+
   .foot {
     margin-top: 40px;
     padding-top: 20px;
@@ -238,6 +274,7 @@
     <a href="#wysokosc">Wysokość</a>
     <a href="#podstawa">Podstawa wymiaru</a>
     <a href="#dokumenty">Dokumenty</a>
+    <a href="#linki">Przydatne linki</a>
     <a href="#ryzyka">Ryzyka</a>
   </div>
 
@@ -498,7 +535,21 @@
     <span class="legal">rozporządzenie z 27.09.2026 r. (Dz.U. 2026 poz. 1316)</span>
   </div>
 
-  <h2 id="ryzyka">8. Ryzyka — na co uważać</h2>
+  <h2 id="linki">8. Przydatne linki</h2>
+  <div class="card">
+    <div class="linklist">
+      <a href="https://www.zus.pl" target="_blank" rel="noopener">ZUS – zus.pl<span>Informacje o świadczeniach i wzory formularzy (ZAM, ZAS-53, Z-3)</span></a>
+      <a href="https://www.zus.pl/ezus" target="_blank" rel="noopener">PUE/eZUS<span>Portal elektroniczny ZUS – wnioski online</span></a>
+      <a href="https://www.gov.pl/web/rodzina" target="_blank" rel="noopener">Ministerstwo Rodziny, Pracy i Polityki Społecznej<span>gov.pl/rodzina</span></a>
+      <a href="https://www.gov.pl/web/rodzina/urlop-rodzicielski" target="_blank" rel="noopener">Urlop rodzicielski<span>Informator MRPiPS</span></a>
+      <a href="https://www.pip.gov.pl/dla-pracodawcow/porady-prawne/rodzicielstwo" target="_blank" rel="noopener">Państwowa Inspekcja Pracy<span>Porady prawne – rodzicielstwo</span></a>
+      <a href="https://www.gov.pl/web/cyfryzacja/rejestr-stanu-cywilnego" target="_blank" rel="noopener">Rejestr stanu cywilnego<span>Wniosek o odpis aktu urodzenia</span></a>
+      <a href="https://www.gov.pl/web/mobywatel" target="_blank" rel="noopener">mObywatel<span>Aplikacja mobilna – dokumenty i sprawy urzędowe</span></a>
+      <a href="https://isap.sejm.gov.pl" target="_blank" rel="noopener">ISAP<span>Internetowy System Aktów Prawnych</span></a>
+    </div>
+  </div>
+
+  <h2 id="ryzyka">9. Ryzyka — na co uważać</h2>
   <div class="card">
     <ul>
       <li><b>Pozorna umowa lub działalność</b> założona tylko dla świadczeń — ZUS może wydać decyzję o niepodleganiu ubezpieczeniom.</li>
