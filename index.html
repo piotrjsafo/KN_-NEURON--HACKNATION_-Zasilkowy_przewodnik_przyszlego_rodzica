@@ -1,42 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="KN-,,NEURON",Piotr Kicinski">
+    <meta name="author" content="KN-NEURON, Piotr Kicinski">
     <link rel="stylesheet" href="style.css">
-    <title>swiadczenie ZUS</title>
+    <title>Świadczenie ZUS</title>
 </head>
 <body>
-   <p>ZUS</p>
-   <label><input type="checkbox" class="mobywatel"> Logowanie z mObywatelem</label><br>
-   <label><input type="checkbox" class="bez"> Logowanie bez mObywatela</label>
-   <form id="mojFormularz" action="formularz" style="display: none;">
-       <input type="text" name="imie" placeholder="Imię"><br>
-       <input type="text" name="nazwisko" placeholder="Nazwisko"><br>
-       <input type="email" name="email" placeholder="Email"><br>
-       <input type="submit" value="Zapisz">
-   </form>
-   <script>
-     const checkboxy = document.querySelectorAll('.mobywatel, .bez');
-     const formularz = document.getElementById('mojFormularz');
-     const boxBez = document.querySelector('.bez');
+    <div class="kontener">
+        <h1>Zasiłkowy przewodnik przyszłego rodzica</h1>
+        
+        <label><input type="checkbox" class="mobywatel"> Logowanie z mObywatelem</label>
+        <label><input type="checkbox" class="bez"> Logowanie bez mObywatela</label>
 
-     checkboxy.forEach(box => {
-       box.addEventListener('change', function() {
-         if (this.checked) {
-           checkboxy.forEach(inny => {
-             if (inny !== this) inny.checked = false;
-           });
-         }
-         if (boxBez.checked) {
-           formularz.style.display = 'block';
-         } else {
-           formularz.style.display = 'none';
-         }
-       });
-     });
-   </script>
+        <div id="sekcjaMObywatel" style="display: none; margin: 15px 0; padding: 15px; border: 1px solid #ccc; border-radius: 8px;">
+            <p>Zeskanuj kod QR w aplikacji mObywatel. <img src="kod_QR.png" alt="Kod QR"> lub kliknij przycisk poniżej, aby zasymulować autoryzację:</p>
+            <button type="button" id="btnSymulujMObywatel">Autoryzuj i pobierz dane z mObywatela</button>
+            <p id="statusMObywatel" style="color: green; font-weight: bold; margin-top: 10px;"></p>
+        </div>
 
+        <form id="mojFormularz" action="formularz" style="display: none;">
+            <input type="text" id="poleImie" name="imie" placeholder="Imię"><br>
+            <input type="text" id="poleNazwisko" name="nazwisko" placeholder="Nazwisko"><br>
+            <input type="submit" value="Zapisz i przejdź dalej">
+        </form>
+
+        <footer>
+            <p>czytaj więcej: <a href="https://www.zus.pl/">https://www.zus.pl/</a></p>
+        </footer>
+    </div>
+
+    <script>
+        const checkboxy = document.querySelectorAll('.mobywatel, .bez');
+        const formularz = document.getElementById('mojFormularz');
+        const sekcjaMObywatel = document.getElementById('sekcjaMObywatel');
+        const boxBez = document.querySelector('.bez');
+        const boxMObywatel = document.querySelector('.mobywatel');
+        const btnSymuluj = document.getElementById('btnSymulujMObywatel');
+        const statusMObywatel = document.getElementById('statusMObywatel');
+
+        checkboxy.forEach(box => {
+            box.addEventListener('change', function() {
+                if (this.checked) {
+                    checkboxy.forEach(inny => {
+                        if (inny !== this) inny.checked = false;
+                    });
+                }
+
+                formularz.style.display = 'none';
+                sekcjaMObywatel.style.display = 'none';
+                statusMObywatel.textContent = '';
+
+                if (boxBez.checked) {
+                    document.getElementById('poleImie').value = '';
+                    document.getElementById('poleNazwisko').value = '';
+                    document.getElementById('poleImie').readOnly = false;
+                    document.getElementById('poleNazwisko').readOnly = false;
+                    
+                    formularz.style.display = 'block';
+                } else if (boxMObywatel.checked) {
+                    sekcjaMObywatel.style.display = 'block';
+                }
+            });
+        });
+
+        btnSymuluj.addEventListener('click', function() {
+            statusMObywatel.textContent = 'Łączenie z mObywatelem...';
+            
+            setTimeout(() => {
+                const daneZMobywatela = {
+                    imie: 'przykładowe_imię',
+                    nazwisko: 'przykładowe_nazwisko'
+                };
+
+                const poleImie = document.getElementById('poleImie');
+                const poleNazwisko = document.getElementById('poleNazwisko');
+                
+                poleImie.value = daneZMobywatela.imie;
+                poleNazwisko.value = daneZMobywatela.nazwisko;
+                poleImie.readOnly = true;
+                poleNazwisko.readOnly = true;
+                statusMObywatel.textContent = 'Pobrano dane pomyślnie!';
+                formularz.style.display = 'block';
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
