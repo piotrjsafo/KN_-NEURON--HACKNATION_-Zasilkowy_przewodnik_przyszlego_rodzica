@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="style.css">
     <title>Świadczenie ZUS</title>
     <style>
+        .kontener {
+            text-align: center;
+        }
+
         .wybor {
             display: flex;
             justify-content: center;
@@ -29,12 +33,33 @@
             border-color: #1e7e34;
             color: white;
         }
+
+        #sekcjaMObywatel {
+            max-width: 500px;
+            margin: 15px auto;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        #sekcjaMObywatel img {
+            display: block;
+            margin: 15px auto;
+        }
+
+        #statusMObywatel {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
         #mojFormularz {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            margin: 10px 0;
+            margin: 10px auto;
         }
 
         #mojFormularz input[type="text"] {
@@ -58,6 +83,7 @@
             align-self: center;
             transition: background-color 0.2s, color 0.2s, border-color 0.2s;
         }
+
         #btnSymulujMObywatel{
             font-size: 1.2rem;
             padding: 12px 28px;
@@ -79,10 +105,12 @@
         <button type="button" id="btnBez">Logowanie bez mObywatela</button>
     </div>
 
-    <div id="sekcjaMObywatel" style="display: none; margin: 15px 0; padding: 15px; border: 1px solid #ccc; border-radius: 8px;">
-        <p>Zeskanuj kod QR w aplikacji mObywatel. <img src="kod_QR.png" alt="Kod QR"> lub kliknij przycisk poniżej, aby zasymulować autoryzację:</p>
+    <div id="sekcjaMObywatel" style="display: none;">
+        <p>Zeskanuj kod QR w aplikacji mObywatel:</p>
+        <img src="kod_QR.png" alt="Kod QR">
+        <p>lub kliknij przycisk poniżej, aby zasymulować autoryzację:</p>
         <button type="button" id="btnSymulujMObywatel">Autoryzuj i pobierz dane z mObywatela</button>
-        <p id="statusMObywatel" style="color: green; font-weight: bold; margin-top: 10px;"></p>
+        <p id="statusMObywatel"></p>
     </div>
 
     <form id="mojFormularz" action="formularz" style="display: none;">
