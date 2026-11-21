@@ -660,20 +660,6 @@ function lostHtml(){
   return h;
 }
 
-/*SYMULATOR PUE/eZUS, mOBYWATEL I WNIOSKÓW*/
-$("simLogin").onclick=function(){
-  var o=$("simOut");o.classList.remove("hide");
-  o.innerHTML='<b>[Symulacja mObywatel / PUE eZUS]</b> Uwierzytelniono ubezpieczonego: <i>Anna Kowalska (PESEL: 940512*****)</i>.<br>• Aktywny tytuł ubezpieczenia: <b>'+stName(v("st1"))+'</b> (nieprzerwany okres: 412 dni).<br>• Zarejestrowane zaświadczenia e-ZLA: <b>1 aktywne zwolnienie (kod B)</b>.<br>• Podstawa wymiaru składek pobrana z ZUS: <b>'+pln(+v("b1")||6000)+'</b>.';
-};
-$("simDebt").onclick=function(){
-  var o=$("simOut");o.classList.remove("hide");
-  o.innerHTML='<b>[Symulacja weryfikacji konta płatnika ZUS]</b> Stan rozliczeń składek na dzień powstania prawa do świadczenia: <b>0,00 zł zaległości (brak zadłużenia)</b>. Dobrowolne ubezpieczenie chorobowe opłacane terminowo.';
-};
-$("genApp").onclick=function(){
-  var o=$("simOut");o.classList.remove("hide");
-  o.innerHTML='<b>[Podgląd wygenerowanego wniosku ZAM / wniosku o urlop]</b><br>Wnioskodawca: <i>Rodzic 1 ('+stName(v("st1"))+')</i> | Zdarzenie: <i>'+$("sc").options[$("sc").selectedIndex].text+'</i> | Liczba dzieci: <i>'+v("kids")+'</i> | Wariant 81,5%: <i>'+(ck("opt")?"TAK":"NIE")+'</i>.<br>Miejsce złożenia: <b>'+(v("st1")==="e"&&ck("big")?"Płatnik składek (pracodawca)":"Zakład Ubezpieczeń Społecznych (PUE/eZUS)")+'</b>.';
-};
-
 /*PRZYKŁADOWE SPRAWY TESTOWE ZUS*/
 var PRESETS={
   p_std:{tab:1,sc:"birth",kids:"1",pre:0,momSpec:"none",zz:false,supp:0,suppWho:"1",st1:"e",st2:"e",b1:6500,b2:7200,big:true,T:0,wM:32,wF:9,f1:0,f2:0,pat:true,patParts:"1",opt:true},
