@@ -52,6 +52,7 @@
         <option value="hosp">Pobyt matki w szpitalu / zakładzie leczniczym</option>
         <option value="aband">Porzucenie dziecka przez matkę</option>
         <option value="death">Śmierć matki</option>
+        <option value="work">Matka nieubezpieczona podjęła pracę w wymiarze co najmniej 1/2 etatu</option>
       </select>
     </div>
   </div>
@@ -64,7 +65,11 @@
     <div><label for="kind">Forma przyjęcia</label><select id="kind"><option value="adopt">Wniosek o przysposobienie (adopcja)</option><option value="foster">Rodzina zastępcza niezawodowa</option></select></div>
     <div><label for="age">Wiek dziecka w dniu przyjęcia (lata)</label><input type="number" id="age" min="0" max="18" value="3"></div>
   </div>
+  <div class="row">
+    <div><label for="dob">Data urodzenia dziecka (opcjonalnie – dokładne skrócenie przy granicy wieku)</label><input type="date" id="dob"></div>
+  </div>
   <label class="chk"><input type="checkbox" id="defer"> Odroczony obowiązek szkolny (rodzina zastępcza do 10 lat)</label>
+  <label class="chk"><input type="checkbox" id="zzA"> Dziecko ma zaświadczenie „Za życiem” (wydłużony urlop rodzicielski: 65/67/62 tyg.)</label>
 </div>
 
 <!-- Pola dla martwego urodzenia lub zgonu dziecka (#fStill) -->
@@ -88,8 +93,9 @@
       <select id="suppCase">
         <option value="15">Przed 28. tyg. ciąży lub masa urodzeniowa ≤ 1000 g (do 15 tyg.)</option>
         <option value="8">Urodzenie między 28. a 37. tyg., masa > 1000 g (do 8 tyg.)</option>
-        <option value="8">Urodzenie o czasie, hospitalizacja między 5.–28. dniem (do 8 tyg.)</option>
-        <option value="15">Poród mnogi – najniższa masa, najdłuższa hospitalizacja (do 15 tyg.)</option>
+        <option value="8">Urodzenie o czasie – pierwszy z co najmniej 2 kolejnych dni pobytu w szpitalu między 5.–28. dniem po porodzie (wymiar od 5. dnia, do 8 tyg.)</option>
+        <option value="15">Poród mnogi – najniższa masa urodzeniowa ≤ 1000 g (do 15 tyg.)</option>
+        <option value="8">Poród mnogi – najniższa masa urodzeniowa > 1000 g (do 8 tyg.)</option>
       </select>
     </div>
     <div>
@@ -194,6 +200,10 @@
     <option value="post90">W ciągu 3 miesięcy od ustania ubezpieczenia – choroba zakaźna kod „E” (trwa min. 30 dni)</option>
   </select>
   <label class="chk"><input type="checkbox" id="saPreg"> Niezdolność do pracy przypada w okresie ciąży (zasiłek 100%, okres zasiłkowy do 270 dni)</label>
+  <div class="row">
+    <div><label for="sa1">Początek zwolnienia (opcjonalnie)</label><input type="date" id="sa1"></div>
+    <div><label for="sterm">Data ustania ubezpieczenia (opcjonalnie)</label><input type="date" id="sterm"></div>
+  </div>
 </div>
 
 <label for="sst">Tytuł ubezpieczenia chorobowego</label>
@@ -228,7 +238,7 @@
 <hr>
 <div class="rehab-box" id="fRehabBox">
   <h2>Świadczenie rehabilitacyjne</h2>
-  <p class="hint">Przysługuje po wyczerpaniu okresu zasiłkowego (182 lub 270 dni), jeżeli dalsze leczenie lub rehabilitacja rokują odzyskanie zdolności do pracy. O przyznaniu orzeka lekarz orzecznik ZUS; maksymalny okres to 12 miesięcy. Wysokość: 90% podstawy wymiaru za pierwsze 3 miesiące i 75% za pozostały okres; jeżeli niezdolność do pracy przypada w okresie ciąży – 100% przez cały okres (art. 19 ust. 3 ustawy zasiłkowej). Świadczenie wypłaca ZUS; podstawa wymiaru podlega waloryzacji kwartalnej (art. 19 ust. 2).</p>
+  <p class="hint">Przysługuje po wyczerpaniu okresu zasiłkowego (182 lub 270 dni), jeżeli dalsze leczenie lub rehabilitacja rokują odzyskanie zdolności do pracy. O przyznaniu orzeka lekarz orzecznik ZUS; maksymalny okres to 12 miesięcy. Wysokość: 90% podstawy wymiaru za pierwsze 3 miesiące i 75% za pozostały okres; jeżeli niezdolność do pracy przypada w okresie ciąży – 100% przez cały okres (art. 19 ust. 1 ustawy zasiłkowej). Świadczenie wypłaca ZUS; podstawa wymiaru podlega waloryzacji kwartalnej (art. 19 ust. 2).</p>
   <div class="row">
     <div><label for="rmon">Liczba miesięcy (maks. 12)</label><input type="number" id="rmon" min="1" max="12" value="6"></div>
     <div>
@@ -251,7 +261,7 @@ var D={
   rMat:100,rPar:70,rOpt:81.5,rPat:100,rSick:100,rSickGen:80,
   m1:20,m2:31,m3:33,m4:35,m5:37,
   p1:41,p2:43,z1:65,z2:67,
-  pat:14,res:9,resSolo:0,minMom:14,preMax:6,supp:8,still:8,stillAfter:7,incap:8,adopt9:38,
+  pat:14,res:9,resSolo:0,minMom:14,preMax:6,supp:8,still:8,stillAfter:7,incap:8,adopt9:38,adopt9zz:62,
   e33:33,e50:14,sickMax:270,sickGenMax:182,sickAfter:91,workMax:50
 };
 var P=Object.assign({},D);
@@ -340,12 +350,30 @@ function eff(){
   return{sc:sc,n:n,born:n,alive:n};
 }
 
+function adoptNine(){
+  if(v("sc")!=="adopt")return false;
+  var a=+v("age")||0;
+  var lim=v("kind")==="adopt"?14:(ck("defer")?10:7);
+  if(a>=lim)return false;
+  var dob=v("dob"),bd=v("bd");
+  if(!dob||!bd)return false;
+  var limitDate=new Date(dob+"T00:00:00");
+  limitDate.setFullYear(limitDate.getFullYear()+lim);
+  var przyj=new Date(bd+"T00:00:00");
+  var wks=(limitDate.getTime()-przyj.getTime())/864e5/7;
+  return wks<9;
+}
+
 function pool(){
   var n=eff().n,zz=ck("zz")&&v("sc")==="birth";
   if(v("sc")==="adopt"){
     var a=+v("age")||0;
     var lim=v("kind")==="adopt"?14:(ck("defer")?10:7);
-    if(a>=7&&a<lim)return P.adopt9;
+    if(a<lim){
+      if(adoptNine())return ck("zzA")?P.adopt9zz:P.adopt9;
+      if(ck("zzA"))return n>1?67:65;
+    }
+    return n>1?43:41;
   }
   return P[(zz?"z":"p")+(n>1?2:1)];
 }
@@ -432,7 +460,7 @@ function calc(){
     }
   }
 
-  /* Przyjęcie dziecka na wychowanie: granice wieku i wymiar 9 tygodni */
+  /* Przyjęcie dziecka na wychowanie: granice wieku, skrócenie i minimum 9 tygodni */
   var adoptDenied=false;
   if(sc==="adopt"){
     var a=+v("age")||0;
@@ -440,9 +468,25 @@ function calc(){
     if(a>=lim){
       adoptDenied=true;M=0;
       W.push(["e","Dziecko osiągnęło granicę wieku ("+lim+" lat) — zasiłek za urlop na warunkach macierzyńskiego i urlop rodzicielski nie przysługują."]);
-    }else if(a>=7){
-      M=9;
-      W.push(["w","Przyjęcie dziecka w wieku co najmniej 7 lat: urlop na warunkach urlopu macierzyńskiego przysługuje w wymiarze 9 tygodni (art. 183 § 1 i § 1¹ Kodeksu pracy)."]);
+    }else{
+      var wksUntil=null;
+      if(v("dob")&&v("bd")){
+        var limitDate=new Date(v("dob")+"T00:00:00");
+        limitDate.setFullYear(limitDate.getFullYear()+lim);
+        var przyj=new Date(v("bd")+"T00:00:00");
+        wksUntil=(limitDate.getTime()-przyj.getTime())/864e5/7;
+      }
+      if(wksUntil!==null&&wksUntil<M){
+        if(wksUntil<9){
+          M=9;
+          W.push(["w","Dziecko osiągnie "+lim+" lat w trakcie urlopu — przysługuje gwarantowane minimum 9 tygodni (art. 183 § 3 k.p.), a pula urlopu rodzicielskiego wynosi 38 tygodni (art. 183 § 4 pkt 3 i § 4² k.p.)."]);
+        }else{
+          M=Math.round(wksUntil*10)/10;
+          W.push(["w","Dziecko osiągnie "+lim+" lat w trakcie urlopu — wymiar skrócony do dnia ukończenia "+lim+" lat: "+M+" tyg. (nie krócej niż 9 tyg., art. 183 § 3 k.p.)."]);
+        }
+      }else if(a>=lim-1){
+        W.push(["w","Dziecko jest blisko granicy wieku ("+lim+" lat) — urlop może zostać skrócony do dnia ukończenia "+lim+" lat, nie krócej niż 9 tygodni (art. 183 § 3 k.p.). Podaj daty urodzenia i przyjęcia, aby obliczyć dokładny wymiar."]);
+      }
     }
   }
 
@@ -464,17 +508,20 @@ function calc(){
       if(!e1||!e2)T=0;
     }else{
       if(momSpec==="incap"){
-        maxT=e2?Math.max(0,M-P.incap):0;
-        W.push(["o","Matka posiada orzeczenie o niezdolności do samodzielnej egzystencji — po wykorzystaniu co najmniej 8 tygodni po porodzie ojciec może przejąć pozostałą część urlopu macierzyńskiego (art. 180 § 6–7 k.p., art. 29 ust. 5 ustawy zasiłkowej)."]);
+        maxT=e2?(e1?Math.max(0,M-P.incap-pre):M):0;
+        W.push(["o","Matka posiada orzeczenie o niezdolności do samodzielnej egzystencji — po wykorzystaniu co najmniej 8 tygodni PO PORODZIE ojciec może przejąć pozostałą część urlopu macierzyńskiego (art. 180 § 6–7 k.p., art. 29 ust. 5 ustawy zasiłkowej)."+(e1&&pre>0?" Urlop przed porodem skraca część ojca.":"")]);
       }else if(momSpec==="hosp"){
-        maxT=e2?Math.max(0,M-P.incap):0;
-        W.push(["o","Matka przebywa w szpitalu/zakładzie leczniczym — po wykorzystaniu co najmniej 8 tygodni po porodzie ojciec może przejąć zasiłek za okres hospitalizacji matki (art. 180 § 10–11 k.p., art. 29 ust. 6 ustawy zasiłkowej)."]);
+        maxT=e2?(e1?Math.max(0,M-P.incap-pre):M):0;
+        W.push(["o","Matka przebywa w szpitalu/zakładzie leczniczym — po wykorzystaniu co najmniej 8 tygodni PO PORODZIE ojciec może przejąć zasiłek za okres hospitalizacji matki (art. 180 § 10–11 k.p., art. 29 ust. 6 ustawy zasiłkowej)."]);
       }else if(momSpec==="aband"){
-        maxT=e2?Math.max(0,M-P.incap):0;
-        W.push(["o","Porzucenie dziecka przez matkę — ojciec przejmuje część urlopu macierzyńskiego przypadającą po dniu porzucenia, nie wcześniej niż po 8 tygodniach po porodzie (art. 180 § 13 k.p., art. 29 ust. 7 ustawy zasiłkowej)."]);
+        maxT=e2?(e1?Math.max(0,M-P.incap-pre):M):0;
+        W.push(["o","Porzucenie dziecka przez matkę — ojciec przejmuje część urlopu macierzyńskiego przypadającą po dniu porzucenia, nie wcześniej niż po 8 tygodniach po porodzie (art. 180 § 13 k.p., art. 29 ust. 7 ustawy zasiłkowej). Przy matce nieubezpieczonej — od dnia zdarzenia, bez progu 8 tygodni (art. 180 § 15 k.p., art. 29 ust. 9)."]);
       }else if(momSpec==="death"){
         maxT=e2?M:0;
-        W.push(["o","Śmierć matki — ojciec przejmuje część urlopu macierzyńskiego przypadającą po dniu zgonu, także gdy matka nie była ubezpieczona (art. 180 § 12 k.p., art. 29 ust. 7 ustawy zasiłkowej)."]);
+        W.push(["o","Śmierć matki — ojciec przejmuje część urlopu macierzyńskiego przypadającą po dniu zgonu, także gdy matka nie była ubezpieczona (art. 180 § 12 i § 15 k.p., art. 29 ust. 7 i ust. 9 ustawy zasiłkowej)."]);
+      }else if(momSpec==="work"){
+        maxT=e2?M:0;
+        W.push(e1?["w","Ten przypadek dotyczy matki nieposiadającej tytułu do ubezpieczenia chorobowego (art. 180 § 17 k.p., art. 29 ust. 10 ustawy zasiłkowej). Przy matce ubezpieczonej wybierz inny wariant."]:["o","Matka nieubezpieczona podjęła pracę w wymiarze co najmniej 1/2 etatu — ojciec przejmuje część urlopu macierzyńskiego od dnia podjęcia pracy przez matkę, na okres trwania tego zatrudnienia (art. 180 § 17 k.p., art. 29 ust. 10 ustawy zasiłkowej)."]);
       }
       if(!e2)T=0;
     }
@@ -551,8 +598,22 @@ function calc(){
   /* Wariant 81,5% (poród lub przyjęcie dziecka na wychowanie) */
   var optOn=false;
   if(ck("opt")&&sc!=="still"&&!adoptDenied&&(raw==="birth"||raw==="adopt")){
-    if(e1&&T===0&&Math.abs(wM-(p-r))<0.01)optOn=true;
-    else W.push(["w","Stawka 81,5% wymaga, aby Rodzic 1 wykorzystał pełny wymiar urlopu macierzyńskiego (lub na warunkach macierzyńskiego) oraz pełną swoją część urlopu rodzicielskiego ("+(p-r)+" tyg.). Policzono standardowe stawki (100% i 70%)."]);
+    if(e1&&T===0&&Math.abs(wM-(p-r))<0.01){
+      if(raw==="birth"&&v("bd")){
+        var y1=new Date(v("bd")+"T00:00:00");
+        y1=new Date(y1.getTime()+365*864e5);
+        var anyInY1=(v("wm1")&&new Date(v("wm1")+"T00:00:00")<y1)||(v("wf1")&&new Date(v("wf1")+"T00:00:00")<y1);
+        if(!anyInY1){
+          W.push(["w","Żaden dzień urlopu rodzicielskiego nie przypada w pierwszym roku życia dziecka — zasiłek za urlop rodzicielski wynosi 70%, a za urlop macierzyński przysługuje jednorazowe wyrównanie do 100% (art. 31 ust. 3g i ust. 4 ustawy zasiłkowej). Policzono stawki standardowe (100% i 70%)."]);
+        }else{
+          optOn=true;
+        }
+      }else{
+        optOn=true;
+      }
+    }else{
+      W.push(["w","Stawka 81,5% wymaga, aby Rodzic 1 wykorzystał pełny wymiar urlopu macierzyńskiego (lub na warunkach macierzyńskiego) oraz pełną swoją część urlopu rodzicielskiego ("+(p-r)+" tyg.). Policzono standardowe stawki (100% i 70%)."]);
+    }
   }
 
   var rm=optOn?P.rOpt:P.rMat,rp=optOn?P.rOpt:P.rPar;
@@ -634,7 +695,7 @@ function render(){
     }
   });
   if(pod>0){
-    h+='<div class="msg o"><b>Podwyższenie zasiłku macierzyńskiego do kwoty świadczenia rodzicielskiego</b> (art. 69 ustawy zasiłkowej): <b>'+pln(pod)+'</b> łącznie. Miesięczny zasiłek pomniejszony o zaliczkę PIT (12%) jest niższy niż 1000 zł – ZUS podwyższa zasiłek o różnicę: '+podRows.join('; ')+'.</div>';
+    h+='<div class="msg o"><b>Podwyższenie zasiłku macierzyńskiego do kwoty świadczenia rodzicielskiego</b> (art. 31 ust. 3a ustawy zasiłkowej): <b>'+pln(pod)+'</b> łącznie. Miesięczny zasiłek pomniejszony o zaliczkę PIT (12%) jest niższy niż 1000 zł – ZUS podwyższa zasiłek o różnicę: '+podRows.join('; ')+'.</div>';
   }
   if(!c.ph.length){h+='<p>Brak okresów, za które przysługuje zasiłek.</p>';$("res").innerHTML=h;return}
 
@@ -654,7 +715,7 @@ function render(){
   h+='</tbody></table></div>';
 
   if(c.ph.some(function(o){return o.f>0})){
-    h+='<p class="hint">Łączenie urlopu rodzicielskiego z pracą (do 1/2 etatu) wydłuża urlop proporcjonalnie i zmniejsza miesięczny zasiłek, zachowując pełną pulę świadczenia. Podjęcie pracy w wymiarze wyższym niż 1/2 etatu oznacza rezygnację z pozostałej części urlopu rodzicielskiego i utratę zasiłku za ten okres.</p>';
+    h+='<p class="hint">Łączenie urlopu rodzicielskiego z pracą (do 1/2 etatu) wydłuża urlop proporcjonalnie i zmniejsza miesięczny zasiłek, zachowując pełną pulę świadczenia. Podjęcie pracy w wymiarze wyższym niż 1/2 etatu oznacza rezygnację z pozostałej części urlopu rodzicielskiego i utratę zasiłku za ten okres. Jeżeli wydłużonej części urlopu nie łączy się z pracą (art. 182¹f § 2 k.p.), okres kalendarzowy to W×(1+f) zamiast W/(1−f), a łączna kwota zasiłku pozostaje taka sama.</p>';
   }
 
   /* Gdzie złożyć dokumenty (uwzględnia Z-3, Z-3a, ZAM i załączniki) */
@@ -674,7 +735,10 @@ function render(){
   if(c.pre>0)h+='<li>Załącznik: zaświadczenie lekarskie o przewidywanej dacie porodu (urlop przed porodem).</li>';
   if(c.S>0)h+='<li>Załącznik: zaświadczenie wydane przez szpital (podstawa do uzupełniającego urlopu macierzyńskiego).</li>';
   if(ck("zz")&&c.raw==="birth")h+='<li>Załącznik: zaświadczenie lekarskie „Za życiem” (wydłużony urlop rodzicielski).</li>';
-  if(isDeathScenario(c.raw))h+='<li>Załącznik: odpis skrócony aktu urodzenia z adnotacją o martwym urodzeniu lub akt zgonu dziecka.</li>';
+  if(isDeathScenario(c.raw)){
+    h+='<li>Załącznik: odpis skrócony aktu urodzenia z adnotacją o martwym urodzeniu lub akt zgonu dziecka, a gdy nie sporządzono aktu urodzenia – zaświadczenie o martwym urodzeniu wydane przez lekarza/położną; gdy wypłaca ZUS, akt pobierany jest z rejestru stanu cywilnego.</li>';
+    h+='<li>Dodatkowo przysługuje <b>zasiłek pogrzebowy (7000 zł)</b> — wniosek na druku <b>Z-12</b> w ciągu 12 miesięcy od pochówku.</li>';
+  }
   h+='</ul>';
 
   /* Przydatne odnośniki */
@@ -714,6 +778,13 @@ function renderSick(){
 
   if(mode==="after"){
     var onset=v("onset");
+    if(onset==="during"&&v("sa1")&&v("sterm")){
+      var zPre=Math.max(0,Math.round((new Date(v("sterm")+"T00:00:00")-new Date(v("sa1")+"T00:00:00"))/864e5));
+      var zPost=Math.max(0,z-zPre);
+      if(zPost>P.sickAfter)zPost=P.sickAfter;
+      z=zPre+zPost;
+      h+='<div class="msg o">Okres po ustaniu ubezpieczenia ograniczony do 91 dni (art. 8 ust. 2 ustawy zasiłkowej) — przyjęto '+zPost+' dni po ustaniu i '+zPre+' dni przed ustaniem (łącznie '+z+' dni).</div>';
+    }
     if(onset!=="during"&&z<30){
       h+='<div class="msg e">Gdy niezdolność do pracy powstała po ustaniu ubezpieczenia (w ciągu 14 dni lub 3 mies. dla kodu „E”), zasiłek przysługuje tylko wtedy, gdy trwa nieprzerwanie co najmniej <b>30 dni</b> (podano '+z+' dni).</div>';
     }else{
@@ -732,8 +803,9 @@ function renderSick(){
   if(s==="e"&&mode!=="after")emp=Math.min(z,Math.max(0,lim-sp));
   var zus=z-emp;
 
-  if(sp+z>totMax){
-    h+='<div class="msg w">Okres zasiłkowy wynosi maksymalnie <b>'+totMax+' dni</b> (suma dni: '+(sp+z)+'). Po jego wyczerpaniu osoba nadal niezdolna do pracy może ubiegać się o <b>świadczenie rehabilitacyjne</b> (oblicz w sekcji „Świadczenie rehabilitacyjne”).</div>';
+  var overDays=(mode==="preg")?z:sp+z;
+  if(overDays>totMax){
+    h+='<div class="msg w">Okres zasiłkowy wynosi maksymalnie <b>'+totMax+' dni</b>'+(mode==="preg"?" (w ciąży wcześniejszych okresów sprzed przerwy nie wlicza się — art. 9 ust. 2 ustawy zasiłkowej)":" (suma dni: "+overDays+")")+'. Po jego wyczerpaniu osoba nadal niezdolna do pracy może ubiegać się o <b>świadczenie rehabilitacyjne</b> (oblicz w sekcji „Świadczenie rehabilitacyjne”).</div>';
   }
 
   h+='<p class="hint">Do jednego okresu zasiłkowego wlicza się wszystkie okresy nieprzerwanej niezdolności do pracy oraz poprzednie okresy, jeżeli przerwa między nimi nie przekroczyła <b>60 dni</b>. Jeżeli nowa niezdolność przypada w okresie ciąży, okresów sprzed przerwy nie wlicza się.</p>';
@@ -745,7 +817,7 @@ function renderSick(){
   var rpreg=v("rpreg")==="1";
   var m3=Math.min(rmon,3),mRest=Math.max(0,rmon-3);
   var rSum=b/30*(m3*30*(rpreg?100:90)/100+mRest*30*(rpreg?100:75)/100);
-  h+='<div class="msg o"><b>Świadczenie rehabilitacyjne: '+pln(rSum)+'</b> za '+rmon+' mies. '+(rpreg?'(100% podstawy – ciąża, art. 19 ust. 3)':'(90% za pierwsze 3 mies., 75% za pozostałe)')+'. Wypłaca ZUS po orzeczeniu lekarza orzecznika i złożeniu wniosku z dokumentacją medyczną.</div>';
+  h+='<div class="msg o"><b>Świadczenie rehabilitacyjne: '+pln(rSum)+'</b> za '+rmon+' mies. '+(rpreg?'(100% podstawy – ciąża, art. 19 ust. 1)':'(90% za pierwsze 3 mies., 75% za pozostałe)')+'. Wypłaca ZUS po orzeczeniu lekarza orzecznika i złożeniu wniosku z dokumentacją medyczną.</div>';
 
   if(mode==="preg"){
     h+='<p class="hint">W okresie ciąży przy kodzie „B” zasiłek wynosi 100% podstawy wymiaru przez maks. 270 dni. Jeżeli niezdolność trwa nieprzerwanie do dnia porodu, od porodu rozpoczyna się zasiłek macierzyński.</p>';
@@ -757,7 +829,7 @@ function renderSick(){
   }else if(s==="e"){
     h+='<li>Pracownik informuje pracodawcę o nieobecności. Pracodawca zgłaszający do ubezpieczenia chorobowego powyżej 20 osób ustala i wypłaca zasiłek; w pozostałych przypadkach przekazuje do ZUS <b>Z-3</b> (lub <b>ZAS-12</b> na dalszy okres).</li>';
   }else if(s==="z"){
-    h+='<li>Zleceniobiorca powstrzymuje się od pracy; nieuprawniony zleceniodawca przekazuje do ZUS <b>Z-3a</b>.</li>';
+    h+='<li>Zleceniobiorca powstrzymuje się od pracy i składa wniosek <b>ZAS-53</b>; nieuprawniony zleceniodawca przekazuje do ZUS zaświadczenie <b>Z-3a</b>.</li>';
   }else{
     h+='<li>Przedsiębiorca powstrzymuje się od działalności i składa do ZUS wniosek <b>ZAS-53</b>.</li>';
   }
@@ -778,6 +850,10 @@ function lostHtml(){
     why="Zasiłek przysługuje tylko wtedy, gdy kobiecie w ciąży nie zapewniono innego zatrudnienia.";
   }
   if(why)return h+'<div class="msg e">'+why+'</div>';
+
+  if(r==="viol"){
+    return h+'<div class="msg o">Przy rozwiązaniu umowy z naruszeniem przepisów prawa (prawomocny wyrok sądu) zasiłek „do dnia porodu” nie przysługuje (art. 30 ust. 3 ustawy zasiłkowej). Po porodzie kobiecie przysługuje zasiłek macierzyński po ustaniu ubezpieczenia (art. 30 ust. 1 pkt 2 ustawy zasiłkowej) — oblicz go w zakładce „9 macierzyński”.</div>';
+  }
 
   if(!v("ld")||!v("due"))return h+'<div class="msg w">Podaj ostatni dzień ubezpieczenia oraz planowaną datę porodu, aby obliczyć kwotę świadczenia.</div>';
   var days=Math.round((new Date(v("due")+"T00:00:00")-new Date(v("ld")+"T00:00:00"))/864e5);
