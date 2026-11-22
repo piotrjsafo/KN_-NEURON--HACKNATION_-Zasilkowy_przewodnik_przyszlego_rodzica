@@ -1,4 +1,6 @@
 :root {
+    --bad: #b42323;
+    --badbg: #fff0f0;
     --bg: #f3f7f4;
     --card-bg: #ffffff;
     --text: #162b20;
@@ -159,6 +161,22 @@
     font-size: 0.95rem;
     color: var(--warn-text);
   }
+.risk h2,
+h2.risk {
+  color: var(--bad);
+  border-bottom-color: #f1c0c0;
+}
+
+.risk-card {
+  background: var(--badbg);
+  border-color: #f1c0c0;
+  border-left: 4px solid var(--bad);
+}
+
+.risk-card li,
+.risk-card b {
+  color: var(--bad);
+}
 
   .num {
     font-weight: 700;

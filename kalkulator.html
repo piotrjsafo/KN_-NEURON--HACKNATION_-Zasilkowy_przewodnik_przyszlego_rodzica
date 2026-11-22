@@ -14,14 +14,16 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Zasiłkowy Przewodnik Przyszłego Rodzica</h1>
-  <p class="sub">Zintegrowany kalkulator zasiłku macierzyńskiego oraz zasiłku chorobowego (w ciąży, na zasadach ogólnych i po ustaniu ubezpieczenia) wraz z doborem formularzy ZUS (stan prawny po 24.10.2026 r.).</p>
+  <div class="hero">
+    <h1>Zasiłkowy Przewodnik Przyszłego Rodzica</h1>
+    <p class="sub">Zintegrowany kalkulator zasiłku macierzyńskiego oraz zasiłku chorobowego (w ciąży, na zasadach ogólnych i po ustaniu ubezpieczenia) wraz z doborem formularzy ZUS (stan prawny po 24.10.2026 r.).</p>
 
-  <!-- Pasek zakładek -->
-  <div class="top-bar">
-    <div class="tabs" role="tablist">
-      <button role="tab" id="t1" aria-selected="true">Urlop macierzyński</button>
-      <button role="tab" id="t2" aria-selected="false">Zasiłek chorobowy i ciąża</button>
+    <!-- Pasek zakładek -->
+    <div class="top-bar">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="t1" aria-selected="true">Urlop macierzyński</button>
+        <button role="tab" id="t2" aria-selected="false">Zasiłek chorobowy i ciąża</button>
+      </div>
     </div>
   </div>
    <iframe 
@@ -31,6 +33,9 @@
     style="border: 1px solid #ccc;" 
     title="Osadzona strona">
   </iframe>
+
+  <!--PANEL 1: ZASIŁEK MACIERZYŃSKI-->
+
 
   <!--PANEL 1: ZASIŁEK MACIERZYŃSKI-->
   <div id="p1" class="grid">
@@ -799,7 +804,7 @@ if (wyplataOjca > 0) {
 
       /* Wsparcie charytatywne w sytuacjach szczególnych */
       if(isDeathScenario(c.raw)||ck("zz")||c.S>0){
-        h+='<div class="msg o" style="margin-top:14px"><b>Wsparcie w trudnych sytuacjach:</b> Organizacje pożytku publicznego i fundacje (m.in. Fundacja Ernesta, Fundacja Gajusz, Fundacja Wcześniak, lokalne ośrodki wsparcia okołoporodowego) oferują bezpłatną pomoc psychologiczną, prawną oraz opiekę dla rodziców po stracie dziecka, przy narodzinach wcześniaka lub dziecka z ciężką chorobą.</div>';
+        h+='<div class="msg o" style="margin-top:14px"><b>Wsparcie w trudnych sytuacjach:</b> Organizacje pożytku publicznego i fundacje (m.in. <a href="https://fundacjaernesta.pl/">Fundacja Ernesta</a>, <a href="https://gajusz.org.pl/">Fundacja Gajusz</a>, <a href="https://wczesniak.pl/">Fundacja Wcześniak</a>, lokalne ośrodki wsparcia okołoporodowego) oferują bezpłatną pomoc psychologiczną, prawną oraz opiekę dla rodziców po stracie dziecka, przy narodzinach wcześniaka lub dziecka z ciężką chorobą.</div>';
       }
 
       h+='<div class="risk"><h2 style="margin-top:16px">Ryzyka i na co uważać</h2><ul class="file"><li>Pozorna umowa lub działalność założona wyłącznie w celu uzyskania świadczeń: ZUS może wydać decyzję o niepodleganiu ubezpieczeniom.</li><li>Sztuczne zawyżenie podstawy wymiaru składek w okresie ciąży: ZUS może obniżyć podstawę wymiaru zasiłku.</li><li>Utrata tytułu ubezpieczenia przed porodem (np. zakończenie zlecenia lub działalności) pozbawia prawa do zasiłku macierzyńskiego.</li><li>Ochrona przed wypowiedzeniem z Kodeksu pracy dotyczy wyłącznie pracowników (umowa o pracę). Umowa o pracę na czas określony lub na okres próbny (powyżej 1 miesiąca), która rozwiązałaby się po 3. miesiącu ciąży, ulega przedłużeniu do dnia porodu.</li></ul></div>';
