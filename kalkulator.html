@@ -1,317 +1,957 @@
 <!DOCTYPE html>
 <!-- Dokument HTML5; atrybut lang="pl" informuje przeglądarkę i czytniki ekranu, że treść jest po polsku. -->
 <html lang="pl">
-
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kalkulator zasiłków rodzicielskich – prototyp</title>
-<link rel="preconnect" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="kalkulator.css" type="text/css">
+  <meta charset="utf-8">
+  <!-- viewport: strona dopasowuje szerokość do ekranu telefonu (RWD); viewport-fit=cover pozwala rysować pod paskami systemowymi. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Zasiłkowy Przewodnik Przyszłego Rodzica – Kalkulator ZUS</title>
+  <link rel="stylesheet" href="kalkulator.css">
+  <title>Kalkulator zasiłków rodzicielskich – prototyp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="kalkulator.css" type="text/css">
 
 </head>
-
 <body>
 <div class="wrap">
-<h1>Kalkulator zasiłków rodzicielskich</h1>
-<p class="sub">Prototyp do wyzwania „Zasiłkowy Przewodnik Przyszłego Rodzica”. Ustal czas trwania i wysokość zasiłku macierzyńskiego dla obojga rodziców oraz zasiłku chorobowego w ciąży. Wynik ma charakter poglądowy.</p>
-<div class="tabs" role="tablist">
-<button role="tab" id="t1" aria-selected="true">Zasiłek macierzyński</button>
-<button role="tab" id="t2" aria-selected="false">Ciąża: zasiłek chorobowy</button>
-</div>
+  <h1>Zasiłkowy Przewodnik Przyszłego Rodzica</h1>
+  <p class="sub">Zintegrowany kalkulator zasiłku macierzyńskiego oraz zasiłku chorobowego (w ciąży, na zasadach ogólnych i po ustaniu ubezpieczenia) wraz z doborem formularzy ZUS (stan prawny po 24.10.2026 r.).</p>
 
-<div id="p1" class="grid">
-<div class="card">
-<h2>Sytuacja rodziny</h2>
-<label for="sc">Zdarzenie</label>
-<select id="sc"><option value="birth">Urodzenie dziecka</option><option value="still">Urodzenie martwego dziecka lub zgon do 8 tyg. życia</option><option value="adopt">Przyjęcie dziecka na wychowanie</option></select>
-<div class="row">
-<div><label for="kids">Liczba dzieci (jeden poród lub jedno przyjęcie)</label><select id="kids"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-<div><label for="bd">Data porodu lub przyjęcia (opcjonalnie)</label><input type="date" id="bd"></div>
-</div>
-<div id="fBirth">
-<label class="chk"><input type="checkbox" id="zz"> Dziecko ma zaświadczenie „Za życiem”</label>
-<label for="supp">Uzupełniający urlop macierzyński (tyg., wcześniak lub hospitalizacja)</label>
-<input type="number" id="supp" min="0" value="0">
-</div>
-<div id="fAdopt" class="hide">
-<div class="row">
-<div><label for="kind">Forma</label><select id="kind"><option value="adopt">Wniosek o przysposobienie</option><option value="foster">Rodzina zastępcza niezawodowa</option></select></div>
-<div><label for="age">Wiek dziecka (lata)</label><input type="number" id="age" min="0" max="18" value="3"></div>
-</div>
-<label class="chk"><input type="checkbox" id="defer"> Odroczony obowiązek szkolny (rodzina zastępcza)</label>
-</div>
-<hr>
-<h2>Rodzice</h2>
-<div class="row">
-<div><label for="st1">Rodzic 1 (matka)</label><select id="st1"></select></div>
-<div><label for="st2">Rodzic 2 (ojciec)</label><select id="st2"></select></div>
-<div><label for="b1">Podstawa wymiaru, zł/mies.</label><input type="number" id="b1" min="0" step="50" value="6000"></div>
-<div><label for="b2">Podstawa wymiaru, zł/mies.</label><input type="number" id="b2" min="0" step="50" value="7000"></div>
-</div>
-<p class="hint">Podstawa wymiaru to średni miesięczny przychód z 12 miesięcy po odliczeniu składek (w prototypie wpisujesz ją ręcznie; docelowo z Z-3 lub danych ZUS).</p>
-<label class="chk"><input type="checkbox" id="big"> Pracodawca zgłasza do ubezpieczenia chorobowego powyżej 20 osób</label>
-<hr>
-<div id="fSplit">
-<h2>Podział urlopów</h2>
-<label for="T">Tygodnie urlopu macierzyńskiego przejęte przez ojca</label>
-<input type="number" id="T" min="0" value="0">
-<div class="row">
-<div><label for="wM">Urlop rodzicielski matki (tyg.)</label><input type="number" id="wM" min="0" value="32"></div>
-<div><label for="wF">Urlop rodzicielski ojca (tyg.)</label><input type="number" id="wF" min="0" value="9"></div>
-<div><label for="f1">Matka pracuje w czasie urlopu (% etatu)</label><input type="number" id="f1" min="0" max="50" value="0"></div>
-<div><label for="f2">Ojciec pracuje w czasie urlopu (% etatu)</label><input type="number" id="f2" min="0" max="50" value="0"></div>
-</div>
-<p class="hint" id="poolHint"></p>
-<label class="chk"><input type="checkbox" id="pat"> Ojciec bierze urlop ojcowski</label>
-<label class="chk"><input type="checkbox" id="opt"> Matka składa w ciągu 21 dni po porodzie wniosek o 81,5% za cały okres</label>
-</div>
-</div>
+  <!-- Pasek zakładek -->
+  <div class="top-bar">
+    <div class="tabs" role="tablist">
+      <button role="tab" id="t1" aria-selected="true">Urlop macierzyński</button>
+      <button role="tab" id="t2" aria-selected="false">Zasiłek chorobowy i ciąża</button>
+    </div>
+  </div>
 
-<div>
-<div class="card" id="res"></div>
-</div>
-</div>
+  <!--PANEL 1: ZASIŁEK MACIERZYŃSKI-->
+  <div id="p1" class="grid">
+    <div class="card">
+      <h2>1. Sytuacja rodziny</h2>
+      <label for="sc">Zdarzenie</label>
+      <select id="sc">
+        <option value="birth">Urodzenie dziecka</option>
+        <option value="adopt">Przyjęcie dziecka na wychowanie (adopcja / rodzina zastępcza)</option>
+        <option value="still">Urodzenie martwego dziecka lub zgon dziecka przed 8. tygodniem</option>
+        <option value="death_after8">Urodzenie i zgon dziecka po 8 tygodniach</option>
+      </select>
+      <div class="row">
+        <div><label for="kids">Liczba dzieci (jeden poród lub przyjęcie)</label><select id="kids"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div><label for="bd">Data porodu lub przyjęcia (opcjonalnie)</label><input type="date" id="bd"></div>
+      </div>
 
-<div id="p2" class="grid hide">
-<div class="card">
-<h2>Zasiłek chorobowy w ciąży</h2>
-<label for="sst">Tytuł ubezpieczenia</label><select id="sst"></select>
-<div class="row">
-<div><label for="sd">Dni ubezpieczenia chorobowego</label><input type="number" id="sd" min="0" value="200"></div>
-<div><label for="sb">Podstawa wymiaru, zł/mies.</label><input type="number" id="sb" min="0" step="50" value="6000"></div>
-<div><label for="sz">Dni zwolnienia z kodem „B”</label><input type="number" id="sz" min="0" value="60"></div>
-<div><label for="sp">Dni niezdolności wykorzystane wcześniej w roku</label><input type="number" id="sp" min="0" value="0"></div>
-</div>
-<label class="chk"><input type="checkbox" id="s50"> Pracownica po 50. roku życia</label>
-</div>
-<div class="card" id="res2"></div>
-</div>
+      <!-- Pola dla urodzenia dziecka (#fBirth) -->
+      <div id="fBirth">
+        <div class="row">
+          <div>
+            <label for="pre">Urlop macierzyński przed porodem (tyg., maks. 6)</label>
+            <input type="number" id="pre" min="0" max="6" value="0">
+          </div>
+          <div>
+            <label for="momSpec">Szczególna sytuacja matki (wcześniejsze przejęcie)</label>
+            <select id="momSpec">
+              <option value="none">Brak (matka min. 14 tyg. po porodzie)</option>
+              <option value="incap">Orzeczenie o niezdolności do samodzielnej egzystencji</option>
+              <option value="hosp">Pobyt matki w szpitalu / zakładzie leczniczym</option>
+              <option value="aband">Porzucenie dziecka przez matkę</option>
+              <option value="death">Śmierć matki</option>
+              <option value="work">Matka nieubezpieczona podjęła pracę w wymiarze co najmniej 1/2 etatu</option>
+            </select>
+          </div>
+        </div>
+        <label class="chk"><input type="checkbox" id="zz"> Dziecko ma zaświadczenie „Za życiem” (wydłużony urlop rodzicielski)</label>
+      </div>
 
-<details>
-<summary>Panel administracyjny: parametry kalkulatora</summary>
-<div class="card" style="margin-top:10px">
-<p class="hint">Zmiana przepisów nie wymaga zmiany kodu. Wartości w tabeli działają od razu. Tygodnie dla „Za życiem”, uzupełniającego urlopu i limity pracy podczas urlopu pochodzą z Kodeksu pracy i spoza treści zadania, więc przed wdrożeniem trzeba je zweryfikować.</p>
-<div class="adm" id="adm"></div>
-<button class="btn" id="reset" type="button">Przywróć wartości domyślne</button>
-</div>
-</details>
+      <!-- Pola dla przyjęcia dziecka na wychowanie (#fAdopt) -->
+      <div id="fAdopt" class="hide">
+        <div class="row">
+          <div><label for="kind">Forma przyjęcia</label><select id="kind"><option value="adopt">Wniosek o przysposobienie (adopcja)</option><option value="foster">Rodzina zastępcza niezawodowa</option></select></div>
+          <div><label for="age">Wiek dziecka w dniu przyjęcia (lata)</label><input type="number" id="age" min="0" max="18" value="3"></div>
+        </div>
+        <div class="row">
+          <div><label for="dob">Data urodzenia dziecka (opcjonalnie – dokładne skrócenie przy granicy wieku)</label><input type="date" id="dob"></div>
+        </div>
+        <label class="chk"><input type="checkbox" id="defer"> Odroczony obowiązek szkolny (rodzina zastępcza do 10 lat)</label>
+        <label class="chk"><input type="checkbox" id="zzA"> Dziecko ma zaświadczenie „Za życiem” (wydłużony urlop rodzicielski: 65/67/62 tyg.)</label>
+      </div>
 
-<p class="foot">Funkcje oparte na AI: brak, wszystkie wyliczenia to deterministyczne reguły. Logowanie mObywatel, pobieranie danych z ZUS, e-ZLA i PUE nie są jeszcze zasymulowane w tym prototypie. Dzień zasiłku liczony jako 1/30 podstawy wymiaru. Wynik nie jest decyzją ZUS.</p>
-</div>
+      <!-- Pola dla martwego urodzenia lub zgonu dziecka (#fStill) -->
+      <div id="fStill" class="hide">
+        <div class="row">
+          <div><label for="dd">Dzień życia dziecka w chwili zgonu (0 = martwe urodzenie)</label><input type="number" id="dd" min="0" value="0"></div>
+          <div><label for="alive">Liczba dzieci, które przeżyły (musi być &lt; liczby urodzonych)</label><input type="number" id="alive" min="0" max="0" value="0"></div>
+        </div>
+        <p class="hint" id="stillHint">Zgon przed upływem 8. tyg. życia: zasiłek za 8 tyg. od porodu, nie krócej niż 7 dni od zgonu. Zgon po 8. tyg.: zasiłek przez 7 dni od zgonu.</p>
+      </div>
 
-<script>
-var D={rMat:100,rPar:70,rOpt:81.5,rPat:100,rSick:100,m1:20,m2:31,m3:33,m4:35,m5:37,p1:41,p2:43,z1:65,z2:67,pat:14,res:9,minMom:14,supp:8,still:8,e33:33,e50:14,sickMax:270,workMax:50};
-var L={rMat:"Zasiłek: urlop macierzyński, uzupełniający, ojcowski (%)",rPar:"Zasiłek: urlop rodzicielski (%)",rOpt:"Zasiłek przy wniosku w 21 dni (%)",rPat:"Zasiłek: urlop ojcowski (%)",rSick:"Zasiłek chorobowy z kodem B (%)",m1:"Urlop macierzyński: 1 dziecko (tyg.)",m2:"Urlop macierzyński: 2 dzieci (tyg.)",m3:"Urlop macierzyński: 3 dzieci (tyg.)",m4:"Urlop macierzyński: 4 dzieci (tyg.)",m5:"Urlop macierzyński: 5 i więcej (tyg.)",p1:"Urlop rodzicielski: 1 dziecko (tyg.)",p2:"Urlop rodzicielski: 2 i więcej (tyg.)",z1:"Rodzicielski „Za życiem”: 1 dziecko (tyg.)",z2:"Rodzicielski „Za życiem”: 2 i więcej (tyg.)",pat:"Urlop ojcowski (dni)",res:"Tygodnie nieprzenoszalne na rodzica",minMom:"Minimum matki po porodzie (tyg.)",supp:"Maks. uzupełniający urlop (tyg.)",still:"Martwe urodzenie: wymiar (tyg.)",e33:"Wynagrodzenie chorobowe: dni (do 50 lat)",e50:"Wynagrodzenie chorobowe: dni (po 50 r.ż.)",sickMax:"Okres zasiłkowy (dni)",workMax:"Maks. praca w czasie urlopu rodz. (% etatu)"};
-var P=Object.assign({},D);
-var ST=[["e","Umowa o pracę"],["z","Zlecenie z dobrowolnym chorobowym"],["d","Działalność z dobrowolnym chorobowym"],["n","Brak ubezpieczenia chorobowego"]];
-var $=function(i){return document.getElementById(i)};
-var v=function(i){return $(i).value};
-var ck=function(i){return $(i).checked};
-var cl=function(x,a,b){x=isNaN(x)?0:x;return Math.max(a,Math.min(b,x))};
-var pln=function(x){return new Intl.NumberFormat("pl-PL",{style:"currency",currency:"PLN",maximumFractionDigits:2}).format(x)};
-var money=function(b,w,r){return b/30*w*7*r/100};
-var dt=function(d){return d.toLocaleDateString("pl-PL")};
-var stName=function(k){return ST.filter(function(s){return s[0]===k})[0][1]};
+      <!-- Uzupełniający urlop macierzyński (wcześniak / hospitalizacja) -->
+      <div id="fSupp">
+        <div class="row">
+          <div>
+            <label for="supp">Uzupełniający urlop macierzyński (tyg. hospitalizacji)</label>
+            <input type="number" id="supp" min="0" max="15" value="0">
+          </div>
+          <div>
+            <label for="suppCase">Przypadek uprawniający (limit)</label>
+            <select id="suppCase">
+              <option value="15">Przed 28. tyg. ciąży lub masa urodzeniowa ≤ 1000 g (do 15 tyg.)</option>
+              <option value="8">Urodzenie między 28. a 37. tyg., masa > 1000 g (do 8 tyg.)</option>
+              <option value="8">Urodzenie o czasie – pierwszy z co najmniej 2 kolejnych dni pobytu w szpitalu między 5.–28. dniem po porodzie (wymiar od 5. dnia, do 8 tyg.)</option>
+              <option value="15">Poród mnogi – najniższa masa urodzeniowa ≤ 1000 g (do 15 tyg.)</option>
+              <option value="8">Poród mnogi – najniższa masa urodzeniowa > 1000 g (do 8 tyg.)</option>
+            </select>
+          </div>
+          <div>
+            <label for="suppWho">Kto korzysta z urlopu uzupełniającego?</label>
+            <select id="suppWho">
+              <option value="1">Rodzic 1 (matka)</option>
+              <option value="2">Rodzic 2 (ojciec)</option>
+            </select>
+          </div>
+        </div>
+        <p class="hint">1 tydzień urlopu za każdy tydzień pobytu dziecka w szpitalu (okresy hospitalizacji sumuje się, niepełny tydzień zaokrągla w górę). Limit: do 15. tygodnia po porodzie (przed 28. tyg. ciąży, masa ≤ 1000 g lub poród mnogi) albo do 8. tygodnia (pozostałe przypadki). Urlop przysługuje jednorazowo, bezpośrednio po urlopie macierzyńskim; wymagane zaświadczenie ze szpitala.</p>
+      </div>
 
-["st1","st2","sst"].forEach(function(id,i){
-  $(id).innerHTML=ST.map(function(s){return '<option value="'+s[0]+'">'+s[1]+'</option>'}).join("");
-  $(id).value=id==="st2"?"e":"e";
-});
+      <hr>
+      <h2>2. Ubezpieczenie i podstawa wymiaru</h2>
+      <div class="row">
+        <div><label for="st1">Rodzic 1 (matka)</label><select id="st1"></select></div>
+        <div><label for="st2">Rodzic 2 (ojciec)</label><select id="st2"></select></div>
+        <div><label for="b1">Podstawa wymiaru R1, zł/mies.</label><input type="number" id="b1" min="0" step="50" value="6000"></div>
+        <div><label for="b2">Podstawa wymiaru R2, zł/mies.</label><input type="number" id="b2" min="0" step="50" value="7000"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="big"> Płatnik składek (pracodawca / zleceniodawca) zgłasza do ubezpieczenia chorobowego powyżej 20 osób</label>
+      <label class="chk" id="lblDebt1"><input type="checkbox" id="debt1"> Rodzic 1 (przedsiębiorca): zadłużenie z tytułu składek powyżej 1% minimalnego wynagrodzenia (art. 2a ustawy zasiłkowej)</label>
+      <label class="chk" id="lblDebt2"><input type="checkbox" id="debt2"> Rodzic 2 (przedsiębiorca): zadłużenie z tytułu składek powyżej 1% minimalnego wynagrodzenia (art. 2a ustawy zasiłkowej)</label>
+      <p class="hint">Podstawa wymiaru zasiłku: dla pracownika – przeciętne wynagrodzenie z 12 miesięcy poprzedzających, pomniejszone o 13,71%; dla niepracownika – przeciętny przychód z 12 miesięcy, pomniejszony o 13,71%. W 2026 r. minimalna podstawa (pełny etat, płaca minimalna 4 806 zł) to 4 147,10 zł, a maksymalna podstawa dobrowolnego ubezpieczenia chorobowego – 20 321,30 zł.</p>
 
-function pool(){
-  var n=+v("kids"),zz=ck("zz")&&v("sc")==="birth";
-  return P[(zz?"z":"p")+(n>1?2:1)];
-}
-function resetParental(){
-  var p=pool();
-  $("wM").value=p-P.res;$("wF").value=P.res;
-  $("poolHint").textContent="Pula urlopu rodzicielskiego: "+p+" tyg. Każdemu rodzicowi przysługuje "+P.res+" tyg. wyłącznie dla niego, więc jedno z rodziców może wziąć najwyżej "+(p-P.res)+" tyg.";
-}
+      <hr>
+      <!-- Sekcja podziału urlopów (#fSplit) -->
+      <div id="fSplit">
+        <h2>3. Podział urlopów i praca na urlopie</h2>
+        <div id="fT">
+          <label for="T">Tygodnie urlopu macierzyńskiego (lub na warunkach) przejęte przez ojca</label>
+          <input type="number" id="T" min="0" value="0">
+        </div>
+        <div class="row">
+          <div><label for="wm1">Urlop rodzicielski matki: od</label><input type="date" id="wm1"></div>
+          <div><label for="wm2">do</label><input type="date" id="wm2"></div>
+          <div><label for="wf1">Urlop rodzicielski ojca: od</label><input type="date" id="wf1"></div>
+          <div><label for="wf2">do</label><input type="date" id="wf2"></div>
+        </div>
+        <div class="row">
+          <div><label for="f1">Matka pracuje w czasie urlopu (% etatu, maks. 50%)</label><input type="number" id="f1" min="0" max="50" value="0"></div>
+          <div><label for="f2">Ojciec pracuje w czasie urlopu (% etatu, maks. 50%)</label><input type="number" id="f2" min="0" max="50" value="0"></div>
+        </div>
+        <p class="hint">Rodzice mogą korzystać z urlopu rodzicielskiego jednocześnie lub naprzemiennie – podaj daty od–do dla każdego z nich. Przy łączeniu urlopu z pracą na część etatu podaj faktyczny (wydłużony) okres kalendarzowy.</p>
+        <p class="hint" id="poolHint"></p>
+        <div class="row">
+          <div><label class="chk"><input type="checkbox" id="pat"> Ojciec bierze urlop ojcowski (14 dni)</label></div>
+          <div>
+            <label for="patParts">Podział urlopu ojcowskiego</label>
+            <select id="patParts">
+              <option value="1">Jednorazowo (14 dni)</option>
+              <option value="2">2 części po 7 dni</option>
+            </select>
+          </div>
+        </div>
+        <label class="chk"><input type="checkbox" id="opt"> Rodzic 1 składa wniosek o 81,5% (w ciągu 21 dni od porodu lub przyjęcia dziecka) za cały okres: macierzyński + pełny rodzicielski</label>
+      </div>
+    </div>
 
-function calc(){
-  var sc=v("sc"),n=+v("kids"),W=[],ph=[];
-  var e1=v("st1")!=="n",e2=v("st2")!=="n";
-  var b1=+v("b1")||0,b2=+v("b2")||0;
-  var M=sc==="still"?P.still:P["m"+Math.min(n,5)];
-  var p=pool();
-  var T=+v("T")||0,maxT=sc==="still"?0:(sc==="birth"?M-P.minMom:M);
-  if(!e1||!e2||sc==="still")T=0;
-  T=cl(T,0,maxT);
-  if(sc==="adopt"&&!e1&&e2)T=M;
-  if(sc==="birth"&&!e1)W.push(["e","Matka nie podlega ubezpieczeniu chorobowemu w dniu porodu, więc nie przysługuje jej zasiłek macierzyński. Ojciec może wziąć zasiłek za urlop rodzicielski."]);
-  if(sc!=="birth"&&!e1&&!e2)W.push(["e","Żaden z rodziców nie podlega ubezpieczeniu chorobowemu, więc zasiłek nie przysługuje."]);
-  var mM=e1?M-T:0,S=(sc==="birth"&&e1)?cl(+v("supp")||0,0,P.supp):0;
-  var wM=0,wF=0;
-  if(sc!=="still"){
-    wM=e1?cl(+v("wM")||0,0,p-P.res):0;
-    wF=e2?cl(+v("wF")||0,0,p-P.res):0;
-    if(wM+wF>p){wF=p-wM;W.push(["w","Suma urlopów rodzicielskich przekracza pulę. Skróciłem urlop ojca do "+wF+" tyg."])}
-    if(e1&&e2&&wM+wF<p)W.push(["w","Niewykorzystane tygodnie puli urlopu rodzicielskiego: "+(p-wM-wF)+"."]);
-  }
-  var f1=cl(+v("f1")||0,0,P.workMax)/100,f2=cl(+v("f2")||0,0,P.workMax)/100;
-  var optOn=false;
-  if(ck("opt")&&sc==="birth"){
-    if(e1&&T===0&&wM===p-P.res)optOn=true;
-    else W.push(["w","Stawka 81,5% wymaga, by matka wzięła pełny wymiar urlopu macierzyńskiego i swoją część rodzicielskiego (bez przekazania tygodni ojcu). Policzono standardowe stawki."]);
-  }
-  var rm=optOn?P.rOpt:P.rMat,rp=optOn?P.rOpt:P.rPar;
-  var pre=sc==="adopt"?"":"";
-  var defs=[
-    [1,"Urlop macierzyński",mM,mM,rm,b1],
-    [2,"Urlop macierzyński (część ojca)",T,T,P.rMat,b2],
-    [1,"Uzupełniający urlop macierzyński",S,S,P.rMat,b1],
-    [1,"Urlop rodzicielski",wM,f1<1?wM/(1-f1):wM,rp,b1,f1],
-    [2,"Urlop rodzicielski",wF,f2<1?wF/(1-f2):wF,P.rPar,b2,f2]
-  ];
-  var cur=0,d0=v("bd")?new Date(v("bd")+"T00:00:00"):null;
-  defs.forEach(function(d){
-    if(d[2]<=0)return;
-    var o={who:d[0],name:d[1],w:d[2],cal:d[3],rate:d[4],tot:money(d[5],d[2],d[4]),base:d[5],f:d[6]||0};
-    if(d0){var s=new Date(d0.getTime()+cur*7*864e5),e=new Date(d0.getTime()+(cur+o.cal)*7*864e5-864e5);o.s=dt(s);o.e=dt(e)}
-    cur+=o.cal;ph.push(o);
-  });
-  if(ck("pat")&&sc!=="still"){
-    if(v("st2")==="e"&&e2){ph.push({who:2,name:"Urlop ojcowski",w:P.pat/7,days:P.pat,cal:P.pat/7,rate:P.rPat,tot:b2/30*P.pat*P.rPat/100,base:b2,f:0,s:"w ciągu 12 mies.",e:""})}
-    else W.push(["w","Urlop ojcowski przysługuje ojcu będącemu pracownikiem."]);
-  }
-  if(sc==="adopt"){
-    var a=+v("age")||0,lim=v("kind")==="adopt"?14:(ck("defer")?10:7);
-    if(a>=lim)W.push(["e","Dziecko jest za duże: zasiłek za urlop na warunkach macierzyńskiego przysługuje do ukończenia "+lim+" lat."]);
-  }
-  var cmp=null;
-  if(optOn){cmp={std:money(b1,M,P.rMat)+money(b1,wM,P.rPar),opt:money(b1,M+wM,P.rOpt)}}
-  return{ph:ph,W:W,cmp:cmp,sc:sc,e1:e1,e2:e2,p:p,wM:wM,wF:wF,optOn:optOn};
-}
+    <!-- Prawa kolumna: wyniki (#res) -->
+    <div>
+      <div class="card" id="res"></div>
+    </div>
+  </div>
 
-function render(){
-  var c=calc(),h="";
-  var tM=0,tF=0;
-  c.ph.forEach(function(o){if(o.who===1)tM+=o.tot;else tF+=o.tot});
-  h+='<div class="tot"><div><b>'+pln(tM+tF)+'</b><span>Razem dla rodziny</span></div><div><b>'+pln(tM)+'</b><span>Rodzic 1 (matka)</span></div><div><b>'+pln(tF)+'</b><span>Rodzic 2 (ojciec)</span></div></div>';
-  c.W.forEach(function(w){h+='<div class="msg '+w[0]+'">'+w[1]+'</div>'});
-  if(c.cmp){h+='<div class="msg o">Wniosek o 81,5%: '+pln(c.cmp.opt)+' wobec '+pln(c.cmp.std)+' przy standardowych stawkach (100% i 70%). Różnica: '+pln(c.cmp.opt-c.cmp.std)+'.</div>'}
-  if(!c.ph.length){h+='<p>Brak okresów, za które przysługuje zasiłek.</p>';$("res").innerHTML=h;return}
-  var tw=c.ph.reduce(function(a,o){return a+o.cal},0),col={1:"var(--m)",2:"var(--f)"};
-  h+='<div class="bar" role="img" aria-label="Podział okresów">'+c.ph.map(function(o,i){return '<i style="width:'+(o.cal/tw*100)+'%;background:'+(o.name.indexOf("Uzup")===0?"var(--s)":col[o.who])+';opacity:'+(o.name.indexOf("rodzicielski")>-1?.65:1)+'" title="'+o.name+'"></i>'}).join("")+'</div>';
-  h+='<p class="hint">Kolejność: najpierw urlopy macierzyńskie, potem rodzicielski matki i ojca. Rodzice mogą też korzystać z urlopu rodzicielskiego jednocześnie, w maks. 5 częściach.</p>';
-  var hasD=c.ph.some(function(o){return o.s});
-  h+='<div class="tw"><table><thead><tr><th>Okres</th><th class="n">Tyg.</th><th class="n">Stawka</th><th class="n">Zasiłek mies.</th><th class="n">Razem</th>'+(hasD?'<th>Termin</th>':'')+'</tr></thead><tbody>';
-  c.ph.forEach(function(o){
-    var mon=o.base*o.rate/100*(1-o.f);
-    var wk=o.days?o.days+" dni":(Math.round(o.w*10)/10)+(o.f>0?' (kalendarz. '+(Math.round(o.cal*10)/10)+')':'');
-    h+='<tr><td><span class="dot" style="background:'+(o.name.indexOf("Uzup")===0?"var(--s)":col[o.who])+'"></span>'+(o.who===1?"M: ":"O: ")+o.name+'</td><td class="n">'+wk+'</td><td class="n">'+o.rate+'%</td><td class="n">'+pln(mon)+'</td><td class="n">'+pln(o.tot)+'</td>'+(hasD?'<td>'+(o.e?o.s+" – "+o.e:o.s||"")+'</td>':'')+'</tr>';
-  });
-  h+='</tbody></table></div>';
-  if(c.ph.some(function(o){return o.f>0}))h+='<p class="hint">Praca w czasie urlopu rodzicielskiego wydłuża urlop proporcjonalnie, a miesięczny zasiłek maleje o ten sam ułamek. Łączna kwota zasiłku się nie zmienia. Limity określa Kodeks pracy.</p>';
-  h+='<h2 style="margin-top:16px">Gdzie złożyć dokumenty</h2><ul class="file">'+[1,2].map(function(k){
-    var s=v("st"+k),nm=k===1?"Rodzic 1":"Rodzic 2";
-    if(s==="n")return '<li>'+nm+': brak ubezpieczenia chorobowego, zasiłek nie przysługuje.</li>';
-    if(s==="e")return '<li>'+nm+': wniosek o urlop do pracodawcy. '+(ck("big")?"Zasiłek wypłaca pracodawca na podstawie wniosku.":"Pracodawca nie wypłaca zasiłków i przekazuje do ZUS zaświadczenie Z-3, a ZUS ustala i wypłaca zasiłek.")+'</li>';
-    return '<li>'+nm+' ('+stName(s)+'): wniosek ZAM bezpośrednio do ZUS (przez PUE/eZUS lub w placówce).</li>';
-  }).join("")+'</ul>';
-  h+='<h2 style="margin-top:16px">Na co uważać</h2><ul class="file"><li>Pozorna umowa zawarta tylko dla zasiłku: ZUS może orzec brak ubezpieczenia.</li><li>Sztuczne podwyższenie podstawy składek w ciąży: ZUS może ustalić niższą podstawę.</li><li>Brak ubezpieczenia chorobowego w dniu porodu (np. rozwiązanie umowy, zamknięcie firmy, brak zgłoszenia do dobrowolnego chorobowego) oznacza brak zasiłku.</li><li>Ochrona przed wypowiedzeniem z Kodeksu pracy dotyczy tylko pracowników.</li></ul>';
-  $("res").innerHTML=h;
-}
+  <!--PANEL 2: ZASIŁEK CHOROBOWY I CIĄŻA-->
+  <div id="p2" class="grid hide">
+    <div class="card">
+      <h2>Zasiłek chorobowy – parametry zwolnienia</h2>
+      <label for="smode">Rodzaj niezdolności do pracy</label>
+      <select id="smode">
+        <option value="preg">Niezdolność do pracy w okresie ciąży (kod „B” – 100%, limit 270 dni)</option>
+        <option value="gen">Niezdolność do pracy poza ciążą (zasady ogólne – 80% / 100%, limit 182 dni)</option>
+        <option value="after">Niezdolność do pracy po ustaniu tytułu ubezpieczenia</option>
+      </select>
 
-function renderSick(){
-  var s=v("sst"),d=+v("sd")||0,b=+v("sb")||0,z=+v("sz")||0,sp=+v("sp")||0,h="";
-  var need=s==="e"?30:90;
-  if(s==="n"){$("res2").innerHTML='<div class="msg e">Bez ubezpieczenia chorobowego zasiłek chorobowy nie przysługuje.</div>';return}
-  if(d<need)h+='<div class="msg w">Okres wyczekiwania co do zasady wynosi '+need+' dni ('+(s==="e"?"ubezpieczenie obowiązkowe":"ubezpieczenie dobrowolne")+'). Przy '+d+' dniach prawo do zasiłku może nie powstać.</div>';
-  var lim=ck("s50")?P.e50:P.e33,emp=0;
-  if(s==="e")emp=Math.min(z,Math.max(0,lim-sp));
-  var zus=z-emp;
-  var tot=P.sickMax;
-  if(sp+z>tot)h+='<div class="msg w">Okres zasiłkowy to '+tot+' dni. Suma dni ('+(sp+z)+') go przekracza.</div>';
-  h+='<div class="tot"><div><b>'+pln(b/30*emp*P.rSick/100)+'</b><span>Wynagrodzenie chorobowe (pracodawca), '+emp+' dni</span></div><div><b>'+pln(b/30*zus*P.rSick/100)+'</b><span>Zasiłek chorobowy (ZUS lub płatnik), '+zus+' dni</span></div><div><b>'+pln(b/30*z*P.rSick/100)+'</b><span>Razem, '+z+' dni</span></div></div>';
-  h+='<p class="hint">Stawka '+P.rSick+'% podstawy przy kodzie „B”. '+(s==="e"?"Pracodawca płaci wynagrodzenie za pierwsze "+lim+" dni niezdolności w roku.":"Zasiłek przysługuje od pierwszego dnia niezdolności.")+'</p>';
-  h+='<ul class="file"><li>Zwolnienie e-ZLA trafia elektronicznie do ZUS i pracodawcy.</li><li>'+(s==="e"?"Pracownica informuje pracodawcę o nieobecności zgodnie z Kodeksem pracy.":"Osoba niebędąca pracownikiem powstrzymuje się od pracy i składa dokumenty do ZUS lub płatnika (ZAS-53 przy działalności).")+'</li></ul>';
-  $("res2").innerHTML=h;
-}
+      <!-- Pola dla trybu ogólnego (#fGen) -->
+      <div id="fGen" class="hide">
+        <div class="row">
+          <div>
+            <label for="srate">Stawka zasiłku</label>
+            <select id="srate">
+              <option value="80">80% (standardowe zwolnienie lekarskie)</option>
+              <option value="100">100% (wypadek w drodze do/z pracy, badania/dawstwo; choroba zawodowa – 100% z ubezpieczenia wypadkowego)</option>
+            </select>
+          </div>
+          <div>
+            <label for="smax">Maksymalny okres zasiłkowy</label>
+            <select id="smax">
+              <option value="182">182 dni (standardowy)</option>
+              <option value="270">270 dni (gruźlica)</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
-function buildAdmin(){
-  $("adm").innerHTML=Object.keys(D).map(function(k){return '<div><label for="a_'+k+'">'+L[k]+'</label><input type="number" step="0.5" id="a_'+k+'" data-k="'+k+'" value="'+P[k]+'"></div>'}).join("");
-  Array.prototype.forEach.call($("adm").querySelectorAll("input"),function(i){i.addEventListener("input",function(){P[i.dataset.k]=+i.value;resetParental();render();renderSick()})});
-} 
+      <!-- Pola dla trybu po ustaniu ubezpieczenia (#fAfter) -->
+      <div id="fAfter" class="hide">
+        <label for="onset">Kiedy powstała niezdolność do pracy?</label>
+        <select id="onset">
+          <option value="during">Jeszcze w trakcie ubezpieczenia i trwa nieprzerwanie po jego ustaniu</option>
+          <option value="post14">W ciągu 14 dni od ustania ubezpieczenia (trwa min. 30 dni)</option>
+          <option value="post90">W ciągu 3 miesięcy od ustania ubezpieczenia – choroba zakaźna kod „E” (trwa min. 30 dni)</option>
+        </select>
+        <label class="chk"><input type="checkbox" id="saPreg"> Niezdolność do pracy przypada w okresie ciąży (zasiłek 100%, okres zasiłkowy do 270 dni)</label>
+        <div class="row">
+          <div><label for="sa1">Początek zwolnienia (opcjonalnie)</label><input type="date" id="sa1"></div>
+          <div><label for="sterm">Data ustania ubezpieczenia (opcjonalnie)</label><input type="date" id="sterm"></div>
+        </div>
+      </div>
 
-function vis() {
-  var sc = v("sc");
-  $("fBirth").classList.toggle("hide", sc !== "birth");
-  $("fAdopt").classList.toggle("hide", sc !== "adopt");
-  $("fSplit").classList.toggle("hide", sc === "still");
-  $("pat").parentNode.classList.toggle("hide", sc === "still");
-  $("opt").parentNode.classList.toggle("hide", sc !== "birth");
-}
+      <label for="sst">Tytuł ubezpieczenia chorobowego</label>
+      <select id="sst"></select>
+      <div class="row">
+        <div><label for="sd">Nieprzerwane dni ubezpieczenia przed L4</label><input type="number" id="sd" min="0" value="200"></div>
+        <div><label for="sb">Podstawa wymiaru, zł/mies.</label><input type="number" id="sb" min="0" step="50" value="6000"></div>
+        <div><label for="sz">Dni zwolnienia lekarskiego (e-ZLA)</label><input type="number" id="sz" min="0" value="60"></div>
+        <div><label for="sp">Dni niezdolności wykorzystane wcześniej w roku</label><input type="number" id="sp" min="0" value="0"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="s50"> Pracownik, który ukończył 50. rok życia (14 dni wynagrodzenia chorobowego zamiast 33 – od roku kalendarzowego następującego po ukończeniu 50. r.ż.)</label>
+      <label class="chk" id="lblDebtS"><input type="checkbox" id="debtS"> Przedsiębiorca: zadłużenie z tytułu składek powyżej 1% minimalnego wynagrodzenia (art. 2a ustawy zasiłkowej)</label>
 
-["sc", "kids", "zz"].forEach(function(id) {
-  $(id).addEventListener("change", function() {
-    vis();
-    resetParental();
-    render();
-  });
-});
+      <hr>
+      <div id="fLostBox">
+        <h2>Szczególny przypadek: utrata pracy w ciąży</h2>
+        <label class="chk"><input type="checkbox" id="lost"> Umowa o pracę została rozwiązana w okresie ciąży</label>
+        <div id="fLost" class="hide">
+          <label for="lr">Przyczyna rozwiązania umowy o pracę</label>
+          <select id="lr">
+            <option value="bank">Upadłość lub likwidacja pracodawcy</option>
+            <option value="death">Śmierć pracodawcy</option>
+            <option value="viol">Naruszenie przepisów prawa przy rozwiązaniu umowy (prawomocny wyrok sądu)</option>
+          </select>
+          <label class="chk"><input type="checkbox" id="nojob" checked> Kobiecie nie zapewniono innego zatrudnienia</label>
+          <div class="row">
+            <div><label for="ld">Ostatni dzień ubezpieczenia</label><input type="date" id="ld"></div>
+            <div><label for="due">Planowana data porodu</label><input type="date" id="due"></div>
+          </div>
+        </div>
+      </div>
 
-document.querySelectorAll("#p1 input, #p1 select").forEach(function(e) {
-  e.addEventListener("input", render);
-  e.addEventListener("change", render);
-});
+      <hr>
+      <div class="rehab-box" id="fRehabBox">
+        <h2>Świadczenie rehabilitacyjne</h2>
+        <p class="hint">Przysługuje po wyczerpaniu okresu zasiłkowego (182 lub 270 dni), jeżeli dalsze leczenie lub rehabilitacja rokują odzyskanie zdolności do pracy. O przyznaniu orzeka lekarz orzecznik ZUS; maksymalny okres to 12 miesięcy. Wysokość: 90% podstawy wymiaru za pierwsze 3 miesiące i 75% za pozostały okres; jeżeli niezdolność do pracy przypada w okresie ciąży – 100% przez cały okres (art. 19 ust. 1 ustawy zasiłkowej). Świadczenie wypłaca ZUS; podstawa wymiaru podlega waloryzacji kwartalnej (art. 19 ust. 2).</p>
+        <div class="row">
+          <div><label for="rmon">Liczba miesięcy (maks. 12)</label><input type="number" id="rmon" min="1" max="12" value="6"></div>
+          <div>
+            <label for="rpreg">Czy niezdolność do pracy przypada w okresie ciąży?</label>
+            <select id="rpreg">
+              <option value="1">Tak – 100% przez cały okres</option>
+              <option value="0">Nie – 90% (pierwsze 3 mies.) i 75% (pozostałe)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
 
-document.querySelectorAll("#p2 input, #p2 select").forEach(function(e) {
-  e.addEventListener("input", renderSick);
-  e.addEventListener("change", renderSick);
-});
+    <div class="card" id="res2"></div>
+  </div>
 
-function tab(a) {
-  $("p1").classList.toggle("hide", a !== 1);
-  $("p2").classList.toggle("hide", a !== 2);
-  $("t1").setAttribute("aria-selected", a === 1);
-  $("t2").setAttribute("aria-selected", a === 2);
-}
+  <script>
+    /*PARAMETRY DOMYŚLNE (D)*/
+    var D={
+      rMat:100,rPar:70,rOpt:81.5,rPat:100,rSick:100,rSickGen:80,
+      m1:20,m2:31,m3:33,m4:35,m5:37,
+      p1:41,p2:43,z1:65,z2:67,
+      pat:14,res:9,resSolo:0,minMom:14,preMax:6,supp:8,still:8,stillAfter:7,incap:8,adopt9:38,adopt9zz:62,
+      e33:33,e50:14,sickMax:270,sickGenMax:182,sickAfter:91,workMax:50
+    };
+    var P=Object.assign({},D);
 
-$("t1").onclick = function() { tab(1); };
-$("t2").onclick = function() { tab(2); };
-$("reset").onclick = function() {
-  P = Object.assign({}, D);
-  buildAdmin();
-  resetParental();
-  render();
-  renderSick();
-};
+    var ST=[
+      ["e","Umowa o pracę (ubezpieczenie obowiązkowe)"],
+      ["z","Umowa zlecenia (dobrowolne chorobowe)"],
+      ["d","Działalność gospodarcza (dobrowolne chorobowe)"],
+      ["n","Brak ubezpieczenia chorobowego"],
+      ["b","Brak drugiego rodzica (np. zgon przed porodem)"]
+    ];
 
-window.addEventListener('DOMContentLoaded', () => {
-  buildAdmin();
+    var $=function(i){return document.getElementById(i)};
+    var v=function(i){return $(i).value};
+    var ck=function(i){return $(i).checked};
+    var cl=function(x,a,b){x=isNaN(x)?0:x;return Math.max(a,Math.min(b,x))};
+    var pln=function(x){return new Intl.NumberFormat("pl-PL",{style:"currency",currency:"PLN",maximumFractionDigits:2}).format(x)};
+    var money=function(b,w,r){return b/30*w*7*r/100};
+    var dt=function(d){return d.toLocaleDateString("pl-PL")};
+    var p2=function(n){return (n<10?"0":"")+n};
+    var iso=function(d){return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())};
+    var stName=function(k){return ST.filter(function(s){return s[0]===k})[0][1]};
 
-  const params = new URLSearchParams(window.location.search);
-  const matka = params.get('matka');
-  const ojciec = params.get('ojciec');
-  const zdarzenie = params.get('zdarzenie');
+    ["st1","st2","sst"].forEach(function(id){
+      $(id).innerHTML=ST.filter(function(s){return id==="st2"||s[0]!=="b"}).map(function(s){return '<option value="'+s[0]+'">'+s[1]+'</option>'}).join("");
+      $(id).value="e";
+    });
 
-  if (matka && document.getElementById('b1')) {
-    document.getElementById('b1').value = matka;
-  }
-  if (ojciec && document.getElementById('b2')) {
-    document.getElementById('b2').value = ojciec;
-  }
-
-  const sc = document.getElementById('sc');
-  const zz = document.getElementById('zz');
-
-  if (zdarzenie && sc) {
-    if (zdarzenie === 'normalne') {
-      sc.value = 'birth';
-    } else if (zdarzenie === 'niepelnosprawne') {
-      sc.value = 'birth';
-      if (zz) zz.checked = true;
-    } else if (zdarzenie === 'zmarlo') {
-      sc.value = 'still';
+    function isDeathScenario(sc){
+      return sc==="still"||sc==="death_after8";
     }
-  }
-  vis();
-  resetParental();
-  render();
-  renderSick();
-});
-</script>
+
+    /* Synchronizacja limitu dzieci, które przeżyły (zawsze < liczba urodzonych dzieci) */
+    function syncAliveLimit(){
+      var n=Math.max(1,+v("kids")||1);
+      var maxAlive=Math.max(0,n-1);
+      var el=$("alive");
+      el.max=maxAlive;
+      el.disabled=(maxAlive===0);
+      var cur=Math.floor(+el.value||0);
+      var clamped=cl(cur,0,maxAlive);
+      if(cur!==clamped||el.value==="")el.value=clamped;
+    }
+
+    /* Synchronizacja dnia zgonu po przełączeniu typu zdarzenia */
+    function syncDeathDay(changedField){
+      var sc=v("sc");
+      var ddEl=$("dd");
+      var dd=Math.max(0,Math.floor(+ddEl.value||0));
+      if(changedField==="sc"){
+        if(sc==="death_after8"){
+          ddEl.min=P.still*7;
+          ddEl.removeAttribute("max");
+          if(dd<P.still*7)ddEl.value=P.still*7;
+        }else if(sc==="still"){
+          ddEl.min=0;
+          ddEl.max=P.still*7-1;
+          if(dd>=P.still*7)ddEl.value=0;
+        }
+      }
+    }
+
+    function eff(){
+      var sc=v("sc"),n=Math.max(1,+v("kids")||1);
+      if(isDeathScenario(sc)){
+        var maxAlive=Math.max(0,n-1);
+        var rawAlive=Math.floor(+v("alive")||0);
+        var a=cl(rawAlive,0,maxAlive);
+        var dd=Math.max(0,Math.floor(+v("dd")||0));
+        if(sc==="death_after8"){
+          if(dd<P.still*7)dd=P.still*7;
+        }else if(sc==="still"&&dd>=P.still*7){
+          dd=P.still*7-1;
+        }
+        return{
+          sc:a>0?"birth":"still",
+          deathMode:sc,
+          n:a>0?a:n,
+          born:n,
+          still:true,
+          alive:a,
+          aliveExceeded:rawAlive>maxAlive,
+          dd:dd
+        };
+      }
+      return{sc:sc,n:n,born:n,alive:n};
+    }
+
+    function adoptNine(){
+      if(v("sc")!=="adopt")return false;
+      var a=+v("age")||0;
+      var lim=v("kind")==="adopt"?14:(ck("defer")?10:7);
+      if(a>=lim)return false;
+      var dob=v("dob"),bd=v("bd");
+      if(!dob||!bd)return false;
+      var limitDate=new Date(dob+"T00:00:00");
+      limitDate.setFullYear(limitDate.getFullYear()+lim);
+      var przyj=new Date(bd+"T00:00:00");
+      var wks=(limitDate.getTime()-przyj.getTime())/864e5/7;
+      return wks<9;
+    }
+
+    function pool(){
+      var n=eff().n,zz=ck("zz")&&v("sc")==="birth";
+      if(v("sc")==="adopt"){
+        var a=+v("age")||0;
+        var lim=v("kind")==="adopt"?14:(ck("defer")?10:7);
+        if(a<lim){
+          if(adoptNine())return ck("zzA")?P.adopt9zz:P.adopt9;
+          if(ck("zzA"))return n>1?67:65;
+        }
+        return n>1?43:41;
+      }
+      return P[(zz?"z":"p")+(n>1?2:1)];
+    }
+
+    function resv(){
+      if(v("st2")==="b")return P.resSolo;
+      if(v("sc")==="birth"&&v("momSpec")==="death")return P.resSolo;
+      return P.res;
+    }
+
+    function resetParental(){
+      var p=pool(),r=resv(),solo=v("st2")==="b";
+      $("poolHint").textContent=solo
+              ?"Pula urlopu rodzicielskiego: "+p+" tyg. Przy braku drugiego rodzica cała pula ("+p+" tyg.) może zostać wykorzystana przez jednego rodzica."
+              :"Pula urlopu rodzicielskiego: "+p+" tyg. Każdemu rodzicowi przysługuje "+P.res+" tyg. wyłącznie dla niego, więc jedno z rodziców może wziąć maks. "+(p-P.res)+" tyg.";
+      var clear=function(){$("wm1").value="";$("wm2").value="";$("wf1").value="";$("wf2").value="";};
+      var bd=v("bd"),E=eff(),raw=v("sc");
+      if(!bd||(E.sc!=="birth"&&E.sc!=="adopt")){clear();return;}
+      var n=Math.max(1,E.n);
+      var M=P["m"+Math.min(n,5)];
+      var pre=(raw==="birth")?cl(+v("pre")||0,0,P.preMax):0;
+      var after=(raw==="adopt")?M:M-pre;
+      var mStart=new Date(bd+"T00:00:00");
+      mStart=new Date(mStart.getTime()+Math.max(0,after)*7*864e5);
+      var mWk=solo?p:p-r;
+      var mEnd=new Date(mStart.getTime()+mWk*7*864e5-864e5);
+      $("wm1").value=iso(mStart);$("wm2").value=iso(mEnd);
+      if(!solo&&r>0){
+        var fStart=new Date(mEnd.getTime()+864e5);
+        var fEnd=new Date(fStart.getTime()+r*7*864e5-864e5);
+        $("wf1").value=iso(fStart);$("wf2").value=iso(fEnd);
+      }else{
+        $("wf1").value="";$("wf2").value="";
+      }
+    }
+
+    /*calc(): GŁÓWNA LOGIKA ZASIŁKU MACIERZYŃSKIEGO*/
+    function calc(){
+      var raw=v("sc"),E=eff(),sc=E.sc,n=E.n,W=[],ph=[];
+      var noP2=v("st2")==="b",r=resv();
+      var e1=v("st1")!=="n",e2=v("st2")!=="n"&&!noP2;
+      var momSpec=(raw==="birth")?v("momSpec"):"none";
+      var b1=+v("b1")||0,b2=+v("b2")||0;
+      var M=P["m"+Math.min(n,5)],stillDays=0;
+
+      if(noP2)W.push(["w","Przyjęto brak drugiego rodzica — nieprzenoszalna pula drugiego rodzica nie przepada."]);
+
+      /* Art. 2a ustawy zasiłkowej: zadłużenie składek > 1% min. wynagrodzenia (działalność) */
+      var debt1=ck("debt1")&&v("st1")==="d";
+      var debt2=ck("debt2")&&v("st2")==="d";
+      if(debt1)W.push(["e","Rodzic 1 (przedsiębiorca): zadłużenie z tytułu składek na ubezpieczenia społeczne przekraczające 1% minimalnego wynagrodzenia (48,06 zł w 2026 r.) pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2)."]);
+      if(debt2)W.push(["e","Rodzic 2 (przedsiębiorca): zadłużenie z tytułu składek na ubezpieczenia społeczne przekraczające 1% minimalnego wynagrodzenia (48,06 zł w 2026 r.) pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2)."]);
+
+      if(E.aliveExceeded){
+        W.push(["e","Liczba dzieci, które przeżyły poród, musi być mniejsza niż liczba urodzonych dzieci ("+E.born+"). Przyjęto maksymalnie "+(E.born-1)+"."]);
+      }
+
+      /* Martwe urodzenie lub zgon dziecka (przed oraz po upływie 8 tygodni życia) */
+      if(isDeathScenario(raw)){
+        var dd=E.dd;
+        var fullOrig=P["m"+Math.min(E.born,5)]*7;
+        var after8=(raw==="death_after8"||dd>=P.still*7);
+
+        if(E.alive===0){
+          /* Żadne dziecko nie przeżyło (poród pojedynczy lub zgon wszystkich dzieci z porodu mnogiego) */
+          if(!after8){
+            /* Martwe urodzenie lub zgon przed upływem 8 tyg. życia: 8 tyg. po porodzie, nie krócej niż 7 dni od zgonu */
+            stillDays=Math.max(P.still*7,dd+P.stillAfter);
+          }else{
+            /* Zgon po upływie 8 tyg. życia: zachowane prawo do zasiłku za okres urlopu macierzyńskiego przez 7 dni od dnia zgonu */
+            stillDays=Math.min(dd+P.stillAfter,fullOrig);
+          }
+          M=stillDays/7;
+          W.push(["w",after8
+                  ?"Zgon dziecka po upływie 8. tygodnia życia (dzień "+dd+"): prawo do zasiłku za okres urlopu macierzyńskiego jest zachowane przez 7 dni od dnia zgonu (łącznie "+stillDays+" dni). Urlop rodzicielski i ojcowski nie przysługują."
+                  :"Martwe urodzenie lub zgon przed upływem 8. tygodnia życia: zasiłek przysługuje przez 8 tygodni po porodzie, nie krócej niż 7 dni od dnia zgonu (łącznie "+stillDays+" dni). Urlop rodzicielski i ojcowski nie przysługują."
+          ]);
+        }else{
+          /* Poród mnogi i co najmniej 1 dziecko przeżyło: wymiar stosowny do liczby dzieci pozostałych przy życiu, nie krócej niż 7 dni od zgonu */
+          var aliveDays=P["m"+Math.min(E.alive,5)]*7;
+          if(after8){
+            stillDays=Math.max(aliveDays,Math.min(dd+P.stillAfter,fullOrig));
+            M=stillDays/7;
+            W.push(["w","Poród mnogi ("+E.born+" dzieci) i zgon po 8. tygodniu życia (dzień "+dd+"): przysługuje urlop macierzyński w wymiarze stosownym do liczby dzieci pozostałych przy życiu ("+E.alive+" – "+P["m"+Math.min(E.alive,5)]+" tyg.), nie krócej niż 7 dni od dnia zgonu."]);
+          }else{
+            stillDays=Math.max(aliveDays,Math.max(P.still*7,dd+P.stillAfter));
+            M=stillDays/7;
+            W.push(["w","Poród mnogi ("+E.born+" dzieci) i zgon przed 8. tygodniem życia: przysługuje urlop macierzyński w wymiarze stosownym do liczby dzieci pozostałych przy życiu ("+E.alive+" – "+P["m"+Math.min(E.alive,5)]+" tyg.)."]);
+          }
+        }
+      }
+
+      /* Przyjęcie dziecka na wychowanie: granice wieku, skrócenie i minimum 9 tygodni */
+      var adoptDenied=false;
+      if(sc==="adopt"){
+        var a=+v("age")||0;
+        var lim=v("kind")==="adopt"?14:(ck("defer")?10:7);
+        if(a>=lim){
+          adoptDenied=true;M=0;
+          W.push(["e","Dziecko osiągnęło granicę wieku ("+lim+" lat) — zasiłek za urlop na warunkach macierzyńskiego i urlop rodzicielski nie przysługują."]);
+        }else{
+          var wksUntil=null;
+          if(v("dob")&&v("bd")){
+            var limitDate=new Date(v("dob")+"T00:00:00");
+            limitDate.setFullYear(limitDate.getFullYear()+lim);
+            var przyj=new Date(v("bd")+"T00:00:00");
+            wksUntil=(limitDate.getTime()-przyj.getTime())/864e5/7;
+          }
+          if(wksUntil!==null&&wksUntil<M){
+            if(wksUntil<9){
+              M=9;
+              W.push(["w","Dziecko osiągnie "+lim+" lat w trakcie urlopu — przysługuje gwarantowane minimum 9 tygodni (art. 183 § 3 k.p.), a pula urlopu rodzicielskiego wynosi 38 tygodni (art. 183 § 4 pkt 3 i § 4² k.p.)."]);
+            }else{
+              M=Math.round(wksUntil*10)/10;
+              W.push(["w","Dziecko osiągnie "+lim+" lat w trakcie urlopu — wymiar skrócony do dnia ukończenia "+lim+" lat: "+M+" tyg. (nie krócej niż 9 tyg., art. 183 § 3 k.p.)."]);
+            }
+          }else if(a>=lim-1){
+            W.push(["w","Dziecko jest blisko granicy wieku ("+lim+" lat) — urlop może zostać skrócony do dnia ukończenia "+lim+" lat, nie krócej niż 9 tygodni (art. 183 § 3 k.p.). Podaj daty urodzenia i przyjęcia, aby obliczyć dokładny wymiar."]);
+          }
+        }
+      }
+
+      /* Urlop macierzyński przed porodem (maks. 6 tyg.) */
+      var pre=(raw==="birth"&&e1)?cl(+v("pre")||0,0,P.preMax):0;
+      if(pre>0&&momSpec!=="none"){
+        W.push(["w","Przy wcześniejszym przejęciu urlopu przez ojca z powodu sytuacji szczególnej matki sprawdź dokładną liczbę tygodni wykorzystanych przez matkę przed i po porodzie."]);
+      }
+
+      var p=pool();
+      var T=+v("T")||0;
+      var maxT=0;
+
+      if(sc==="still"){
+        maxT=0;T=0;
+      }else if(sc==="birth"){
+        if(momSpec==="none"){
+          maxT=(e1&&e2)?Math.max(0,M-P.minMom-pre):0;
+          if(!e1||!e2)T=0;
+        }else{
+          if(momSpec==="incap"){
+            maxT=e2?(e1?Math.max(0,M-P.incap-pre):M):0;
+            W.push(["o","Matka posiada orzeczenie o niezdolności do samodzielnej egzystencji — po wykorzystaniu co najmniej 8 tygodni PO PORODZIE ojciec może przejąć pozostałą część urlopu macierzyńskiego (art. 180 § 6–7 k.p., art. 29 ust. 5 ustawy zasiłkowej)."+(e1&&pre>0?" Urlop przed porodem skraca część ojca.":"")]);
+          }else if(momSpec==="hosp"){
+            maxT=e2?(e1?Math.max(0,M-P.incap-pre):M):0;
+            W.push(["o","Matka przebywa w szpitalu/zakładzie leczniczym — po wykorzystaniu co najmniej 8 tygodni PO PORODZIE ojciec może przejąć zasiłek za okres hospitalizacji matki (art. 180 § 10–11 k.p., art. 29 ust. 6 ustawy zasiłkowej)."]);
+          }else if(momSpec==="aband"){
+            maxT=e2?(e1?Math.max(0,M-P.incap-pre):M):0;
+            W.push(["o","Porzucenie dziecka przez matkę — ojciec przejmuje część urlopu macierzyńskiego przypadającą po dniu porzucenia, nie wcześniej niż po 8 tygodniach po porodzie (art. 180 § 13 k.p., art. 29 ust. 7 ustawy zasiłkowej). Przy matce nieubezpieczonej — od dnia zdarzenia, bez progu 8 tygodni (art. 180 § 15 k.p., art. 29 ust. 9)."]);
+          }else if(momSpec==="death"){
+            maxT=e2?M:0;
+            W.push(["o","Śmierć matki — ojciec przejmuje część urlopu macierzyńskiego przypadającą po dniu zgonu, także gdy matka nie była ubezpieczona (art. 180 § 12 i § 15 k.p., art. 29 ust. 7 i ust. 9 ustawy zasiłkowej)."]);
+          }else if(momSpec==="work"){
+            maxT=e2?M:0;
+            W.push(e1?["w","Ten przypadek dotyczy matki nieposiadającej tytułu do ubezpieczenia chorobowego (art. 180 § 17 k.p., art. 29 ust. 10 ustawy zasiłkowej). Przy matce ubezpieczonej wybierz inny wariant."]:["o","Matka nieubezpieczona podjęła pracę w wymiarze co najmniej 1/2 etatu — ojciec przejmuje część urlopu macierzyńskiego od dnia podjęcia pracy przez matkę, na okres trwania tego zatrudnienia (art. 180 § 17 k.p., art. 29 ust. 10 ustawy zasiłkowej)."]);
+          }
+          if(!e2)T=0;
+        }
+      }else if(sc==="adopt"){
+        maxT=(e1&&e2)?Math.max(0,M-P.minMom):(e2?M:0);
+        if(!e2)T=0;
+        if(!e1&&e2)T=M;
+      }
+
+      T=cl(T,0,maxT);
+
+      if(raw==="birth"&&!e1&&momSpec==="none"){
+        W.push(e2?["w","Matka nie podlega ubezpieczeniu chorobowemu w dniu porodu — nie przysługuje jej zasiłek macierzyński. Ojciec może skorzystać z urlopu rodzicielskiego (maks. "+(p-P.res)+" tyg.) i urlopu ojcowskiego."]:["e","Żaden z rodziców nie podlega ubezpieczeniu chorobowemu w dniu porodu — zasiłek macierzyński nie przysługuje."]);
+      }
+      if(!e1&&!e2&&(sc!=="birth"||isDeathScenario(raw))){
+        W.push(["e","Żaden z rodziców nie podlega ubezpieczeniu chorobowemu — zasiłek nie przysługuje."]);
+      }
+
+      var mM=e1?Math.max(0,M-T):0;
+
+      /* Uzupełniający urlop macierzyński (matka albo ojciec) */
+      var S=0,suppWho=+v("suppWho")||1;
+      if(sc!=="still"&&!adoptDenied){
+        var rawSupp=cl(+v("supp")||0,0,cl(+v("suppCase")||P.supp,0,15));
+        if(rawSupp>0){
+          if(suppWho===1&&e1)S=rawSupp;
+          else if(suppWho===2&&e2)S=rawSupp;
+          else W.push(["w","Wybrany rodzic do uzupełniającego urlopu macierzyńskiego nie podlega ubezpieczeniu chorobowemu."]);
+        }
+      }
+
+      /* Łączenie urlopu rodzicielskiego z pracą (wyłącznie pracownik st === "e") */
+      var f1=(v("st1")==="e")?cl(+v("f1")||0,0,P.workMax)/100:0;
+      var f2=(v("st2")==="e")?cl(+v("f2")||0,0,P.workMax)/100:0;
+
+      /* Urlop rodzicielski: daty od–do -> tygodnie świadczeniowe (przy pracy: dni/7 x (1 - wymiar)) */
+      var wM=0,wF=0,wdM=0,wdF=0;
+      if(sc!=="still"&&!adoptDenied){
+        var rM=(noP2)?P.resSolo:P.res;
+        var rF=(momSpec==="death")?P.resSolo:P.res;
+        var days=function(id1,id2){
+          var a=v(id1),b=v(id2);
+          if(!a||!b)return 0;
+          return Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/864e5)+1;
+        };
+        var cutDates=function(prefix,weeks,f){
+          if(weeks<=0){$(prefix+"1").value="";$(prefix+"2").value="";return;}
+          var s=v(prefix+"1");
+          if(!s)return;
+          var d=Math.max(1,Math.round(weeks*7/(1-f)));
+          var e=new Date(s+"T00:00:00");
+          e=new Date(e.getTime()+d*864e5-864e5);
+          $(prefix+"2").value=iso(e);
+        };
+        wdM=e1?days("wm1","wm2"):0;
+        wdF=e2?days("wf1","wf2"):0;
+        wM=wdM?wdM/7*(1-f1):0;
+        wF=wdF?wdF/7*(1-f2):0;
+        if(wM>p-rM){wM=p-rM;cutDates("wm",wM,f1);W.push(["w","Urlop rodzicielski matki przekracza jej maksymalny wymiar ("+(p-rM)+" tyg.). Skrócono go do "+Math.round(wM*10)/10+" tyg."]);}
+        if(wF>p-rF){wF=p-rF;cutDates("wf",wF,f2);W.push(["w","Urlop rodzicielski ojca przekracza jego maksymalny wymiar ("+(p-rF)+" tyg.). Skrócono go do "+Math.round(wF*10)/10+" tyg."]);}
+        if(wM+wF>p){
+          wF=Math.max(0,p-wM);
+          cutDates("wf",wF,f2);
+          W.push(["w","Suma urlopów rodzicielskich przekracza pulę ("+p+" tyg.). Skrócono urlop ojca do "+Math.round(wF*10)/10+" tyg."]);
+        }
+        if(e1&&e2&&wM+wF<p){
+          var left=p-wM-wF;
+          W.push(["w","Niewykorzystane tygodnie z puli urlopu rodzicielskiego: "+Math.round(left*10)/10+" tyg. Część wspólną puli może wykorzystać dowolny z rodziców; nieprzenoszalne "+P.res+" tygodni każdego z rodziców przepadają, jeśli rodzic ich nie wykorzysta."]);
+        }
+        wdM=e1?days("wm1","wm2"):0;
+        wdF=e2?days("wf1","wf2"):0;
+      }
+
+      /* Art. 2a: zadłużenie składek -> świadczenia nie przysługują do czasu spłaty */
+      if(debt1){pre=0;mM=0;wM=0;if(suppWho===1)S=0;}
+      if(debt2){T=0;wF=0;if(suppWho===2)S=0;}
+
+      /* Wariant 81,5% (poród lub przyjęcie dziecka na wychowanie) */
+      var optOn=false;
+      if(ck("opt")&&sc!=="still"&&!adoptDenied&&(raw==="birth"||raw==="adopt")){
+        if(e1&&T===0&&Math.abs(wM-(p-r))<0.01){
+          if(raw==="birth"&&v("bd")){
+            var y1=new Date(v("bd")+"T00:00:00");
+            y1=new Date(y1.getTime()+365*864e5);
+            var anyInY1=(v("wm1")&&new Date(v("wm1")+"T00:00:00")<y1)||(v("wf1")&&new Date(v("wf1")+"T00:00:00")<y1);
+            if(!anyInY1){
+              W.push(["w","Żaden dzień urlopu rodzicielskiego nie przypada w pierwszym roku życia dziecka — zasiłek za urlop rodzicielski wynosi 70%, a za urlop macierzyński przysługuje jednorazowe wyrównanie do 100% (art. 31 ust. 3g i ust. 4 ustawy zasiłkowej). Policzono stawki standardowe (100% i 70%)."]);
+            }else{
+              optOn=true;
+            }
+          }else{
+            optOn=true;
+          }
+        }else{
+          W.push(["w","Stawka 81,5% wymaga, aby Rodzic 1 wykorzystał pełny wymiar urlopu macierzyńskiego (lub na warunkach macierzyńskiego) oraz pełną swoją część urlopu rodzicielskiego ("+(p-r)+" tyg.). Policzono standardowe stawki (100% i 70%)."]);
+        }
+      }
+
+      var rm=optOn?P.rOpt:P.rMat,rp=optOn?P.rOpt:P.rPar;
+      var matLabel=(sc==="adopt")?"Urlop na warunkach urlopu macierzyńskiego":"Urlop macierzyński";
+
+      var defs=[
+        [1,matLabel,mM,mM,rm,b1,0],
+        [2,matLabel+" (część drugiego rodzica)",T,T,P.rMat,b2,0],
+        [suppWho,"Uzupełniający urlop macierzyński",S,S,P.rMat,suppWho===1?b1:b2,0],
+        [1,"Urlop rodzicielski",wM,wdM?wdM/7:wM,rp,b1,f1,"wm1","wm2"],
+        [2,"Urlop rodzicielski",wF,wdF?wdF/7:wF,P.rPar,b2,f2,"wf1","wf2"]
+      ];
+
+      var d0=v("bd")?new Date(v("bd")+"T00:00:00"):null;
+      var cur=d0?-pre:0;
+      defs.forEach(function(d){
+        if(d[2]<=0)return;
+        var o={who:d[0],name:d[1],w:d[2],cal:d[3],rate:d[4],tot:money(d[5],d[2],d[4]),base:d[5],f:d[6]||0};
+        if(d[7]&&v(d[7])&&v(d[8])){
+          o.s=dt(new Date(v(d[7])+"T00:00:00"));
+          o.e=dt(new Date(v(d[8])+"T00:00:00"));
+        }else if(d0){
+          var s=new Date(d0.getTime()+cur*7*864e5);
+          var e=new Date(d0.getTime()+(cur+o.cal)*7*864e5-864e5);
+          o.s=dt(s);o.e=dt(e);
+        }
+        cur+=o.cal;
+        ph.push(o);
+      });
+
+      if(stillDays&&ph.length)ph[0].days=Math.round(ph[0].w*7);
+
+      /* Urlop ojcowski (biologiczny i adopcyjny, bez rodziny zastępczej niezawodowej) */
+      var isFoster=(sc==="adopt"&&v("kind")==="foster");
+      if(ck("pat")&&sc!=="still"&&!noP2&&!isFoster&&!adoptDenied){
+        if(v("st2")==="e"&&e2){
+          var parts=(v("patParts")==="2"?"w 2 częściach po 7 dni":"jednorazowo (14 dni)")+(sc==="adopt"?"; adopcja: w ciągu 12 mies. od uprawomocnienia przysposobienia, nie później niż do 14. roku życia dziecka":"; w ciągu 12 mies., do ukończenia przez dziecko 12 mies.");
+          ph.push({who:2,name:"Urlop ojcowski",w:P.pat/7,days:P.pat,cal:P.pat/7,rate:P.rPat,tot:b2/30*P.pat*P.rPat/100,base:b2,f:0,s:parts,e:""});
+        }else{
+          W.push(["w","Urlop ojcowski przysługuje wyłącznie ojcu podlegającemu ubezpieczeniu jako pracownik (umowa o pracę)."]);
+        }
+      }
+
+      /* Kontrola wieku dziecka przy adopcji i rodzinie zastępczej (przekroczenie granicy w trakcie urlopu) */
+      if(sc==="adopt"&&!adoptDenied){
+        var a=+v("age")||0,lim=v("kind")==="adopt"?14:(ck("defer")?10:7);
+        var totYrs=(M+S+wM+wF)/52;
+        if(a+totYrs>lim)W.push(["w","Uwaga: w trakcie trwania urlopu rodzicielskiego dziecko ukończy "+lim+" lat, co skraca maksymalny okres pobierania zasiłku."]);
+      }
+
+      var cmp=null;
+      if(optOn){
+        var fpart=e2?money(b2,wF,P.rPar):0;
+        cmp={std:money(b1,M,P.rMat)+money(b1,wM,P.rPar)+fpart,opt:money(b1,M+wM,P.rOpt)+fpart};
+      }
+      return{ph:ph,W:W,cmp:cmp,sc:sc,raw:raw,e1:e1,e2:e2,p:p,wM:wM,wF:wF,optOn:optOn,S:S,pre:pre};
+    }
+
+    /*render(): WYNIKI ZASIŁKU MACIERZYŃSKIEGO*/
+    function render(){
+      var c=calc(),h="";
+      var tM=0,tF=0;
+      c.ph.forEach(function(o){if(o.who===1)tM+=o.tot;else tF+=o.tot});
+
+      h+='<div class="tot"><div><b>'+pln(tM+tF)+'</b><span>Razem dla rodziny</span></div><div><b>'+pln(tM)+'</b><span>Rodzic 1 (matka)</span></div><div><b>'+pln(tF)+'</b><span>Rodzic 2 (ojciec)</span></div></div>';
+      c.W.forEach(function(w){h+='<div class="msg '+w[0]+'">'+w[1]+'</div>'});
+      if(c.cmp){
+        h+='<div class="msg o">Wariant 81,5%: <b>'+pln(c.cmp.opt)+'</b> wobec <b>'+pln(c.cmp.std)+'</b> przy stawkach 100% i 70% (różnica: '+pln(c.cmp.opt-c.cmp.std)+'). Nieprzenoszalne 9 tygodni drugiego rodzica są w obu wariantach płatne w wysokości 70%.</div>';
+      }
+
+      /* Podwyższenie zasiłku macierzyńskiego do kwoty świadczenia rodzicielskiego (art. 69 ustawy zasiłkowej) */
+      var pod=0,podRows=[];
+      c.ph.forEach(function(o){
+        var mon=o.base*o.rate/100*(1-o.f);
+        if(mon>0&&mon*0.88<1000){
+          var topM=1000-mon*0.88;
+          pod+=topM*(o.cal*7/30);
+          podRows.push(o.name+" ("+(o.who===1?"matka":"ojciec")+"), "+pln(topM)+"/mies.");
+        }
+      });
+      if(pod>0){
+        h+='<div class="msg o"><b>Podwyższenie zasiłku macierzyńskiego do kwoty świadczenia rodzicielskiego</b> (art. 31 ust. 3a ustawy zasiłkowej): <b>'+pln(pod)+'</b> łącznie. Miesięczny zasiłek pomniejszony o zaliczkę PIT (12%) jest niższy niż 1000 zł – ZUS podwyższa zasiłek o różnicę: '+podRows.join('; ')+'.</div>';
+      }
+      if(!c.ph.length){h+='<p>Brak okresów, za które przysługuje zasiłek.</p>';$("res").innerHTML=h;return}
+
+      var tw=c.ph.reduce(function(a,o){return a+o.cal},0),col={1:"var(--m)",2:"var(--f)"};
+      h+='<div class="bar" role="img" aria-label="Podział okresów">'+c.ph.map(function(o){
+        return '<i style="width:'+(o.cal/tw*100)+'%;background:'+(o.name.indexOf("Uzup")===0?"var(--s)":col[o.who])+';opacity:'+(o.name.indexOf("rodzicielski")>-1?.65:1)+'" title="'+o.name+'"></i>';
+      }).join("")+'</div>';
+      h+='<p class="hint">Rodzice mogą korzystać z urlopu rodzicielskiego jednocześnie lub naprzemiennie (maks. w 5 częściach do końca roku ukończenia przez dziecko 6 lat).</p>';
+
+      var hasD=c.ph.some(function(o){return o.s});
+      h+='<div class="tw"><table><thead><tr><th>Okres</th><th class="n">Wymiar</th><th class="n">Stawka</th><th class="n">Miesięcznie</th><th class="n">Razem</th>'+(hasD?'<th>Termin / zasady</th>':'')+'</tr></thead><tbody>';
+      c.ph.forEach(function(o){
+        var mon=o.base*o.rate/100*(1-o.f);
+        var wk=o.days?o.days+" dni ("+(Math.round(o.w*10)/10)+" tyg.)":(Math.round(o.w*10)/10)+' tyg.'+(o.f>0?' (kalend. '+(Math.round(o.cal*10)/10)+')':'');
+        h+='<tr><td><span class="dot" style="background:'+(o.name.indexOf("Uzup")===0?"var(--s)":col[o.who])+'"></span>'+(o.who===1?"M: ":"O: ")+o.name+'</td><td class="n">'+wk+'</td><td class="n">'+o.rate+'%</td><td class="n">'+pln(mon)+'</td><td class="n">'+pln(o.tot)+'</td>'+(hasD?'<td>'+(o.e?o.s+" – "+o.e:o.s||"")+'</td>':'')+'</tr>';
+      });
+      h+='</tbody></table></div>';
+
+      if(c.ph.some(function(o){return o.f>0})){
+        h+='<p class="hint">Łączenie urlopu rodzicielskiego z pracą (do 1/2 etatu) wydłuża urlop proporcjonalnie i zmniejsza miesięczny zasiłek, zachowując pełną pulę świadczenia. Podjęcie pracy w wymiarze wyższym niż 1/2 etatu oznacza rezygnację z pozostałej części urlopu rodzicielskiego i utratę zasiłku za ten okres. Jeżeli wydłużonej części urlopu nie łączy się z pracą (art. 182¹f § 2 k.p.), okres kalendarzowy to W×(1+f) zamiast W/(1−f), a łączna kwota zasiłku pozostaje taka sama.</p>';
+      }
+
+      /* Gdzie złożyć dokumenty (uwzględnia Z-3, Z-3a, ZAM i załączniki) */
+      h+='<h2 style="margin-top:16px">Wymagane dokumenty i miejsce złożenia</h2><ul class="file">';
+      [1,2].forEach(function(k){
+        var s=v("st"+k),nm=k===1?"Rodzic 1 (matka)":"Rodzic 2 (ojciec)";
+        if(s==="b")return;
+        if(s==="n"){h+='<li>'+nm+': brak ubezpieczenia chorobowego — zasiłek nie przysługuje.</li>';return}
+        if(s==="e"){
+          h+='<li>'+nm+' (pracownik): wniosek o urlop do pracodawcy. '+(ck("big")?"Zasiłek ustala i wypłaca pracodawca.":"Pracodawca przekazuje wniosek i zaświadczenie <b>Z-3</b> do ZUS, który wypłaca zasiłek.")+'</li>';
+        }else if(s==="z"){
+          h+='<li>'+nm+' (zleceniobiorca): wniosek <b>ZAM</b>. '+(ck("big")?"Zasiłek ustala i wypłaca zleceniodawca.":"Zleceniodawca przekazuje do ZUS zaświadczenie <b>Z-3a</b>, a ZUS wypłaca zasiłek.")+'</li>';
+        }else{
+          h+='<li>'+nm+' (przedsiębiorca): wniosek <b>ZAM</b> bezpośrednio do ZUS (przez PUE/eZUS lub w placówce). Uwaga: zadłużenie z tytułu składek przekraczające 1% minimalnego wynagrodzenia pozbawia prawa do świadczeń do czasu spłaty (art. 2a ustawy zasiłkowej).</li>';
+        }
+      });
+      if(c.pre>0)h+='<li>Załącznik: zaświadczenie lekarskie o przewidywanej dacie porodu (urlop przed porodem).</li>';
+      if(c.S>0)h+='<li>Załącznik: zaświadczenie wydane przez szpital (podstawa do uzupełniającego urlopu macierzyńskiego).</li>';
+      if(ck("zz")&&c.raw==="birth")h+='<li>Załącznik: zaświadczenie lekarskie „Za życiem” (wydłużony urlop rodzicielski).</li>';
+      if(isDeathScenario(c.raw)){
+        h+='<li>Załącznik: odpis skrócony aktu urodzenia z adnotacją o martwym urodzeniu lub akt zgonu dziecka, a gdy nie sporządzono aktu urodzenia – zaświadczenie o martwym urodzeniu wydane przez lekarza/położną; gdy wypłaca ZUS, akt pobierany jest z rejestru stanu cywilnego.</li>';
+        h+='<li>Dodatkowo przysługuje <b>zasiłek pogrzebowy (7000 zł)</b> — wniosek na druku <b>Z-12</b> w ciągu 12 miesięcy od pochówku.</li>';
+      }
+      h+='</ul>';
+
+      /* Przydatne odnośniki */
+      h+='<h2 style="margin-top:16px">Przydatne odnośniki</h2><ul class="file"><li><a href="https://www.zus.pl" target="_blank" rel="noopener">www.zus.pl</a> – wzory formularzy (ZAM, ZAS-53, Z-3) i informacje o zasiłkach</li><li><a href="https://www.gov.pl/web/rodzina/urlop-rodzicielski" target="_blank" rel="noopener">gov.pl/rodzina</a> – urlop rodzicielski</li><li><a href="https://www.pip.gov.pl/dla-pracodawcow/porady-prawne/rodzicielstwo" target="_blank" rel="noopener">pip.gov.pl</a> – porady prawne dotyczące rodzicielstwa</li><li><a href="https://www.gov.pl/web/cyfryzacja/rejestr-stanu-cywilnego" target="_blank" rel="noopener">gov.pl</a> – wniosek o odpis aktu stanu cywilnego (urodzenia)</li></ul>';
+
+      /* Wsparcie charytatywne w sytuacjach szczególnych */
+      if(isDeathScenario(c.raw)||ck("zz")||c.S>0){
+        h+='<div class="msg o" style="margin-top:14px"><b>Wsparcie w trudnych sytuacjach:</b> Organizacje pożytku publicznego i fundacje (m.in. Fundacja Ernesta, Fundacja Gajusz, Fundacja Wcześniak, lokalne ośrodki wsparcia okołoporodowego) oferują bezpłatną pomoc psychologiczną, prawną oraz opiekę dla rodziców po stracie dziecka, przy narodzinach wcześniaka lub dziecka z ciężką chorobą.</div>';
+      }
+
+      h+='<div class="risk"><h2 style="margin-top:16px">Ryzyka i na co uważać</h2><ul class="file"><li>Pozorna umowa lub działalność założona wyłącznie w celu uzyskania świadczeń: ZUS może wydać decyzję o niepodleganiu ubezpieczeniom.</li><li>Sztuczne zawyżenie podstawy wymiaru składek w okresie ciąży: ZUS może obniżyć podstawę wymiaru zasiłku.</li><li>Utrata tytułu ubezpieczenia przed porodem (np. zakończenie zlecenia lub działalności) pozbawia prawa do zasiłku macierzyńskiego.</li><li>Ochrona przed wypowiedzeniem z Kodeksu pracy dotyczy wyłącznie pracowników (umowa o pracę). Umowa o pracę na czas określony lub na okres próbny (powyżej 1 miesiąca), która rozwiązałaby się po 3. miesiącu ciąży, ulega przedłużeniu do dnia porodu.</li></ul></div>';
+      $("res").innerHTML=h;
+    }
+
+    /*renderSick(): KALKULATOR ZASIŁKU CHOROBOWEGO*/
+    function renderSick(){
+      var mode=v("smode");
+      $("fGen").classList.toggle("hide",mode!=="gen");
+      $("fAfter").classList.toggle("hide",mode!=="after");
+      $("fLostBox").classList.toggle("hide",mode!=="preg");
+      $("fLost").classList.toggle("hide",mode!=="preg"||!ck("lost"));
+
+      var s=v("sst"),d=+v("sd")||0,b=+v("sb")||0,z=+v("sz")||0,sp=+v("sp")||0,h="";
+      $("lblDebtS").classList.toggle("hide",s!=="d");
+      if(s==="n"){
+        $("res2").innerHTML='<div class="msg e">Bez ubezpieczenia chorobowego zasiłek chorobowy nie przysługuje.</div>'+(mode==="preg"?lostHtml():"");
+        return;
+      }
+      if(s==="d"&&ck("debtS")){
+        $("res2").innerHTML='<div class="msg e">Zadłużenie z tytułu składek na ubezpieczenia społeczne przekraczające 1% minimalnego wynagrodzenia (48,06 zł w 2026 r.) pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2).</div>'+(mode==="preg"?lostHtml():"");
+        return;
+      }
+
+      var need=s==="e"?30:90;
+      if(d<need){
+        h+='<div class="msg w">Okres wyczekiwania wynosi co do zasady <b>'+need+' dni</b> ('+(s==="e"?"ubezpieczenie obowiązkowe":"ubezpieczenie dobrowolne")+'). Przy '+d+' dniach prawo do zasiłku może nie powstać (chyba że zachodzą ustawowe wyjątki, np. 10-letni staż obowiązkowy lub wypadek).</div>';
+      }
+
+      var saPreg=(mode==="after"&&ck("saPreg"));
+      var rate=mode==="preg"?P.rSick:(mode==="gen"?+v("srate"):(saPreg?P.rSick:P.rSickGen));
+      var totMax=mode==="preg"?P.sickMax:(mode==="gen"?+v("smax"):(saPreg?P.sickMax:(v("onset")==="during"?P.sickGenMax:P.sickAfter)));
+
+      if(mode==="after"){
+        var onset=v("onset");
+        if(onset==="during"&&v("sa1")&&v("sterm")){
+          var zPre=Math.max(0,Math.round((new Date(v("sterm")+"T00:00:00")-new Date(v("sa1")+"T00:00:00"))/864e5));
+          var zPost=Math.max(0,z-zPre);
+          if(zPost>P.sickAfter)zPost=P.sickAfter;
+          z=zPre+zPost;
+          h+='<div class="msg o">Okres po ustaniu ubezpieczenia ograniczony do 91 dni (art. 8 ust. 2 ustawy zasiłkowej) — przyjęto '+zPost+' dni po ustaniu i '+zPre+' dni przed ustaniem (łącznie '+z+' dni).</div>';
+        }
+        if(onset!=="during"&&z<30){
+          h+='<div class="msg e">Gdy niezdolność do pracy powstała po ustaniu ubezpieczenia (w ciągu 14 dni lub 3 mies. dla kodu „E”), zasiłek przysługuje tylko wtedy, gdy trwa nieprzerwanie co najmniej <b>30 dni</b> (podano '+z+' dni).</div>';
+        }else{
+          h+='<div class="msg o">Spełniony warunek ciągłości niezdolności po ustaniu tytułu ubezpieczenia. Zasiłek wypłaca ZUS od pierwszego dnia po ustaniu ubezpieczenia.</div>';
+        }
+        if(saPreg){
+          h+='<p class="hint">W okresie ciąży limit 91 dni nie obowiązuje — zasiłek chorobowy przysługuje przez maks. <b>270 dni</b> w wysokości <b>100%</b> podstawy wymiaru (art. 8 ust. 2 w zw. z art. 11 ust. 2 pkt 1 ustawy zasiłkowej).</p>';
+        }else if(onset==="during"){
+          h+='<p class="hint">Za okres przypadający po ustaniu ubezpieczenia zasiłek przysługuje nie dłużej niż przez <b>91 dni</b>, łącznie zaś nie dłużej niż przez 182 dni (art. 8 ust. 1–2 ustawy zasiłkowej).</p>';
+        }else{
+          h+='<p class="hint">Zasiłek chorobowy za okres po ustaniu ubezpieczenia przysługuje nie dłużej niż przez <b>91 dni</b> (art. 8 ust. 2 ustawy zasiłkowej). Limit nie dotyczy m.in. niezdolności spowodowanej gruźlicą lub przypadającej w trakcie ciąży.</p>';
+        }
+      }
+
+      var lim=ck("s50")?P.e50:P.e33,emp=0;
+      if(s==="e"&&mode!=="after")emp=Math.min(z,Math.max(0,lim-sp));
+      var zus=z-emp;
+
+      var overDays=(mode==="preg")?z:sp+z;
+      if(overDays>totMax){
+        h+='<div class="msg w">Okres zasiłkowy wynosi maksymalnie <b>'+totMax+' dni</b>'+(mode==="preg"?" (w ciąży wcześniejszych okresów sprzed przerwy nie wlicza się — art. 9 ust. 2 ustawy zasiłkowej)":" (suma dni: "+overDays+")")+'. Po jego wyczerpaniu osoba nadal niezdolna do pracy może ubiegać się o <b>świadczenie rehabilitacyjne</b> (oblicz w sekcji „Świadczenie rehabilitacyjne”).</div>';
+      }
+
+      h+='<p class="hint">Do jednego okresu zasiłkowego wlicza się wszystkie okresy nieprzerwanej niezdolności do pracy oraz poprzednie okresy, jeżeli przerwa między nimi nie przekroczyła <b>60 dni</b>. Jeżeli nowa niezdolność przypada w okresie ciąży, okresów sprzed przerwy nie wlicza się.</p>';
+
+      h+='<div class="tot"><div><b>'+pln(b/30*emp*rate/100)+'</b><span>Wynagrodzenie chorobowe (pracodawca), '+emp+' dni</span></div><div><b>'+pln(b/30*zus*rate/100)+'</b><span>Zasiłek chorobowy (ZUS / płatnik), '+zus+' dni</span></div><div><b>'+pln(b/30*z*rate/100)+'</b><span>Razem ('+rate+'%), '+z+' dni</span></div></div>';
+
+      /* Świadczenie rehabilitacyjne (art. 18-19 ustawy zasiłkowej) – zawsze widoczne */
+      var rmon=cl(+v("rmon")||0,0,12);
+      var rpreg=v("rpreg")==="1";
+      var m3=Math.min(rmon,3),mRest=Math.max(0,rmon-3);
+      var rSum=b/30*(m3*30*(rpreg?100:90)/100+mRest*30*(rpreg?100:75)/100);
+      h+='<div class="msg o"><b>Świadczenie rehabilitacyjne: '+pln(rSum)+'</b> za '+rmon+' mies. '+(rpreg?'(100% podstawy – ciąża, art. 19 ust. 1)':'(90% za pierwsze 3 mies., 75% za pozostałe)')+'. Wypłaca ZUS po orzeczeniu lekarza orzecznika i złożeniu wniosku z dokumentacją medyczną.</div>';
+
+      if(mode==="preg"){
+        h+='<p class="hint">W okresie ciąży przy kodzie „B” zasiłek wynosi 100% podstawy wymiaru przez maks. 270 dni. Jeżeli niezdolność trwa nieprzerwanie do dnia porodu, od porodu rozpoczyna się zasiłek macierzyński.</p>';
+      }
+
+      h+='<h2 style="margin-top:14px">Dokumenty i procedura</h2><ul class="file"><li>Zaświadczenie lekarskie <b>e-ZLA</b> trafia elektronicznie do ZUS oraz na profil płatnika na PUE/eZUS.</li>';
+      if(mode==="after"){
+        h+='<li>Po ustaniu ubezpieczenia wniosek składa się bezpośrednio do ZUS (formularz <b>ZAS-53</b> wraz z oświadczeniem <b>Z-10</b>; płatnik przekazuje <b>Z-3</b> / <b>Z-3a</b>).</li>';
+      }else if(s==="e"){
+        h+='<li>Pracownik informuje pracodawcę o nieobecności. Pracodawca zgłaszający do ubezpieczenia chorobowego powyżej 20 osób ustala i wypłaca zasiłek; w pozostałych przypadkach przekazuje do ZUS <b>Z-3</b> (lub <b>ZAS-12</b> na dalszy okres).</li>';
+      }else if(s==="z"){
+        h+='<li>Zleceniobiorca powstrzymuje się od pracy i składa wniosek <b>ZAS-53</b>; nieuprawniony zleceniodawca przekazuje do ZUS zaświadczenie <b>Z-3a</b>.</li>';
+      }else{
+        h+='<li>Przedsiębiorca powstrzymuje się od działalności i składa do ZUS wniosek <b>ZAS-53</b>.</li>';
+      }
+      h+='</ul>';
+
+      $("res2").innerHTML=h+(mode==="preg"?lostHtml():"");
+    }
+
+    /* lostHtml(): ZASIŁEK W WYSOKOŚCI ZASIŁKU MACIERZYŃSKIEGO PO USTANIU ZATRUDNIENIA W CIĄŻY*/
+    function lostHtml(){
+      if(!ck("lost"))return "";
+      var h='<h2 style="margin-top:16px">Zasiłek w wysokości zasiłku macierzyńskiego (do dnia porodu)</h2>';
+      var s=v("sst"),r=v("lr"),b=+v("sb")||0;
+      if(s!=="e")return h+'<div class="msg w">Świadczenie przysługuje wyłącznie pracownicom zatrudnionym na umowę o pracę.</div>';
+
+      var why="";
+      if((r==="bank"||r==="death")&&!ck("nojob")){
+        why="Zasiłek przysługuje tylko wtedy, gdy kobiecie w ciąży nie zapewniono innego zatrudnienia.";
+      }
+      if(why)return h+'<div class="msg e">'+why+'</div>';
+
+      if(r==="viol"){
+        return h+'<div class="msg o">Przy rozwiązaniu umowy z naruszeniem przepisów prawa (prawomocny wyrok sądu) zasiłek „do dnia porodu” nie przysługuje (art. 30 ust. 3 ustawy zasiłkowej). Po porodzie kobiecie przysługuje zasiłek macierzyński po ustaniu ubezpieczenia (art. 30 ust. 1 pkt 2 ustawy zasiłkowej) — oblicz go w zakładce „9 macierzyński”.</div>';
+      }
+
+      if(!v("ld")||!v("due"))return h+'<div class="msg w">Podaj ostatni dzień ubezpieczenia oraz planowaną datę porodu, aby obliczyć kwotę świadczenia.</div>';
+      var days=Math.round((new Date(v("due")+"T00:00:00")-new Date(v("ld")+"T00:00:00"))/864e5);
+      if(days<=0)return h+'<div class="msg w">Data porodu musi być późniejsza niż ostatni dzień ubezpieczenia.</div>';
+
+      h+='<div class="tot"><div><b>'+days+'</b><span>Dni zasiłku (do porodu)</span></div><div><b>'+P.rMat+'%</b><span>Stawka</span></div><div><b>'+pln(b/30*days*P.rMat/100)+'</b><span>Kwota do dnia porodu</span></div></div>';
+      h+='<p class="hint">Wypłacany przez ZUS po ustaniu ubezpieczenia do dnia porodu w wysokości 100% podstawy wymiaru (wymagane dokumenty potwierdzające upadłość/likwidację/śmierć pracodawcy lub prawomocny wyrok sądu).</p>';
+      return h;
+    }
+
+    function vis(){
+      syncAliveLimit();
+      var sc=v("sc"),e=eff(),solo=v("st2")==="b",momSpec=sc==="birth"?v("momSpec"):"none";
+      var isFoster=(sc==="adopt"&&v("kind")==="foster");
+      var deathSc=isDeathScenario(sc);
+      $("fBirth").classList.toggle("hide",sc!=="birth");
+      $("fAdopt").classList.toggle("hide",sc!=="adopt");
+      $("fStill").classList.toggle("hide",!deathSc);
+      $("fSupp").classList.toggle("hide",e.sc==="still");
+      $("fSplit").classList.toggle("hide",e.sc==="still");
+      $("fT").classList.toggle("hide",solo&&momSpec==="none");
+      $("b2").parentNode.classList.toggle("hide",solo);
+      $("wf1").parentNode.classList.toggle("hide",solo);
+      $("wf2").parentNode.classList.toggle("hide",solo);
+      $("f2").parentNode.classList.toggle("hide",solo);
+      $("lblDebt1").classList.toggle("hide",v("st1")!=="d");
+      $("lblDebt2").classList.toggle("hide",v("st2")!=="d"||solo);
+      $("pat").parentNode.parentNode.classList.toggle("hide",e.sc==="still"||solo||isFoster);
+      $("opt").parentNode.classList.toggle("hide",e.sc==="still"||(sc!=="birth"&&sc!=="adopt"));
+
+      if(deathSc){
+        $("stillHint").textContent=(sc==="death_after8")
+                ?"Zgon dziecka po upływie 8. tyg. życia (od 56. dnia): zachowane prawo do zasiłku za okres urlopu macierzyńskiego przez 7 dni od dnia zgonu. Przy porodzie mnogim – wymiar stosowny do liczby dzieci pozostałych przy życiu (maks. "+(Math.max(0,(+v("kids")||1)-1))+")."
+                :"Urodzenie martwego dziecka lub zgon przed upływem 8. tyg. życia (do 55. dnia): zasiłek za 8 tyg. od porodu, nie krócej niż 7 dni od zgonu. Przy porodzie mnogim – wymiar stosowny do liczby dzieci pozostałych przy życiu (maks. "+(Math.max(0,(+v("kids")||1)-1))+").";
+      }
+
+      /* Łączenie urlopu rodzicielskiego z pracą tylko dla pracownika (st === "e") */
+      $("f1").disabled=(v("st1")!=="e");if($("f1").disabled)$("f1").value=0;
+      $("f2").disabled=(v("st2")!=="e");if($("f2").disabled)$("f2").value=0;
+
+      /* Limit uzupełniającego urlopu macierzyńskiego zależny od przypadku (8 lub 15 tyg.) */
+      var supLim=cl(+v("suppCase")||P.supp,0,15);
+      $("supp").max=supLim;
+      if(+v("supp")>supLim)$("supp").value=supLim;
+    }
+
+    ["sc","kids","zz","alive","dd","st1","st2","momSpec","kind"].forEach(function(id){
+      $(id).addEventListener("change",function(){
+        if(id==="kids"||id==="alive")syncAliveLimit();
+        if(id==="sc")syncDeathDay("sc");
+        vis();
+        if(id==="sc"||id==="kids"||id==="zz"||id==="alive"||id==="st2"||id==="momSpec")resetParental();
+        render();
+      });
+    });
+    $("alive").addEventListener("input",function(){
+      syncAliveLimit();
+      vis();
+      resetParental();
+      render();
+    });
+    $("suppCase").addEventListener("change",function(){
+      vis();
+      render();
+    });
+    document.querySelectorAll("#p1 input,#p1 select").forEach(function(e){e.addEventListener("input",render);e.addEventListener("change",render)});
+    document.querySelectorAll("#p2 input,#p2 select").forEach(function(e){e.addEventListener("input",renderSick);e.addEventListener("change",renderSick)});
+
+    function tab(a){
+      $("p1").classList.toggle("hide",a!==1);$("p2").classList.toggle("hide",a!==2);
+      $("t1").setAttribute("aria-selected",a===1);$("t2").setAttribute("aria-selected",a===2);
+    }
+    $("t1").onclick=function(){tab(1)};$("t2").onclick=function(){tab(2)};
+
+    syncAliveLimit();vis();resetParental();render();renderSick();
+  </script>
+</div>
 </body>
 </html>
