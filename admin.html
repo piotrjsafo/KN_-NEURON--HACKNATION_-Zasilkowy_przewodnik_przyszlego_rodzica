@@ -20,48 +20,6 @@
 
         h1 { text-align: center; color: #1e7e34; }
 
-        #sekcjaLogowania {
-            max-width: 380px;
-            margin: 30px auto;
-            padding: 20px;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        #sekcjaLogowania input {
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
-            margin: 8px 0;
-            padding: 10px 12px;
-            font-size: 1rem;
-            border: 2px solid #555;
-            border-radius: 8px;
-        }
-
-        #sekcjaLogowania button {
-            margin-top: 8px;
-            font-size: 1.1rem;
-            padding: 10px 26px;
-            border-radius: 8px;
-            border: 2px solid #555;
-            background: #fff;
-            cursor: pointer;
-        }
-
-        #sekcjaLogowania button:hover {
-            background: #28a745;
-            border-color: #1e7e34;
-            color: #fff;
-        }
-
-        #bladLogowania {
-            color: #b00020;
-            font-weight: bold;
-        }
-
         .adm {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -135,17 +93,8 @@
 <div class="kontener">
     <h1>Panel administracyjny</h1>
 
-    <!-- LOGOWANIE -->
-    <div id="sekcjaLogowania">
-        <h2>Zaloguj się</h2>
-        <input type="text" id="poleLogin" placeholder="Login">
-        <input type="password" id="poleHaslo" placeholder="Hasło">
-        <button type="button" id="btnZaloguj">Zaloguj</button>
-        <p id="bladLogowania"></p>
-    </div>
-
-    <!-- PANEL (ukryty do zalogowania) -->
-    <div id="sekcjaPanelu" style="display:none;">
+    <!-- PANEL -->
+    <div id="sekcjaPanelu">
         <div class="adm">
             <h4>Stawki zasiłków (%)</h4>
             <label>Zasiłek macierzyński (urlop macierzyński)<input type="number" id="p_rMat" step="0.1"></label>
@@ -195,7 +144,6 @@
         <div class="admPrzyciski">
             <button type="button" id="btnZapiszParam">💾 Zapisz parametry</button>
             <button type="button" id="btnResetParam">↺ Przywróć domyślne</button>
-            <button type="button" id="btnWyloguj">🚪 Wyloguj</button>
         </div>
         <p id="statusParam"></p>
     </div>
@@ -206,12 +154,7 @@
 </div>
 
 <script>
-    // Demonstracyjne dane logowania (w wersji produkcyjnej logowanie musi być po stronie serwera!)
-    const LOGIN = 'admin';
-    const HASLO = '1234';
-
     const KLUCZ_ZAPISU = 'zusParams';
-    const KLUCZ_SESJI = 'zusAdminZalogowany';
 
     const PARAMETRY_DOMYSLNE = {
         rMat: 100, rPar: 70, rOpt: 81.5, rPat: 100, rSick: 100, rSickGen: 80,
@@ -223,9 +166,6 @@
         workMax: 50
     };
 
-    const sekcjaLogowania = document.getElementById('sekcjaLogowania');
-    const sekcjaPanelu = document.getElementById('sekcjaPanelu');
-    const bladLogowania = document.getElementById('bladLogowania');
     const statusParam = document.getElementById('statusParam');
 
     function wypelnijPanel(parametry) {
@@ -243,33 +183,6 @@
         });
         return parametry;
     }
-
-    function pokazPanel() {
-        sekcjaLogowania.style.display = 'none';
-        sekcjaPanelu.style.display = 'block';
-        bladLogowania.textContent = '';
-    }
-
-    function pokazLogowanie() {
-        sekcjaPanelu.style.display = 'none';
-        sekcjaLogowania.style.display = 'block';
-    }
-
-    document.getElementById('btnZaloguj').addEventListener('click', function() {
-        const login = document.getElementById('poleLogin').value;
-        const haslo = document.getElementById('poleHaslo').value;
-        if (login === LOGIN && haslo === HASLO) {
-            sessionStorage.setItem(KLUCZ_SESJI, '1');
-            pokazPanel();
-        } else {
-            bladLogowania.textContent = 'Błędny login lub hasło.';
-        }
-    });
-
-    document.getElementById('btnWyloguj').addEventListener('click', function() {
-        sessionStorage.removeItem(KLUCZ_SESJI);
-        pokazLogowanie();
-    });
 
     document.getElementById('btnZapiszParam').addEventListener('click', function() {
         localStorage.setItem(KLUCZ_ZAPISU, JSON.stringify(odczytajPanel()));
@@ -289,11 +202,6 @@
             wypelnijPanel(Object.assign({}, PARAMETRY_DOMYSLNE, zapisane));
         } catch (e) {
             wypelnijPanel(PARAMETRY_DOMYSLNE);
-        }
-        if (sessionStorage.getItem(KLUCZ_SESJI) === '1') {
-            pokazPanel();
-        } else {
-            pokazLogowanie();
         }
     })();
 </script>
