@@ -40,6 +40,7 @@
 
         <footer>
             <p id="Czytaj">Czytaj więcej: <a href="https://zus.pl" target="_blank">https://zus.pl</a></p>
+            <button type="button" id="btnAdmin">⚙️ Panel administracyjny</button>
         </footer>
     </div>
 
@@ -144,7 +145,9 @@
             formularz.style.display = 'flex';
             sessionStorage.setItem('metodaLogowania', metoda);
         }
-
+        document.getElementById('btnAdmin').addEventListener('click', function() {
+            window.location.href = 'admin.html';
+        });
         formularz.addEventListener('submit', function(e) {
             e.preventDefault();
             sessionStorage.setItem('imie', poleImie.value);
