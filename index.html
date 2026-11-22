@@ -3,96 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="KN-NEURON, Piotr Kicinski">
     <link rel="stylesheet" href="style.css">
     <title>Świadczenie ZUS</title>
-
 </head>
 <body>
-<div class="kontener">
-    <h1>Zasiłkowy przewodnik przyszłego rodzica</h1>
+    <div class="kontener">
+        <h1>Zasiłkowy przewodnik przyszłego rodzica</h1>
+        
+        <div class="wybor">
+            <button type="button" id="btnMObywatel">Logowanie z mObywatelem</button>
+            <button type="button" id="btnEZUS">Logowanie z eZUS (Profil Zaufany)</button>
+            <button type="button" id="btnBez">Logowanie bez autoryzacji</button>
+        </div>
 
-    <div class="wybor">
-        <button type="button" id="btnMObywatel">Logowanie z mObywatelem</button>
-        <button type="button" id="btnBez">Logowanie bez mObywatela</button>
+        <!-- Sekcja mObywatel -->
+        <div id="sekcjaMObywatel" style="display: none;">
+            <p>Zeskanuj kod QR w aplikacji mObywatel:</p>
+            <img src="kod_QR.png" alt="Kod QR">
+            <p>lub kliknij przycisk poniżej, aby zasymulować autoryzację:</p>
+            <button type="button" id="btnSymulujMObywatel">Autoryzuj i pobierz dane z mObywatela</button>
+            <p id="statusMObywatel"></p>
+        </div>
+
+        <!-- Nowa sekcja eZUS / Profil Zaufany -->
+        <div id="sekcjaEZUS" style="display: none;">
+            <p>Zaloguj się za pomocą Profilu Zaufanego lub bankowości elektronicznej:</p>
+            <button type="button" id="btnSymulujEZUS">Autoryzuj przez Profil Zaufany (eZUS)</button>
+            <p id="statusEZUS"></p>
+        </div>
+
+        <form id="mojFormularz" action="formularz.html" method="GET" style="display: none;">
+            <input type="text" id="poleImie" name="imie" placeholder="Imię" required>
+            <input type="text" id="poleNazwisko" name="nazwisko" placeholder="Nazwisko" required>
+            <input type="submit" value="Zapisz i przejdź dalej">
+        </form>
+
+        <footer>
+            <p id="Czytaj">Czytaj więcej: <a href="https://zus.pl" target="_blank">https://zus.pl</a></p>
+        </footer>
     </div>
 
-    <div id="sekcjaMObywatel" style="display: none;">
-        <p>Zeskanuj kod QR w aplikacji mObywatel:</p>
-        <img src="kod_QR.png" alt="Kod QR">
-        <p>lub kliknij przycisk poniżej, aby zasymulować autoryzację:</p>
-        <button type="button" id="btnSymulujMObywatel">Autoryzuj i pobierz dane z mObywatela</button>
-        <p id="statusMObywatel"></p>
-    </div>
+    <script>
+        const formularz = document.getElementById('mojFormularz');
+        
+        // Elementy mObywatel
+        const sekcjaMObywatel = document.getElementById('sekcjaMObywatel');
+        const btnMObywatel = document.getElementById('btnMObywatel');
+        const btnSymulujMObywatel = document.getElementById('btnSymulujMObywatel');
+        const statusMObywatel = document.getElementById('statusMObywatel');
 
-    <form id="mojFormularz" action="formularz.html" method="GET" style="display: none;">
-        <input type="text" id="poleImie" name="imie" placeholder="Imię" required>
-        <input type="text" id="poleNazwisko" name="nazwisko" placeholder="Nazwisko" required>
-        <input type="submit" value="Zapisz i przejdź dalej">
-    </form>
+        // Elementy eZUS
+        const sekcjaEZUS = document.getElementById('sekcjaEZUS');
+        const btnEZUS = document.getElementById('btnEZUS');
+        const btnSymulujEZUS = document.getElementById('btnSymulujEZUS');
+        const statusEZUS = document.getElementById('statusEZUS');
 
-    <footer>
-        <p id="Czytaj">Czytaj więcej: <a href="https://zus.pl" target="_blank">https://zus.pl</a></p>
-    </footer>
-</div>
+        // Elementy wspólne
+        const btnBez = document.getElementById('btnBez');
+        const poleImie = document.getElementById('poleImie');
+        const poleNazwisko = document.getElementById('poleNazwisko');
 
-<script>
-    const formularz = document.getElementById('mojFormularz');
-    const sekcjaMObywatel = document.getElementById('sekcjaMObywatel');
-    const btnMObywatel = document.getElementById('btnMObywatel');
-    const btnBez = document.getElementById('btnBez');
-    const btnSymuluj = document.getElementById('btnSymulujMObywatel');
-    const statusMObywatel = document.getElementById('statusMObywatel');
-    const poleImie = document.getElementById('poleImie');
-    const poleNazwisko = document.getElementById('poleNazwisko');
+        function reset() {
+            formularz.style.display = 'none';
+            sekcjaMObywatel.style.display = 'none';
+            sekcjaEZUS.style.display = 'none';
+            statusMObywatel.textContent = '';
+            statusEZUS.textContent = '';
+            
+            // Przywrócenie widoczności i edycji pól przy zmianie metody
+            poleImie.classList.remove('ukryte');
+            poleNazwisko.classList.remove('ukryte');
+            poleImie.readOnly = false;
+            poleNazwisko.readOnly = false;
+        }
 
-    function reset() {
-        formularz.style.display = 'none';
-        sekcjaMObywatel.style.display = 'none';
-        statusMObywatel.textContent = '';
-    }
+        function zaznacz(przycisk) {
+            btnMObywatel.classList.remove('aktywny');
+            btnEZUS.classList.remove('aktywny');
+            btnBez.classList.remove('aktywny');
+            przycisk.classList.add('aktywny');
+        }
 
-    function zaznacz(przycisk) {
-        btnMObywatel.classList.remove('aktywny');
-        btnBez.classList.remove('aktywny');
-        przycisk.classList.add('aktywny');
-    }
+        // Logowanie ręczne
+        btnBez.addEventListener('click', function() {
+            reset();
+            zaznacz(btnBez);
+            poleImie.value = '';
+            poleNazwisko.value = '';
+            formularz.style.display = 'flex';
+            sessionStorage.setItem('metodaLogowania', 'reczna');
+        });
 
-    btnBez.addEventListener('click', function() {
-        reset();
-        zaznacz(btnBez);
-        poleImie.value = '';
-        poleNazwisko.value = '';
-        poleImie.readOnly = false;
-        poleNazwisko.readOnly = false;
-        formularz.style.display = 'flex';
-    });
+        // Wybór mObywatel
+        btnMObywatel.addEventListener('click', function() {
+            reset();
+            zaznacz(btnMObywatel);
+            sekcjaMObywatel.style.display = 'block';
+        });
 
-    btnMObywatel.addEventListener('click', function() {
-        reset();
-        zaznacz(btnMObywatel);
-        sekcjaMObywatel.style.display = 'block';
-    });
+        // Wybór eZUS
+        btnEZUS.addEventListener('click', function() {
+            reset();
+            zaznacz(btnEZUS);
+            sekcjaEZUS.style.display = 'block';
+        });
 
-    btnSymuluj.addEventListener('click', function() {
-        statusMObywatel.textContent = 'Łączenie z mObywatelem...';
+        // Symulacja mObywatel
+        btnSymulujMObywatel.addEventListener('click', function() {
+            statusMObywatel.textContent = 'Łączenie z mObywatelem...';
+            setTimeout(() => {
+                const daneZMobywatela = {
+                    imie: 'Jan',
+                    nazwisko: 'Kowalski'
+                };
+                uzupelnijDane(daneZMobywatela, statusMObywatel, 'mObywatel');
+            }, 1000);
+        });
 
-        setTimeout(() => {
-            const daneZMobywatela = {
-                imie: 'przykladowe imie',
-                nazwisko: 'przykladowe nazwisko'
-            };
+        // Symulacja eZUS
+        btnSymulujEZUS.addEventListener('click', function() {
+            statusEZUS.textContent = 'Przekierowanie do Profilu Zaufanego...';
+            setTimeout(() => {
+                const daneZEZUS = {
+                    imie: 'Anna',
+                    nazwisko: 'Nowak'
+                };
+                uzupelnijDane(daneZEZUS, statusEZUS, 'eZUS');
+            }, 1000);
+        });
 
-            poleImie.value = daneZMobywatela.imie;
-            poleNazwisko.value = daneZMobywatela.nazwisko;
+        // Wspólna funkcja wypełniająca dane po autoryzacji
+        function uzupelnijDane(dane, elementStatusu, metoda) {
+            poleImie.value = dane.imie;
+            poleNazwisko.value = dane.nazwisko;
             poleImie.readOnly = true;
             poleNazwisko.readOnly = true;
             poleImie.classList.add('ukryte');
             poleNazwisko.classList.add('ukryte');
-            statusMObywatel.textContent = 'Pobrano dane pomyślnie!';
+            elementStatusu.textContent = 'Pobrano dane pomyślnie!';
             formularz.style.display = 'flex';
-        }, 1000);
-    });
-</script>
+            sessionStorage.setItem('metodaLogowania', metoda);
+        }
+
+        formularz.addEventListener('submit', function(e) {
+            e.preventDefault();
+            sessionStorage.setItem('imie', poleImie.value);
+            sessionStorage.setItem('nazwisko', poleNazwisko.value);
+            window.location.href = 'formularz.html';
+        });
+    </script>
 </body>
 </html>

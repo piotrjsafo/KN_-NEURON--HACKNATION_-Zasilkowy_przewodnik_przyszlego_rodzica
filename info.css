@@ -264,23 +264,35 @@ h2.risk {
    html {
     scroll-behavior: smooth; 
   }
-/* 1. Resetujemy pomarańczowy pasek i sztywne wysokości dla tego konkretnego menu */
 details.sticky-menu {
   position: sticky;
-  top: 0;
+  top: 12px; /* Odsuwa menu od górnej krawędzi - wygląda lekko i nowocześnie */
   z-index: 100;
-  background-color: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: none !important; /* Usuwa pomarańczową ramkę z lewej strony */
-  border-bottom: 1px solid #e5e7eb !important; /* Zostawia tylko subtelną linię na dole */
-  border-radius: 0 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  height: auto !important; /* Dopasowuje wysokość dokładnie do zawartości */
-  min-height: 0 !important;
+  
+  /* Efekt delikatnego mlecznego szkła */
+  background-color: rgba(255, 255, 255, 0.82); 
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  /* Miękkie zaokrąglenie ze wszystkich stron, dopasowane do reszty strony */
+  border-radius: 18px !important; 
+  border: 1px solid rgba(229, 231, 235, 0.8) !important;
+  
+  /* Rozproszony, miękki cień zamiast ostrego odcięcia */
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+  
+  /* Usuwamy ujemne marginesy - menu ma teraz dokładnie taką szerokość jak karty poniżej */
+  margin: 0 0 20px 0 !important; 
   padding: 0 !important;
-  margin: 0 -24px 16px -24px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
 }
+
+/* Gdy menu jest rozwinięte, staje się minimalnie bardziej kryjące dla wygody czytania */
+details.sticky-menu[open] {
+  background-color: rgba(255, 255, 255, 0.92);
+}
+
 
 /* 2. Nagłówek "Kliknij, aby rozwinąć..." */
 details.sticky-menu summary {

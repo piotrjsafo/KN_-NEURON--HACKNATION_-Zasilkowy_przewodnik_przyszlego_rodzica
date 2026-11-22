@@ -1,16 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Piotr Kiciński">
     <link rel="stylesheet" href="style.css">
     <title>Formularz poprzedzający kalkulator</title>
 
     <style>
         
-
 :root {
     --bg: #f3f7f4;
     --card: #ffffff;
@@ -127,6 +124,7 @@ h1 {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(7, 132, 67, 0.2);
 }
+
 footer {
     border-top: 1px solid var(--line);
     margin-top: 25px;
@@ -236,14 +234,11 @@ body {
 
     <form id="formularzDanych" action="kalkulator.html" method="GET">
 
-        <input type="hidden" id="ukryteImie" name="imie">
-        <input type="hidden" id="ukryteNazwisko" name="nazwisko">
-
-        <label for="matka">Wypłata matki (zł/mies.):</label>
+        <label for="matka">Podstawa wymiaru zasiłku matki (zł):</label>
         <input type="number" id="matka" name="matka"
                placeholder="zł" min="0" required>
 
-        <label for="ojciec">Wypłata ojca (zł/mies.):</label>
+        <label for="ojciec">Podstawa wymiaru zasiłku ojca (zł/mies.):</label>
         <input type="number" id="ojciec" name="ojciec"
                placeholder="zł" min="0" required>
 
@@ -252,7 +247,8 @@ body {
         <select id="zdarzenie" name="zdarzenie">
             <option value="normalne">Urodziło się zdrowe</option>
             <option value="niepelnosprawne">Urodziło się niepełnosprawne</option>
-            <option value="zmarlo">Dziecko zmarło</option>
+            <option value="przed">Dziecko zmarło przed porodem lub do 8 tygodnia</option>
+            <option value="po">Dziecko zmarło po 8 tygodniu</option>
         </select>
 
         <input type="submit" value="Zapisz i oblicz zasiłek">
@@ -268,13 +264,31 @@ body {
 </div>
 
 <script>
-    const parametry = new URLSearchParams(window.location.search);
-    const imie = parametry.get('imie') || '';
-    const nazwisko = parametry.get('nazwisko') || '';
-    document.getElementById('ukryteImie').value = imie;
-    document.getElementById('ukryteNazwisko').value = nazwisko;
-    document.getElementById('powitanie').textContent =
-        'Witaj, ' + imie + ' ' + nazwisko + '! Wypełnij poniższe dane.';
+    
+    const imie = sessionStorage.getItem('imie');
+    const nazwisko = sessionStorage.getItem('nazwisko');
+    if (!imie || !nazwisko) {
+        window.location.href = 'index.html';
+    } else {
+        document.getElementById('powitanie').textContent =
+            'Witaj, ' + imie + ' ' + nazwisko + '! Wypełnij poniższe dane.';
+    }
+
+    const formularzDanych = document.getElementById('formularzDanych');
+
+    formularzDanych.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const matka = document.getElementById('matka').value;
+        const ojciec = document.getElementById('ojciec').value;
+        const zdarzenie = document.getElementById('zdarzenie').value;
+
+        sessionStorage.setItem('matka', matka);
+        sessionStorage.setItem('ojciec', ojciec);
+        sessionStorage.setItem('zdarzenie', zdarzenie);
+
+        window.location.href = 'kalkulator.html';
+    });
 </script>
 
 </body>

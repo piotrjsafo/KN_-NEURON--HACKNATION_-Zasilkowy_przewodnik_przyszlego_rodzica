@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel administracyjny – Świadczenie ZUS</title>
+    <style>
+        body {
+            font-family: system-ui, Arial, sans-serif;
+            background: #f3f7f4;
+            margin: 0;
+            padding: 20px;
+            color: #162b20;
+        }
+
+        .kontener {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 { text-align: center; color: #1e7e34; }
+
+        #sekcjaLogowania {
+            max-width: 380px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        #sekcjaLogowania input {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 8px 0;
+            padding: 10px 12px;
+            font-size: 1rem;
+            border: 2px solid #555;
+            border-radius: 8px;
+        }
+
+        #sekcjaLogowania button {
+            margin-top: 8px;
+            font-size: 1.1rem;
+            padding: 10px 26px;
+            border-radius: 8px;
+            border: 2px solid #555;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        #sekcjaLogowania button:hover {
+            background: #28a745;
+            border-color: #1e7e34;
+            color: #fff;
+        }
+
+        #bladLogowania {
+            color: #b00020;
+            font-weight: bold;
+        }
+
+        .adm {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 8px 16px;
+            margin: 12px 0;
+            background: #f8faf9;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .adm h4 {
+            grid-column: 1 / -1;
+            margin: 6px 0 2px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 4px;
+            color: #1e7e34;
+        }
+
+        .adm label {
+            display: flex;
+            flex-direction: column;
+            font-size: .9rem;
+            gap: 4px;
+        }
+
+        .adm input {
+            padding: 6px 8px;
+            border: 1px solid #999;
+            border-radius: 6px;
+            font-size: .95rem;
+        }
+
+        .admPrzyciski {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .admPrzyciski button {
+            font-size: 1rem;
+            padding: 10px 22px;
+            border-radius: 8px;
+            border: 2px solid #555;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .admPrzyciski button:hover {
+            background: #28a745;
+            border-color: #1e7e34;
+            color: #fff;
+        }
+
+        #statusParam {
+            text-align: center;
+            color: green;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+<div class="kontener">
+    <h1>Panel administracyjny</h1>
+
+    <!-- LOGOWANIE -->
+    <div id="sekcjaLogowania">
+        <h2>Zaloguj się</h2>
+        <input type="text" id="poleLogin" placeholder="Login">
+        <input type="password" id="poleHaslo" placeholder="Hasło">
+        <button type="button" id="btnZaloguj">Zaloguj</button>
+        <p id="bladLogowania"></p>
+    </div>
+
+    <!-- PANEL (ukryty do zalogowania) -->
+    <div id="sekcjaPanelu" style="display:none;">
+        <div class="adm">
+            <h4>Stawki zasiłków (%)</h4>
+            <label>Zasiłek macierzyński (urlop macierzyński)<input type="number" id="p_rMat" step="0.1"></label>
+            <label>Urlop rodzicielski<input type="number" id="p_rPar" step="0.1"></label>
+            <label>Wariant „uśredniony” (81,5%)<input type="number" id="p_rOpt" step="0.1"></label>
+            <label>Urlop ojcowski<input type="number" id="p_rPat" step="0.1"></label>
+            <label>Zasiłek chorobowy – ciąża<input type="number" id="p_rSick" step="0.1"></label>
+            <label>Zasiłek chorobowy – poza ciążą<input type="number" id="p_rSickGen" step="0.1"></label>
+
+            <h4>Urlop macierzyński (tygodnie)</h4>
+            <label>1 dziecko<input type="number" id="p_m1"></label>
+            <label>2 dzieci<input type="number" id="p_m2"></label>
+            <label>3 dzieci<input type="number" id="p_m3"></label>
+            <label>4 dzieci<input type="number" id="p_m4"></label>
+            <label>5 i więcej dzieci<input type="number" id="p_m5"></label>
+
+            <h4>Urlop rodzicielski (tygodnie)</h4>
+            <label>Pula – 1 dziecko<input type="number" id="p_p1"></label>
+            <label>Pula – 2+ dzieci<input type="number" id="p_p2"></label>
+            <label>„Za życiem” – 1 dziecko<input type="number" id="p_z1"></label>
+            <label>„Za życiem” – 2+ dzieci<input type="number" id="p_z2"></label>
+            <label>Nieprzenoszalne – każdy rodzic<input type="number" id="p_res"></label>
+            <label>Nieprzenoszalne – brak drugiego rodzica<input type="number" id="p_resSolo"></label>
+            <label>Adopcja – pula przy skróceniu urlopu<input type="number" id="p_adopt9"></label>
+            <label>Adopcja „Za życiem” przy skróceniu<input type="number" id="p_adopt9zz"></label>
+
+            <h4>Pozostałe wymiary (tygodnie / dni)</h4>
+            <label>Urlop ojcowski (dni)<input type="number" id="p_pat"></label>
+            <label>Minimum matki po porodzie (tyg.)<input type="number" id="p_minMom"></label>
+            <label>Urlop przed porodem – maks. (tyg.)<input type="number" id="p_preMax"></label>
+            <label>Uzupełniający – limit domyślny (tyg.)<input type="number" id="p_supp"></label>
+            <label>Martwe urodzenie – 8 tyg. (tyg.)<input type="number" id="p_still"></label>
+            <label>Zgon – dni po zgonie<input type="number" id="p_stillAfter"></label>
+            <label>Próg 8 tyg. – sytuacje szczególne (tyg.)<input type="number" id="p_incap"></label>
+
+            <h4>Zasiłek chorobowy (dni)</h4>
+            <label>Wynagrodzenie chorobowe (dni)<input type="number" id="p_e33"></label>
+            <label>Wynagrodzenie chorobowe 50+ (dni)<input type="number" id="p_e50"></label>
+            <label>Okres zasiłkowy – ciąża<input type="number" id="p_sickMax"></label>
+            <label>Okres zasiłkowy – ogólny<input type="number" id="p_sickGenMax"></label>
+            <label>Po ustaniu ubezpieczenia<input type="number" id="p_sickAfter"></label>
+
+            <h4>Inne</h4>
+            <label>Maks. praca na urlopie rodzicielskim (%)<input type="number" id="p_workMax"></label>
+        </div>
+
+        <div class="admPrzyciski">
+            <button type="button" id="btnZapiszParam">💾 Zapisz parametry</button>
+            <button type="button" id="btnResetParam">↺ Przywróć domyślne</button>
+            <button type="button" id="btnWyloguj">🚪 Wyloguj</button>
+        </div>
+        <p id="statusParam"></p>
+    </div>
+
+    <footer>
+        <p><a href="index.html">← Powrót do strony głównej</a></p>
+    </footer>
+</div>
+
+<script>
+    // Demonstracyjne dane logowania (w wersji produkcyjnej logowanie musi być po stronie serwera!)
+    const LOGIN = 'admin';
+    const HASLO = '1234';
+
+    const KLUCZ_ZAPISU = 'zusParams';
+    const KLUCZ_SESJI = 'zusAdminZalogowany';
+
+    const PARAMETRY_DOMYSLNE = {
+        rMat: 100, rPar: 70, rOpt: 81.5, rPat: 100, rSick: 100, rSickGen: 80,
+        m1: 20, m2: 31, m3: 33, m4: 35, m5: 37,
+        p1: 41, p2: 43, z1: 65, z2: 67,
+        res: 9, resSolo: 0, adopt9: 38, adopt9zz: 62,
+        pat: 14, minMom: 14, preMax: 6, supp: 8, still: 8, stillAfter: 7, incap: 8,
+        e33: 33, e50: 14, sickMax: 270, sickGenMax: 182, sickAfter: 91,
+        workMax: 50
+    };
+
+    const sekcjaLogowania = document.getElementById('sekcjaLogowania');
+    const sekcjaPanelu = document.getElementById('sekcjaPanelu');
+    const bladLogowania = document.getElementById('bladLogowania');
+    const statusParam = document.getElementById('statusParam');
+
+    function wypelnijPanel(parametry) {
+        Object.keys(PARAMETRY_DOMYSLNE).forEach(function(klucz) {
+            const pole = document.getElementById('p_' + klucz);
+            if (pole) pole.value = parametry[klucz];
+        });
+    }
+
+    function odczytajPanel() {
+        const parametry = {};
+        Object.keys(PARAMETRY_DOMYSLNE).forEach(function(klucz) {
+            const pole = document.getElementById('p_' + klucz);
+            parametry[klucz] = pole ? parseFloat(pole.value) : PARAMETRY_DOMYSLNE[klucz];
+        });
+        return parametry;
+    }
+
+    function pokazPanel() {
+        sekcjaLogowania.style.display = 'none';
+        sekcjaPanelu.style.display = 'block';
+        bladLogowania.textContent = '';
+    }
+
+    function pokazLogowanie() {
+        sekcjaPanelu.style.display = 'none';
+        sekcjaLogowania.style.display = 'block';
+    }
+
+    document.getElementById('btnZaloguj').addEventListener('click', function() {
+        const login = document.getElementById('poleLogin').value;
+        const haslo = document.getElementById('poleHaslo').value;
+        if (login === LOGIN && haslo === HASLO) {
+            sessionStorage.setItem(KLUCZ_SESJI, '1');
+            pokazPanel();
+        } else {
+            bladLogowania.textContent = 'Błędny login lub hasło.';
+        }
+    });
+
+    document.getElementById('btnWyloguj').addEventListener('click', function() {
+        sessionStorage.removeItem(KLUCZ_SESJI);
+        pokazLogowanie();
+    });
+
+    document.getElementById('btnZapiszParam').addEventListener('click', function() {
+        localStorage.setItem(KLUCZ_ZAPISU, JSON.stringify(odczytajPanel()));
+        statusParam.textContent = 'Parametry zapisane (localStorage: ' + KLUCZ_ZAPISU + ')!';
+    });
+
+    document.getElementById('btnResetParam').addEventListener('click', function() {
+        localStorage.removeItem(KLUCZ_ZAPISU);
+        wypelnijPanel(PARAMETRY_DOMYSLNE);
+        statusParam.textContent = 'Przywrócono wartości domyślne.';
+    });
+
+    // Start
+    (function() {
+        try {
+            const zapisane = JSON.parse(localStorage.getItem(KLUCZ_ZAPISU));
+            wypelnijPanel(Object.assign({}, PARAMETRY_DOMYSLNE, zapisane));
+        } catch (e) {
+            wypelnijPanel(PARAMETRY_DOMYSLNE);
+        }
+        if (sessionStorage.getItem(KLUCZ_SESJI) === '1') {
+            pokazPanel();
+        } else {
+            pokazLogowanie();
+        }
+    })();
+</script>
+</body>
+</html>
