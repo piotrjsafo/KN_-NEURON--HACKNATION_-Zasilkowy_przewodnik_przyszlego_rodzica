@@ -134,8 +134,11 @@
         <div><label for="b2">Podstawa wymiaru R2, zł/mies.</label><input type="number" id="b2" min="0" step="50" value="7000"></div>
       </div>
       <label class="chk"><input type="checkbox" id="big"> Płatnik składek (pracodawca / zleceniodawca) zgłasza do ubezpieczenia chorobowego powyżej 20 osób</label>
-      <label class="chk" id="lblDebt1"><input type="checkbox" id="debt1"> Rodzic 1 (przedsiębiorca): zadłużenie z tytułu składek powyżej 1% minimalnego wynagrodzenia (art. 2a ustawy zasiłkowej)</label>
-      <label class="chk" id="lblDebt2"><input type="checkbox" id="debt2"> Rodzic 2 (przedsiębiorca): zadłużenie z tytułu składek powyżej 1% minimalnego wynagrodzenia (art. 2a ustawy zasiłkowej)</label>
+      <div class="row">
+        <div><label for="debt1v">Zadłużenie składek Rodzica 1, zł (art. 2a ustawy zasiłkowej)</label><input type="number" id="debt1v" min="0" step="0.01" value="0"></div>
+        <div><label for="debt2v">Zadłużenie składek Rodzica 2, zł (art. 2a ustawy zasiłkowej)</label><input type="number" id="debt2v" min="0" step="0.01" value="0"></div>
+      </div>
+      <p class="hint">Wpisz kwotę zadłużenia z tytułu składek (dotyczy tylko działalności gospodarczej). Próg: 48,06 zł, tj. 1% minimalnego wynagrodzenia w 2026 r.</p>
       <p class="hint">Podstawa wymiaru zasiłku: dla pracownika – przeciętne wynagrodzenie z 12 miesięcy poprzedzających, pomniejszone o 13,71%; dla niepracownika – przeciętny przychód z 12 miesięcy, pomniejszony o 13,71%. W 2026 r. minimalna podstawa (pełny etat, płaca minimalna 4 806 zł) to 4 147,10 zł, a maksymalna podstawa dobrowolnego ubezpieczenia chorobowego – 20 321,30 zł.</p>
 
       <hr>
@@ -233,7 +236,7 @@
         <div><label for="sp">Dni niezdolności wykorzystane wcześniej w roku</label><input type="number" id="sp" min="0" value="0"></div>
       </div>
       <label class="chk"><input type="checkbox" id="s50"> Pracownik, który ukończył 50. rok życia (14 dni wynagrodzenia chorobowego zamiast 33 – od roku kalendarzowego następującego po ukończeniu 50. r.ż.)</label>
-      <label class="chk" id="lblDebtS"><input type="checkbox" id="debtS"> Przedsiębiorca: zadłużenie z tytułu składek powyżej 1% minimalnego wynagrodzenia (art. 2a ustawy zasiłkowej)</label>
+      <label for="debtSv">Zadłużenie składek, zł (art. 2a ustawy zasiłkowej)</label><input type="number" id="debtSv" min="0" step="0.01" value="0">
 
       <hr>
       <div id="fLostBox">
@@ -307,7 +310,7 @@ if (wyplataOjca > 0) {
       m1:20,m2:31,m3:33,m4:35,m5:37,
       p1:41,p2:43,z1:65,z2:67,
       pat:14,res:9,resSolo:0,minMom:14,preMax:6,supp:8,still:8,stillAfter:7,incap:8,adopt9:38,adopt9zz:62,
-      e33:33,e50:14,sickMax:270,sickGenMax:182,sickAfter:91,workMax:50
+      e33:33,e50:14,sickMax:270,sickGenMax:182,sickAfter:91,workMax:50,debtMin:48.06
     };
     var P=Object.assign({},D);
 
@@ -467,10 +470,10 @@ if (wyplataOjca > 0) {
       if(noP2)W.push(["w","Przyjęto brak drugiego rodzica — nieprzenoszalna pula drugiego rodzica nie przepada."]);
 
       /* Art. 2a ustawy zasiłkowej: zadłużenie składek > 1% min. wynagrodzenia (działalność) */
-      var debt1=ck("debt1")&&v("st1")==="d";
-      var debt2=ck("debt2")&&v("st2")==="d";
-      if(debt1)W.push(["e","Rodzic 1 (przedsiębiorca): zadłużenie z tytułu składek na ubezpieczenia społeczne przekraczające 1% minimalnego wynagrodzenia (48,06 zł w 2026 r.) pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2)."]);
-      if(debt2)W.push(["e","Rodzic 2 (przedsiębiorca): zadłużenie z tytułu składek na ubezpieczenia społeczne przekraczające 1% minimalnego wynagrodzenia (48,06 zł w 2026 r.) pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2)."]);
+      var debt1=(+v("debt1v")||0)>P.debtMin;
+      var debt2=(+v("debt2v")||0)>P.debtMin;
+      if(debt1)W.push(["e","Rodzic 1 (przedsiębiorca): zadłużenie z tytułu składek ("+pln(+v("debt1v")||0)+") przekracza 1% minimalnego wynagrodzenia ("+pln(P.debtMin)+" w 2026 r.) i pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2)."]);
+      if(debt2)W.push(["e","Rodzic 2 (przedsiębiorca): zadłużenie z tytułu składek ("+pln(+v("debt2v")||0)+") przekracza 1% minimalnego wynagrodzenia ("+pln(P.debtMin)+" w 2026 r.) i pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2)."]);
 
       if(E.aliveExceeded){
         W.push(["e","Liczba dzieci, które przeżyły poród, musi być mniejsza niż liczba urodzonych dzieci ("+E.born+"). Przyjęto maksymalnie "+(E.born-1)+"."]);
@@ -817,13 +820,12 @@ if (wyplataOjca > 0) {
       $("fLost").classList.toggle("hide",mode!=="preg"||!ck("lost"));
 
       var s=v("sst"),d=+v("sd")||0,b=+v("sb")||0,z=+v("sz")||0,sp=+v("sp")||0,h="";
-      $("lblDebtS").classList.toggle("hide",s!=="d");
       if(s==="n"){
         $("res2").innerHTML='<div class="msg e">Bez ubezpieczenia chorobowego zasiłek chorobowy nie przysługuje.</div>'+(mode==="preg"?lostHtml():"");
         return;
       }
-      if(s==="d"&&ck("debtS")){
-        $("res2").innerHTML='<div class="msg e">Zadłużenie z tytułu składek na ubezpieczenia społeczne przekraczające 1% minimalnego wynagrodzenia (48,06 zł w 2026 r.) pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2).</div>'+(mode==="preg"?lostHtml():"");
+      if(s==="d"&&(+v("debtSv")||0)>P.debtMin){
+        $("res2").innerHTML='<div class="msg e">Zadłużenie z tytułu składek ('+pln(+v("debtSv")||0)+') przekracza 1% minimalnego wynagrodzenia ('+pln(P.debtMin)+' w 2026 r.) i pozbawia prawa do świadczeń do czasu spłaty całości zadłużenia (art. 2a ust. 1 ustawy zasiłkowej). Jeżeli zadłużenie nie zostanie uregulowane w ciągu 6 miesięcy od dnia powstania prawa, prawo do świadczeń przedawnia się (art. 2a ust. 2).</div>'+(mode==="preg"?lostHtml():"");
         return;
       }
 
@@ -939,8 +941,6 @@ if (wyplataOjca > 0) {
       $("wf1").parentNode.classList.toggle("hide",solo);
       $("wf2").parentNode.classList.toggle("hide",solo);
       $("f2").parentNode.classList.toggle("hide",solo);
-      $("lblDebt1").classList.toggle("hide",v("st1")!=="d");
-      $("lblDebt2").classList.toggle("hide",v("st2")!=="d"||solo);
       $("pat").parentNode.parentNode.classList.toggle("hide",e.sc==="still"||solo||isFoster);
       $("opt").parentNode.classList.toggle("hide",e.sc==="still"||(sc!=="birth"&&sc!=="adopt"));
 
