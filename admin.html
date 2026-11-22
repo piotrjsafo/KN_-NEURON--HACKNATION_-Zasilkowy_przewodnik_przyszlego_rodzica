@@ -135,17 +135,8 @@
 <div class="kontener">
     <h1>Panel administracyjny</h1>
 
-    <!-- LOGOWANIE -->
-    <div id="sekcjaLogowania">
-        <h2>Zaloguj się</h2>
-        <input type="text" id="poleLogin" placeholder="Login">
-        <input type="password" id="poleHaslo" placeholder="Hasło">
-        <button type="button" id="btnZaloguj">Zaloguj</button>
-        <p id="bladLogowania"></p>
-    </div>
-
     <!-- PANEL (ukryty do zalogowania) -->
-    <div id="sekcjaPanelu" style="display:none;">
+    <div id="sekcjaPanelu">
         <div class="adm">
             <h4>Stawki zasiłków (%)</h4>
             <label>Zasiłek macierzyński (urlop macierzyński)<input type="number" id="p_rMat" step="0.1"></label>
@@ -195,7 +186,6 @@
         <div class="admPrzyciski">
             <button type="button" id="btnZapiszParam">💾 Zapisz parametry</button>
             <button type="button" id="btnResetParam">↺ Przywróć domyślne</button>
-            <button type="button" id="btnWyloguj">🚪 Wyloguj</button>
         </div>
         <p id="statusParam"></p>
     </div>
