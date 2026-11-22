@@ -524,3 +524,52 @@ summary {
     color: var(--acc2);
     text-decoration: underline;
 }
+/* JEDNA KARTA: nagłówek + opis + zakładki */
+
+.hero {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 60, 25, 0.05);
+    margin-bottom: 22px;
+}
+
+.hero h1 {
+    border-radius: 0;
+}
+
+.hero .sub {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: none;
+    text-align: center;
+}
+
+.hero .top-bar {
+    margin: 0;
+    padding: 0 32px 24px;
+}
+
+.hero .tabs {
+    margin-bottom: 0;
+    justify-content: center;
+}
+.hero {
+    margin-bottom: 0;
+    border-radius: 14px 14px 0 0;
+    box-shadow: none;
+    border: 1px solid var(--line);
+    border-bottom: none;
+}
+
+#p1 > .card:first-child,
+#p2 > .card:first-child {
+    border-top: none;
+    border-radius: 0 0 13px 13px;
+}
+
+#p1,
+#p2 {
+    gap: 0;
+}
