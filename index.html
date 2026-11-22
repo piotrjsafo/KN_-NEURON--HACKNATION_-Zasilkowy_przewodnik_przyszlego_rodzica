@@ -43,7 +43,6 @@
             <button type="button" id="btnAdmin">⚙️ Panel administracyjny</button>
         </footer>
     </div>
-
     <script>
         const formularz = document.getElementById('mojFormularz');
         
@@ -114,8 +113,8 @@
             statusMObywatel.textContent = 'Łączenie z mObywatelem...';
             setTimeout(() => {
                 const daneZMobywatela = {
-                    imie: 'Jan',
-                    nazwisko: 'Kowalski'
+                    imie: 'przykładowe imię',
+                    nazwisko: 'przykładowe nazwisko'
                 };
                 uzupelnijDane(daneZMobywatela, statusMObywatel, 'mObywatel');
             }, 1000);
@@ -154,6 +153,83 @@
             sessionStorage.setItem('nazwisko', poleNazwisko.value);
             window.location.href = 'formularz.html';
         });
+                // Logowanie ręczne - czyścimy przykładowe dane z sesji
+        btnBez.addEventListener('click', function() {
+            reset();
+            zaznacz(btnBez);
+            poleImie.value = '';
+            poleNazwisko.value = '';
+            formularz.style.display = 'flex';
+            sessionStorage.setItem('metodaLogowania', 'reczna');
+            sessionStorage.removeItem('adres');
+            sessionStorage.removeItem('pesel');
+        });
+
+        // Wybór mObywatel
+        btnMObywatel.addEventListener('click', function() {
+            reset();
+            zaznacz(btnMObywatel);
+            sekcjaMObywatel.style.display = 'block';
+        });
+
+        // Wybór eZUS
+        btnEZUS.addEventListener('click', function() {
+            reset();
+            zaznacz(btnEZUS);
+            sekcjaEZUS.style.display = 'block';
+        });
+
+        // Symulacja mObywatel
+        btnSymulujMObywatel.addEventListener('click', function() {
+            statusMObywatel.textContent = 'Łączenie z mObywatelem...';
+            setTimeout(() => {
+                const daneZMobywatela = {
+                    imie: 'przykładowe_imię',
+                    nazwisko: 'przykładowe_nazwisko',
+                    adres: 'ul. Przykładowa 12/4, 00-001 Warszawa',
+                    pesel: '90010112345'
+                };
+                uzupelnijDane(daneZMobywatela, statusMObywatel, 'mObywatel');
+            }, 1000);
+        });
+
+        // Symulacja eZUS
+        btnSymulujEZUS.addEventListener('click', function() {
+            statusEZUS.textContent = 'Przekierowanie do Profilu Zaufanego...';
+            setTimeout(() => {
+                const daneZEZUS = {
+                    imie: 'przykładowe_imię',
+                    nazwisko: 'przykładowe_nazwisko',
+                    adres: 'ul. Symulacyjna 8 m. 15, 30-001 Kraków',
+                    pesel: '92051554321'
+                };
+                uzupelnijDane(daneZEZUS, statusEZUS, 'eZUS');
+            }, 1000);
+        });
+
+        // Wspólna funkcja wypełniająca dane po autoryzacji
+        function uzupelnijDane(dane, elementStatusu, metoda) {
+            poleImie.value = dane.imie;
+            poleNazwisko.value = dane.nazwisko;
+            poleImie.readOnly = true;
+            poleNazwisko.readOnly = true;
+            poleImie.classList.add('ukryte');
+            poleNazwisko.classList.add('ukryte');
+            elementStatusu.textContent = 'Pobrano dane z ' + metoda + ' pomyślnie!';
+            formularz.style.display = 'flex';
+
+            sessionStorage.setItem('metodaLogowania', metoda);
+            sessionStorage.setItem('adres', dane.adres);
+            sessionStorage.setItem('pesel', dane.pesel);
+        }
+
+        formularz.addEventListener('submit', function(e) {
+            e.preventDefault();
+            sessionStorage.setItem('imie', poleImie.value);
+            sessionStorage.setItem('nazwisko', poleNazwisko.value);
+            window.location.href = 'formularz.html';
+        });
+
     </script>
 </body>
 </html>

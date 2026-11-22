@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Wniosek o zasiłek i urlop – Świadczenie ZUS</title>
+
+    <style>
+        :root {
+            --bg: #f3f7f4;
+            --card: #ffffff;
+            --ink: #20352a;
+            --mut: #718078;
+            --line: #e0e9e2;
+            --acc: #078443;
+            --acc2: #075c32;
+            --auto-bg: #e9f5ee;
+            --manual-border: #e6a100;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 35px 15px 30px;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        .kontener {
+            width: 100%;
+            max-width: 740px;
+            margin: 0 auto;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow: hidden;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(20, 65, 35, 0.07);
+        }
+
+        h1 {
+            background: linear-gradient(120deg, #075c32, #078443);
+            color: white;
+            padding: 25px 15px;
+            margin: -30px -30px 25px;
+            font-size: 26px;
+            line-height: 1.3;
+            text-align: center;
+        }
+
+        #powitanie {
+            color: var(--mut);
+            font-size: 15px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .info-autoryzacja {
+            background: var(--auto-bg);
+            border: 1px solid #b7dec6;
+            color: var(--acc2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .sekcja-tytul {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--acc2);
+            border-bottom: 2px solid var(--line);
+            padding-bottom: 6px;
+            margin: 25px 0 14px;
+        }
+
+        .wiersz-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .pole-grupa {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        .badge-auto {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-manual {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1px solid #d5e2d8;
+            border-radius: 8px;
+            background: #fbfdfb;
+            color: var(--ink);
+            font-size: 15px;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+
+        input.z-sesji,
+        select.z-sesji {
+            background-color: var(--auto-bg);
+            border-color: var(--acc);
+        }
+
+        input[readonly].z-sesji {
+            color: #3a5244;
+            cursor: not-allowed;
+        }
+
+        input.reczne,
+        select.reczne,
+        textarea.reczne {
+            border-left: 4px solid var(--manual-border);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 3px solid rgba(7, 132, 67, 0.12);
+            border-color: var(--acc);
+            background: white;
+        }
+
+        .przyciski {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        button,
+        input[type="submit"] {
+            flex: 1;
+            background: var(--acc);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button.btn-drukuj {
+            background: #2c3e50;
+        }
+
+        button.btn-powrot {
+            background: var(--mut);
+        }
+
+        button:hover,
+        input[type="submit"]:hover {
+            opacity: 0.92;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(7, 132, 67, 0.2);
+        }
+
+        footer {
+            border-top: 1px solid var(--line);
+            margin-top: 25px;
+            padding-top: 15px;
+            color: var(--mut);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--acc);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .wiersz-2 {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .przyciski {
+                flex-direction: column;
+            }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .kontener { box-shadow: none; border: none; max-width: 100%; }
+            .przyciski, .badge, .info-autoryzacja, footer { display: none; }
+            input, select, textarea { border: 1px solid #999 !important; background: white !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="kontener">
+    <h1>Wniosek o udzielenie urlopu i zasiłku</h1>
+    <p id="powitanie"></p>
+    <div id="infoAutoryzacja" class="info-autoryzacja"></div>
+
+    <form id="formularzWniosku">
+
+        <div class="sekcja-tytul">1. Dane pobrane automatycznie z sesji</div>
+
+        <div class="wiersz-2">
+            <div class="pole-grupa">
+                <label for="imie">Imię <span id="badge-imie" class="badge"></span></label>
+                <input type="text" id="imie" name="imie" required>
+            </div>
+            <div class="pole-grupa">
+                <label for="nazwisko">Nazwisko <span id="badge-nazwisko" class="badge"></span></label>
+                <input type="text" id="nazwisko" name="nazwisko" required>
+            </div>
+        </div>
+
+        <div class="wiersz-2">
+            <div class="pole-grupa">
+                <label for="matka">Podstawa wymiaru zasiłku matki (zł) <span id="badge-matka" class="badge"></span></label>
+                <input type="number" id="matka" name="matka" step="0.01" min="0" required>
+            </div>
+            <div class="pole-grupa">
+                <label for="ojciec">Podstawa wymiaru zasiłku ojca (zł) <span id="badge-ojciec" class="badge"></span></label>
+                <input type="number" id="ojciec" name="ojciec" step="0.01" min="0" required>
+            </div>
+        </div>
+
+        <div class="pole-grupa">
+            <label for="zdarzenie">Stan dziecka / okoliczności <span id="badge-zdarzenie" class="badge"></span></label>
+            <select id="zdarzenie" name="zdarzenie">
+                <option value="normalne">Urodziło się zdrowe</option>
+                <option value="niepelnosprawne">Urodziło się niepełnosprawne</option>
+                <option value="przed">Dziecko zmarło przed porodem lub do 8 tygodnia</option>
+                <option value="po">Dziecko zmarło po 8 tygodniu</option>
+            </select>
+        </div>
+
+        <div class="sekcja-tytul">2. Dane identyfikacyjne i adresowe (uzupełnij ręcznie)</div>
+
+        <div class="wiersz-2">
+            <div class="pole-grupa">
+                <label for="pesel">PESEL wnioskodawcy <span class="badge badge-manual">Uzupełnij</span></label>
+                <input type="text" id="pesel" name="pesel" maxlength="11" pattern="\d{11}" placeholder="11 cyfr" class="reczne" required>
+            </div>
+            <div class="pole-grupa">
+                <label for="telefon">Numer telefonu <span class="badge badge-manual">Uzupełnij</span></label>
+                <input type="text" id="telefon" name="telefon" placeholder="np. 500 600 700" class="reczne" required>
+            </div>
+        </div>
+
+        <div class="pole-grupa">
+            <label for="adres">Adres zamieszkania / do korespondencji <span class="badge badge-manual">Uzupełnij</span></label>
+            <input type="text" id="adres" name="adres" placeholder="Ulica, nr domu/lokalu, kod pocztowy, miejscowość" class="reczne" required>
+        </div>
+
+        <div class="sekcja-tytul">3. Szczegóły urlopu i wypłaty zasiłku (uzupełnij ręcznie)</div>
+
+                <div class="sekcja-tytul">2. Dane identyfikacyjne i adresowe</div>
+
+        <div class="wiersz-2">
+            <div class="pole-grupa">
+                <label for="pesel">PESEL wnioskodawcy <span id="badge-pesel" class="badge"></span></label>
+                <input type="text" id="pesel" name="pesel" maxlength="11" pattern="\d{11}" placeholder="11 cyfr" required>
+            </div>
+            <div class="pole-grupa">
+                <label for="telefon">Numer telefonu <span class="badge badge-manual">Uzupełnij</span></label>
+                <input type="text" id="telefon" name="telefon" placeholder="np. 500 600 700" class="reczne" required>
+            </div>
+        </div>
+
+        <div class="pole-grupa">
+            <label for="adres">Adres zamieszkania / do korespondencji <span id="badge-adres" class="badge"></span></label>
+            <input type="text" id="adres" name="adres" placeholder="Ulica, nr domu/lokalu, kod pocztowy, miejscowość" required>
+        </div>
+
+                
+                <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imie = sessionStorage.getItem('imie');
+    const nazwisko = sessionStorage.getItem('nazwisko');
+    const metodaLogowania = sessionStorage.getItem('metodaLogowania');
+
+    if (!imie || !nazwisko) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    document.getElementById('powitanie').textContent =
+        'Witaj, ' + imie + ' ' + nazwisko + '! Sprawdź dane pobrane z sesji i uzupełnij brakujące pola wniosku.';
+
+    const infoBox = document.getElementById('infoAutoryzacja');
+    const czyAutoryzowane = (metodaLogowania === 'mObywatel' || metodaLogowania === 'eZUS');
+
+    if (metodaLogowania === 'mObywatel') {
+        infoBox.textContent = '✓ Tożsamość potwierdzona przez aplikację mObywatel ';
+    } else if (metodaLogowania === 'eZUS') {
+        infoBox.textContent = '✓ Tożsamość potwierdzona przez Profil Zaufany / eZUS ';
+    } else {
+        infoBox.textContent = 'Tryb bez autoryzacji elektronicznej – możesz swobodnie edytować wszystkie pola.';
+    }
+
+    const kluczeZSesji = ['imie', 'nazwisko', 'matka', 'ojciec', 'zdarzenie'];
+
+    kluczeZSesji.forEach(function(klucz) {
+        const wartosc = sessionStorage.getItem(klucz);
+        const pole = document.getElementById(klucz);
+        const badge = document.getElementById('badge-' + klucz);
+
+        if (pole && wartosc !== null && wartosc !== '') {
+            pole.value = wartosc;
+            pole.classList.add('z-sesji');
+
+            if (czyAutoryzowane && (klucz === 'imie' || klucz === 'nazwisko')) {
+                pole.readOnly = true;
+                if (badge) {
+                    badge.textContent = 'Z ' + metodaLogowania;
+                    badge.classList.add('badge-auto');
+                }
+            } else if (badge) {
+                badge.textContent = 'Z sesji';
+                badge.classList.add('badge-auto');
+            }
+        } else if (pole) {
+            pole.classList.add('reczne');
+            if (badge) {
+                badge.textContent = 'Uzupełnij';
+                badge.classList.add('badge-manual');
+            }
+        }
+    });
+
+    document.getElementById('rodzaj_wniosku').addEventListener('change', function() {
+        const poleOswiadczenie = document.getElementById('oswiadczenie');
+        const dziecko = document.getElementById('imie_dziecka').value || '[Imię i nazwisko dziecka]';
+
+        if (this.value === 'macierzynski') {
+            poleOswiadczenie.value = 'W związku z urodzeniem dziecka ' + dziecko + ' zwracam się z prośbą o udzielenie mi urlopu i zasiłku macierzyńskiego w wymiarze 20 tygodni.';
+        } else if (this.value === 'rodzicielski') {
+            poleOswiadczenie.value = 'W związku z urodzeniem dziecka ' + dziecko + ' zwracam się z prośbą o udzielenie mi urlopu rodzicielskiego w wymiarze 32 tygodni. Oświadczam, że drugi rodzic nie będzie korzystał z urlopu rodzicielskiego w tym okresie.';
+        } else if (this.value === 'laczenie') {
+            poleOswiadczenie.value = 'Proszę o umożliwienie mi łączenia korzystania z urlopu rodzicielskiego na dziecko ' + dziecko + ' z wykonywaniem pracy w obniżonym wymiarze czasu pracy, tj. 1/2 etatu.';
+        } else if (this.value === 'wstrzymanie') {
+            poleOswiadczenie.value = 'Zwracam się z prośbą o wstrzymanie wypłaty zasiłku macierzyńskiego wypłacanego na urlopie rodzicielskim z powodu powrotu do pracy.';
+        }
+    });
+
+    document.getElementById('formularzWniosku').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const daneFormularza = new FormData(this);
+        daneFormularza.forEach(function(wartosc, klucz) {
+            sessionStorage.setItem(klucz, wartosc);
+        });
+
+        alert('Wniosek został zapisany! Możesz go teraz wydrukować lub zapisać jako PDF przyciskiem "Drukuj / PDF".');
+    });
+}); 
+ 
+</script>
+</body>
+</html>
