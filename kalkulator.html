@@ -26,13 +26,21 @@
       </div>
     </div>
   </div>
-   <iframe 
-    src="info.html" 
-    width="100%" 
-    height="500" 
-    style="border: 1px solid #ccc;" 
-    title="Osadzona strona">
-  </iframe>
+    <details class="card iframe-box" open>
+  <summary class="iframe-header">
+    <span>Przewodnik i podstawa prawna</span>
+    <span class="iframe-toggle-label"></span>
+  </summary>
+
+  <div class="iframe-content">
+    <iframe 
+      src="info.html" 
+      width="100%" 
+      height="500" 
+      title="Osadzona strona">
+    </iframe>
+  </div>
+</details>
 
   <!--PANEL 1: ZASIŁEK MACIERZYŃSKI-->
 
@@ -275,6 +283,7 @@
   </div>
 
   <script>
+    
  const imie = sessionStorage.getItem('imie');
 const nazwisko = sessionStorage.getItem('nazwisko');
 const metodaLogowania = sessionStorage.getItem('metodaLogowania');
@@ -989,6 +998,49 @@ if (wyplataOjca > 0) {
     $("t1").onclick=function(){tab(1)};$("t2").onclick=function(){tab(2)};
 
     syncAliveLimit();vis();resetParental();render();renderSick();
+    
+(function zaladujDaneZFormularza() {
+    const imie = sessionStorage.getItem('imie');
+    const nazwisko = sessionStorage.getItem('nazwisko');
+    const wyplataMatki = Number(sessionStorage.getItem('matka')) || 0;
+    const wyplataOjca = Number(sessionStorage.getItem('ojciec')) || 0;
+    const zdarzenie = sessionStorage.getItem('zdarzenie');
+
+    // Przekieruj, jeśli brakuje podstawowych danych
+    if (!imie || !zdarzenie) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // Wpisz wypłaty do pól kalkulatora
+    if (wyplataMatki > 0 && $('b1')) $('b1').value = wyplataMatki;
+    if (wyplataOjca > 0 && $('b2')) $('b2').value = wyplataOjca;
+
+    // Zamień wartości z formularza ('normalne', 'niepelnosprawne', 'przed', 'po') na wartości kalkulatora ('sc')
+    const mapaZdarzen = {
+        'normalne': 'birth',
+        'niepelnosprawne': 'birth',
+        'przed': 'still',
+        'po': 'death_after8'
+    };
+
+    if ($('sc') && mapaZdarzen[zdarzenie]) {
+        $('sc').value = mapaZdarzen[zdarzenie];
+
+        // Zaznacz ustawę "Za życiem" dla dziecka niepełnosprawnego
+        if (zdarzenie === 'niepelnosprawne' && $('zz')) {
+            $('zz').checked = true;
+        }
+    }
+
+    // Odśwież widoczność sekcji, limity dni oraz przelicz wynik
+    if (typeof syncDeathDay === 'function') syncDeathDay('sc');
+    if (typeof syncAliveLimit === 'function') syncAliveLimit();
+    if (typeof resetParental === 'function') resetParental();
+    if (typeof vis === 'function') vis();
+    if (typeof calc === 'function') calc();
+})();
+
   </script>
 </div>
 
