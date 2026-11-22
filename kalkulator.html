@@ -270,6 +270,32 @@
   </div>
 
   <script>
+ const imie = sessionStorage.getItem('imie');
+const nazwisko = sessionStorage.getItem('nazwisko');
+const metodaLogowania = sessionStorage.getItem('metodaLogowania');
+const wyplataMatki = Number(sessionStorage.getItem('matka')) || 0;
+const wyplataOjca = Number(sessionStorage.getItem('ojciec')) || 0;
+const zdarzenie = sessionStorage.getItem('zdarzenie');
+
+if (!imie || !zdarzenie) {
+    window.location.href = 'index.html';
+}
+
+console.log('Dane w kalkulatorze:', {
+    imie,
+    nazwisko,
+    metodaLogowania,
+    wyplataMatki,
+    wyplataOjca,
+    zdarzenie
+});
+if (wyplataMatki > 0) {
+    document.getElementById('b1').value = wyplataMatki;
+}
+
+if (wyplataOjca > 0) {
+    document.getElementById('b2').value = wyplataOjca;
+}
     /*PARAMETRY DOMYŚLNE (D)*/
     var D={
       rMat:100,rPar:70,rOpt:81.5,rPat:100,rSick:100,rSickGen:80,

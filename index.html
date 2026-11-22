@@ -38,61 +38,72 @@
 
 <script>
     const formularz = document.getElementById('mojFormularz');
-    const sekcjaMObywatel = document.getElementById('sekcjaMObywatel');
-    const btnMObywatel = document.getElementById('btnMObywatel');
-    const btnBez = document.getElementById('btnBez');
-    const btnSymuluj = document.getElementById('btnSymulujMObywatel');
-    const statusMObywatel = document.getElementById('statusMObywatel');
-    const poleImie = document.getElementById('poleImie');
-    const poleNazwisko = document.getElementById('poleNazwisko');
+const sekcjaMObywatel = document.getElementById('sekcjaMObywatel');
+const btnMObywatel = document.getElementById('btnMObywatel');
+const btnBez = document.getElementById('btnBez');
+const btnSymuluj = document.getElementById('btnSymulujMObywatel');
+const statusMObywatel = document.getElementById('statusMObywatel');
+const poleImie = document.getElementById('poleImie');
+const poleNazwisko = document.getElementById('poleNazwisko');
 
-    function reset() {
-        formularz.style.display = 'none';
-        sekcjaMObywatel.style.display = 'none';
-        statusMObywatel.textContent = '';
-    }
+function reset() {
+    formularz.style.display = 'none';
+    sekcjaMObywatel.style.display = 'none';
+    statusMObywatel.textContent = '';
+}
 
-    function zaznacz(przycisk) {
-        btnMObywatel.classList.remove('aktywny');
-        btnBez.classList.remove('aktywny');
-        przycisk.classList.add('aktywny');
-    }
+function zaznacz(przycisk) {
+    btnMObywatel.classList.remove('aktywny');
+    btnBez.classList.remove('aktywny');
+    przycisk.classList.add('aktywny');
+}
 
-    btnBez.addEventListener('click', function() {
-        reset();
-        zaznacz(btnBez);
-        poleImie.value = '';
-        poleNazwisko.value = '';
-        poleImie.readOnly = false;
-        poleNazwisko.readOnly = false;
+btnBez.addEventListener('click', function() {
+    reset();
+    zaznacz(btnBez);
+    poleImie.value = '';
+    poleNazwisko.value = '';
+    poleImie.readOnly = false;
+    poleNazwisko.readOnly = false;
+    formularz.style.display = 'flex';
+    sessionStorage.setItem('metodaLogowania', 'reczna'); 
+});
+
+btnMObywatel.addEventListener('click', function() {
+    reset();
+    zaznacz(btnMObywatel);
+    sekcjaMObywatel.style.display = 'block';
+});
+
+btnSymuluj.addEventListener('click', function() {
+    statusMObywatel.textContent = 'Łączenie z mObywatelem...';
+
+    setTimeout(() => {
+        const daneZMobywatela = {
+            imie: 'przykladowe imie',
+            nazwisko: 'przykladowe nazwisko'
+        };
+
+        poleImie.value = daneZMobywatela.imie;
+        poleNazwisko.value = daneZMobywatela.nazwisko;
+        poleImie.readOnly = true;
+        poleNazwisko.readOnly = true;
+        poleImie.classList.add('ukryte');
+        poleNazwisko.classList.add('ukryte');
+        statusMObywatel.textContent = 'Pobrano dane pomyślnie!';
         formularz.style.display = 'flex';
-    });
+        sessionStorage.setItem('metodaLogowania', 'mObywatel'); 
+    }, 1000);
+});
 
-    btnMObywatel.addEventListener('click', function() {
-        reset();
-        zaznacz(btnMObywatel);
-        sekcjaMObywatel.style.display = 'block';
-    });
+formularz.addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    sessionStorage.setItem('imie', poleImie.value);
+    sessionStorage.setItem('nazwisko', poleNazwisko.value);
 
-    btnSymuluj.addEventListener('click', function() {
-        statusMObywatel.textContent = 'Łączenie z mObywatelem...';
+    window.location.href = 'formularz.html';
+});
 
-        setTimeout(() => {
-            const daneZMobywatela = {
-                imie: 'przykladowe imie',
-                nazwisko: 'przykladowe nazwisko'
-            };
-
-            poleImie.value = daneZMobywatela.imie;
-            poleNazwisko.value = daneZMobywatela.nazwisko;
-            poleImie.readOnly = true;
-            poleNazwisko.readOnly = true;
-            poleImie.classList.add('ukryte');
-            poleNazwisko.classList.add('ukryte');
-            statusMObywatel.textContent = 'Pobrano dane pomyślnie!';
-            formularz.style.display = 'flex';
-        }, 1000);
-    });
 </script>
 </body>
 </html>
