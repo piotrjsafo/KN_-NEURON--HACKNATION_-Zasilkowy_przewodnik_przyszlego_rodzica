@@ -1,5 +1,5 @@
 :root{--bg:#f4f7f5;--card:#fff;--ink:#12293a;--mut:#5b6b78;--line:#d5dfda;--acc:#00753a;--acc2:#0b3f7a;--warn:#8a5a00;--warnbg:#fff4d6;--bad:#9b1c1c;--badbg:#fde8e8;--okbg:#e3f3ea;--m:#004d26;--f:#16a34a;--s:#86efac;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+    box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 *,*:before,*:after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -129,10 +129,11 @@ h1 {
     color: var(--mut);
     padding: 20px 32px;
     margin: 0 0 25px;
+    max-width: none;
+    text-align: center;
     border-radius: 0 0 14px 14px;
     box-shadow: 0 4px 15px rgba(0, 60, 25, 0.05);
 }
-
 /* ZAKŁADKI */
 
 .tabs {
@@ -165,11 +166,11 @@ h1 {
     box-shadow: 0 3px 10px rgba(7, 132, 67, 0.2);
 }
 
-/* UKŁAD */
+/* UKŁAD: formularz u góry, wyniki na dole */
 
 .grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: 22px;
     align-items: start;
 }
@@ -438,6 +439,18 @@ tbody tr:hover {
 
 .file li {
     margin-bottom: 9px;
+}
+/* RYZYKA - sekcja w kolorze czerwonym */
+
+.risk h2 {
+    color: var(--bad);
+}
+
+.risk .file {
+    background: var(--badbg);
+    border-color: #f1c0c0;
+    border-left: 4px solid var(--bad);
+    color: var(--bad);
 }
 
 /* PANEL ADMINISTRACYJNY */
