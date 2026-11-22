@@ -1,0 +1,338 @@
+:root {
+    --bg: #f3f7f4;
+    --card-bg: #ffffff;
+    --text: #162b20;
+    --mut: #556b5e;
+    --primary: #15803d;
+    --primary-hover: #166534;
+    --accent: #e6f4ec;
+    --warn-bg: #fefce8;
+    --warn-border: #ca8a04;
+    --warn-text: #854d0e;
+    --note-bg: #ecfdf5;
+    --note-border: #10b981;
+    --note-text: #065f46;
+    --border: #cfe0d6;
+    --radius: 12px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+  }
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 20px rgba(20, 50, 35, 0.06);
+  }
+
+  h1 {
+    font-family: inherit;
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+
+  .sub {
+    font-size: 1.05rem;
+    color: var(--mut);
+    margin-bottom: 25px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: var(--primary-hover);
+    margin-top: 40px;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+
+  .chips a {
+    text-decoration: none;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s, transform 0.1s;
+  }
+
+  .chips a:hover {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(20, 50, 35, 0.03);
+  }
+
+  .card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .card p {
+    margin-bottom: 10px;
+  }
+
+  .card ul {
+    margin-left: 20px;
+    margin-bottom: 10px;
+  }
+
+  .card li {
+    margin-bottom: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 0.95rem;
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    background-color: var(--accent);
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  td.n, th.n {
+    text-align: right;
+  }
+
+  .note {
+    background-color: var(--note-bg);
+    border-left: 4px solid var(--note-border);
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin: 15px 0;
+    font-size: 0.95rem;
+    color: var(--note-text);
+  }
+
+  .warn {
+    background-color: var(--warn-bg);
+    border-left: 4px solid var(--warn-border);
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin: 15px 0;
+    font-size: 0.95rem;
+    color: var(--warn-text);
+  }
+
+  .num {
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .hint {
+    font-size: 0.85rem;
+    color: var(--mut);
+  }
+
+  .legal {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--mut);
+    text-align: right;
+    margin-top: 10px;
+    font-style: italic;
+  }
+  .linklist {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  .linklist a {
+    display: block;
+    background: var(--accent);
+    color: var(--primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .linklist a:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .linklist span {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--mut);
+  }
+
+  .linklist a:hover span {
+    color: #e6f4ec;
+  }
+
+  .foot {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--mut);
+    text-align: center;
+  }
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+
+    .wrap {
+      padding: 18px;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    th, td {
+      padding: 8px;
+      font-size: 0.88rem;
+    }
+  }
+   html {
+    scroll-behavior: smooth; 
+  }
+/* 1. Resetujemy pomarańczowy pasek i sztywne wysokości dla tego konkretnego menu */
+details.sticky-menu {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: none !important; /* Usuwa pomarańczową ramkę z lewej strony */
+  border-bottom: 1px solid #e5e7eb !important; /* Zostawia tylko subtelną linię na dole */
+  border-radius: 0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  height: auto !important; /* Dopasowuje wysokość dokładnie do zawartości */
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 -24px 16px -24px;
+}
+
+/* 2. Nagłówek "Kliknij, aby rozwinąć..." */
+details.sticky-menu summary {
+  padding: 12px 24px;
+  margin: 0;
+  font-weight: 600;
+  font-size: 14.5px;
+  color: #111827;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+details.sticky-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+details.sticky-menu summary::after {
+  content: "▼";
+  font-size: 11px;
+  color: #15803d;
+  transition: transform 0.2s ease;
+}
+
+details.sticky-menu[open] summary::after {
+  transform: rotate(180deg);
+}
+
+/* 3. Wnętrze rozwiniętego menu - bez zbędnego luzu na dole */
+details.sticky-menu .menu-body {
+  padding: 4px 24px 12px 24px !important; /* Tylko 12px odstępu pod ostatnim rzędem linków */
+  margin: 0 !important;
+  border-top: 1px solid rgba(229, 231, 235, 0.6);
+}
+
+details.sticky-menu .menu-body p {
+  margin: 6px 0 10px 0;
+  font-size: 12.5px;
+  color: #6b7280;
+}
+
+/* 4. Przywrócenie Twojego oryginalnego rozmiaru pigułek i usunięcie pustego miejsca pod nimi */
+details.sticky-menu .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  height: auto !important; /* Likwiduje pustą przestrzeń zaznaczoną czerwoną kreską */
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+details.sticky-menu .chips a {
+  padding: 6px 14px; /* Twój pierwotny, wygodny rozmiar linków */
+  text-decoration: none;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #ecfdf5;
+  color: #166534;
+  border: 1px solid #d1fae5;
+  transition: background 0.2s;
+}
+
+details.sticky-menu .chips a:hover {
+  background-color: #d1fae5;
+}
+
+
+
+    
