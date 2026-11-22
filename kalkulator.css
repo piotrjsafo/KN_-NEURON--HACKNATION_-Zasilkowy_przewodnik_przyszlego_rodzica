@@ -573,3 +573,63 @@ summary {
 #p2 {
     gap: 0;
 }
+/* Zwijane okno z iframe w czystym CSS */
+.iframe-box {
+    margin-top: 0;
+    margin-bottom: 22px;
+    padding: 14px 20px;
+}
+
+.iframe-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    cursor: pointer;
+    color: var(--acc2);
+    font-size: 19px;
+    font-weight: 700;
+    padding: 0;
+    user-select: none;
+}
+
+/* Ukrycie domyślnej strzałki przeglądarki */
+.iframe-header::-webkit-details-marker {
+    display: none;
+}
+
+/* Wygląd przycisku po prawej stronie */
+.iframe-toggle-label {
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.iframe-header:hover .iframe-toggle-label {
+    background: #eaf6ee;
+    border-color: var(--acc);
+}
+
+/* Zmiana napisu w zależności od stanu (zwinięty / rozwinięty) */
+.iframe-box:not([open]) .iframe-toggle-label::after {
+    content: "Rozwiń okno ▼";
+}
+
+.iframe-box[open] .iframe-toggle-label::after {
+    content: "Zwiń okno ▲";
+}
+
+.iframe-content {
+    margin-top: 14px;
+}
+
+.iframe-content iframe {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    display: block;
+}
