@@ -633,3 +633,86 @@ summary {
     border-radius: 8px;
     display: block;
 }
+/* 1. Heading inside the summary inherits h2 margins (margin-bottom: 18px),
+      which pushes it off-center and can make it look clipped next to the button */
+.iframe-header,
+.iframe-header h2,
+.iframe-header > * {
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* 2. The card is also .card (overflow:hidden), which can clip the heading
+      and focus outlines, so allow overflow */
+.iframe-box {
+    overflow: visible;
+    padding: 16px 20px;
+}
+
+/* 3. If the box sits right under the hero, join the two visually
+      (no gap, no rounded top corners, no double border) */
+
+/* 1. Next card after the iframe box: normal rounded card again */
+/* Hero (title + tabs): square bottom, no bottom border */
+.hero {
+    margin-bottom: 0;
+    border-radius: 14px 14px 0 0;
+    border-bottom: none;
+}
+
+/* Iframe box: no gap, square corners, joined to hero above and card below */
+.iframe-box {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 0;
+    border-top: 1px solid var(--line);   /* thin divider under the tabs */
+    border-bottom: none;
+    overflow: visible;
+}
+
+
+/* Form card right after it: no gap, square top, rounded bottom */
+#p1,
+#p2 {
+    gap: 0;
+}
+#p1 > .card:first-child,
+#p2 > .card:first-child {
+    border-top: 1px solid var(--line);   /* thin divider under the iframe box */
+    border-radius: 0 0 13px 13px;
+}
+
+/* Iframe sizing, so its content isn't clipped */
+.iframe-content iframe {
+    width: 100%;
+    height: 70vh;
+    min-height: 420px;
+}
+/* Hero -> iframe box -> form card: one continuous block */
+.hero + .iframe-box {
+    border-radius: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: none;
+    margin: 0;
+    box-shadow: none;
+}
+
+
+.hero + .iframe-box {
+    border-bottom: none;
+}
+.iframe-box {
+    border-bottom: none !important;
+}
+#p1 > .card:first-child,
+#p2 > .card:first-child {
+    border-top: none !important;
+    border-radius: 0 0 13px 13px;
+    box-shadow: none;
+}
+
+.hero + .iframe-box {
+    border-top: none;
+    border-bottom: none !important;
+    box-shadow: none;
+}
