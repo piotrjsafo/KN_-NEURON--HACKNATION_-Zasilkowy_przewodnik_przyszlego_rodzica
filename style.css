@@ -147,3 +147,17 @@ h1 {
   color: #078443;
   font-size: 1.6rem;
 }
+#btnAdmin {
+  margin-top: 10px;
+  font-size: .85rem;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid #888;
+  background: #fff;
+  cursor: pointer;
+}
+#btnAdmin:hover {
+  background: #28a745;
+  border-color: #1e7e34;
+  color: #fff;
+}
