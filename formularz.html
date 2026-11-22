@@ -1,64 +1,218 @@
-
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Piotr Kiciński">
     <link rel="stylesheet" href="style.css">
     <title>Formularz poprzedzający kalkulator</title>
 
     <style>
-        .kontener {
-            text-align: center;
-        }
+        
+:root {
+    --bg: #f3f7f4;
+    --card: #ffffff;
+    --ink: #20352a;
+    --mut: #718078;
+    --line: #e0e9e2;
+    --acc: #078443;
+    --acc2: #075c32;
+}
 
-        #formularzDanych {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            margin: 10px auto;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        #formularzDanych label {
-            font-size: 1.1rem;
-            margin-top: 10px;
-        }
+html {
+    min-height: 100%;
+    margin: 0;
+}
 
-        #formularzDanych input[type="number"],
-        #formularzDanych select {
-            font-size: 1.2rem;
-            padding: 8px 12px;
-            border: 2px solid #555;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 380px;
-            box-sizing: border-box;
-            margin: 0;
-            background-color: white;
-        }
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0 15px 30px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", Arial, sans-serif;
+    line-height: 1.6;
+}
 
-        #formularzDanych input[type="submit"] {
-            font-size: 1.2rem;
-            padding: 12px 28px;
-            border-radius: 10px;
-            border: 2px solid #555;
-            cursor: pointer;
-            margin: 16px 0 0;
-            align-self: center;
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-        }
+.kontener {
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: none;
+    border-radius: 0 0 14px 14px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(20, 65, 35, 0.07);
+    text-align: center;
+}
 
-        #formularzDanych input[type="submit"]:hover {
-            background-color: #28a745;
-            border-color: #1e7e34;
-            color: white;
-        }
+h1 {
+    background: linear-gradient(120deg, #075c32, #078443);
+    color: white;
+    padding: 25px 15px;
+    margin: -30px -30px 25px;
+    border-radius: 0;
+    font-size: 28px;
+    line-height: 1.3;
+}
 
-        footer {
-            text-align: center;
-        }
+#powitanie {
+    color: var(--mut);
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+#formularzDanych {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+    margin: 20px auto;
+    text-align: left;
+}
+
+#formularzDanych label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 12px;
+}
+
+#formularzDanych input[type="number"],
+#formularzDanych select {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid #d5e2d8;
+    border-radius: 8px;
+    background: #fbfdfb;
+    color: var(--ink);
+    font-size: 16px;
+    font-family: inherit;
+    transition: 0.2s;
+}
+
+#formularzDanych input[type="number"]:focus,
+#formularzDanych select:focus {
+    outline: 3px solid rgba(7, 132, 67, 0.12);
+    border-color: var(--acc);
+    background: white;
+}
+
+#formularzDanych input[type="submit"] {
+    width: 100%;
+    background: var(--acc);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 22px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    margin: 22px 0 5px;
+    transition: 0.2s;
+}
+
+#formularzDanych input[type="submit"]:hover {
+    background: var(--acc2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(7, 132, 67, 0.2);
+}
+
+footer {
+    border-top: 1px solid var(--line);
+    margin-top: 25px;
+    padding-top: 15px;
+    color: var(--mut);
+    font-size: 13px;
+}
+
+footer a {
+    color: var(--acc);
+    font-weight: 600;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+footer a:hover {
+    color: var(--acc2);
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .kontener {
+        max-width: 600px;
+        padding: 25px;
+    }
+
+    h1 {
+        margin: -25px -25px 22px;
+        font-size: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 0 8px 15px;
+    }
+
+    .kontener {
+        padding: 20px 16px;
+        border-radius: 0 0 12px 12px;
+    }
+
+    h1 {
+        margin: -20px -16px 20px;
+        padding: 22px 12px;
+        font-size: 22px;
+    }
+
+    #powitanie {
+        font-size: 14px;
+    }
+
+    #formularzDanych label {
+        font-size: 13px;
+    }
+
+    #formularzDanych input[type="number"],
+    #formularzDanych select {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    #formularzDanych input[type="submit"] {
+        padding: 14px 10px;
+        font-size: 15px;
+    }
+
+    footer {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 350px) {
+    .kontener {
+        padding: 16px 12px;
+    }
+
+    h1 {
+        margin: -16px -12px 18px;
+        font-size: 20px;
+    }
+}
+
     </style>
 </head>
 
@@ -71,16 +225,13 @@
 
     <form id="formularzDanych" action="kalkulator.html" method="GET">
 
-        <input type="hidden" id="ukryteImie" name="imie">
-        <input type="hidden" id="ukryteNazwisko" name="nazwisko">
-
         <label for="matka">Wypłata matki (zł/mies.):</label>
         <input type="number" id="matka" name="matka"
-               placeholder="np. 6000" min="0" required>
+               placeholder="zł" min="0" required>
 
         <label for="ojciec">Wypłata ojca (zł/mies.):</label>
         <input type="number" id="ojciec" name="ojciec"
-               placeholder="np. 7000" min="0" required>
+               placeholder="zł" min="0" required>
 
         <label for="zdarzenie">Stan dziecka:</label>
 
@@ -95,7 +246,7 @@
     </form>
 
     <footer>
-        <p>czytaj więcej:
+        <p id="Czytaj">czytaj więcej:
             <a href="https://www.zus.pl/" target="_blank">https://www.zus.pl/</a>
         </p>
     </footer>
@@ -103,19 +254,31 @@
 </div>
 
 <script>
-    // Pobranie danych z adresu strony
-    const parametry = new URLSearchParams(window.location.search);
+    
+    const imie = sessionStorage.getItem('imie');
+    const nazwisko = sessionStorage.getItem('nazwisko');
+    if (!imie || !nazwisko) {
+        window.location.href = 'index.html';
+    } else {
+        document.getElementById('powitanie').textContent =
+            'Witaj, ' + imie + ' ' + nazwisko + '! Wypełnij poniższe dane.';
+    }
 
-    const imie = parametry.get('imie') || '';
-    const nazwisko = parametry.get('nazwisko') || '';
+    const formularzDanych = document.getElementById('formularzDanych');
 
-    // Przepisanie danych do ukrytych pól formularza
-    document.getElementById('ukryteImie').value = imie;
-    document.getElementById('ukryteNazwisko').value = nazwisko;
+    formularzDanych.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    // Wyświetlenie powitania
-    document.getElementById('powitanie').textContent =
-        'Witaj, ' + imie + ' ' + nazwisko + '! Wypełnij poniższe dane.';
+        const matka = document.getElementById('matka').value;
+        const ojciec = document.getElementById('ojciec').value;
+        const zdarzenie = document.getElementById('zdarzenie').value;
+
+        sessionStorage.setItem('matka', matka);
+        sessionStorage.setItem('ojciec', ojciec);
+        sessionStorage.setItem('zdarzenie', zdarzenie);
+
+        window.location.href = 'kalkulator.html';
+    });
 </script>
 
 </body>
